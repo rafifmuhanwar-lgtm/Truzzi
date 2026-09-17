@@ -95,9 +95,11 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   res.status(500).json({ message: 'Terjadi kesalahan pada server' });
 });
 
-app.listen(config.server.port, () => {
-  console.log(`Truzzi backend proxy → http://localhost:${config.server.port}`);
-  console.log(`Demo mode: ${config.demo.enabled ? 'ON' : 'OFF'}`);
-});
+if (!process.env.VERCEL) {
+  app.listen(config.server.port, () => {
+    console.log(`Truzzi backend proxy → http://localhost:${config.server.port}`);
+    console.log(`Demo mode: ${config.demo.enabled ? 'ON' : 'OFF'}`);
+  });
+}
 
 export default app;
