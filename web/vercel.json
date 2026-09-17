@@ -1,8 +1,7 @@
 {
   "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
+    { "source": "/api/:path*", "destination": "https://api-truzzi.vercel.app/api/:path*" },
+    { "source": "/uploads/:path*", "destination": "https://api-truzzi.vercel.app/uploads/:path*" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
