@@ -7,7 +7,7 @@ import { FullScreenLoader } from './components/Loading';
 const Splash = lazy(() => import('./screens/Splash'));
 const Login = lazy(() => import('./screens/Login'));
 const Register = lazy(() => import('./screens/Register'));
-const Kyc = lazy(() => import('./screens/KYC'));
+const Kyc = lazy(() => import('./screens/Kyc'));
 const KycPending = lazy(() => import('./screens/KycPending'));
 
 // Main shell
