@@ -65,8 +65,8 @@ export default function App() {
 
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center gap-6">
-            <a href="http://localhost:5173" className="text-[14px] font-medium text-slate-600 hover:text-primary transition-colors">Log In</a>
-            <a href="http://localhost:5173" className="bg-slate-900 text-white px-5 py-2.5 rounded text-[14px] font-medium hover:bg-slate-800 transition-colors">
+            <a href="https://truzzi-web.vercel.app" className="text-[14px] font-medium text-slate-600 hover:text-primary transition-colors">Log In</a>
+            <a href="https://truzzi-web.vercel.app" className="bg-slate-900 text-white px-5 py-2.5 rounded text-[14px] font-medium hover:bg-slate-800 transition-colors">
               Titip Sekarang
             </a>
           </div>
@@ -98,8 +98,8 @@ export default function App() {
             <div className="h-px bg-slate-200 mb-6" />
             
             <div className="flex flex-col gap-3">
-              <a href="http://localhost:5173" className="w-full text-center py-3.5 font-bold text-slate-700 bg-slate-100 rounded-xl hover:bg-slate-200 transition-colors">Log In</a>
-              <a href="http://localhost:5173" className="w-full text-center py-3.5 font-bold text-white bg-primary rounded-xl hover:bg-primary-hover shadow-sm">Titip Sekarang</a>
+              <a href="https://truzzi-web.vercel.app" className="w-full text-center py-3.5 font-bold text-slate-700 bg-slate-100 rounded-xl hover:bg-slate-200 transition-colors">Log In</a>
+              <a href="https://truzzi-web.vercel.app" className="w-full text-center py-3.5 font-bold text-white bg-primary rounded-xl hover:bg-primary-hover shadow-sm">Titip Sekarang</a>
             </div>
           </div>
         )}
@@ -120,7 +120,7 @@ export default function App() {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
-              <a href="http://localhost:5173" className="w-full sm:w-auto bg-primary text-white px-8 py-4 rounded text-base font-medium hover:bg-primary-hover transition-colors text-center">
+              <a href="https://truzzi-web.vercel.app" className="w-full sm:w-auto bg-primary text-white px-8 py-4 rounded text-base font-medium hover:bg-primary-hover transition-colors text-center">
                 Mulai Titip Sekarang
               </a>
               <a href="#how-it-works" className="w-full sm:w-auto text-slate-900 border border-slate-300 px-8 py-4 rounded text-base font-medium hover:bg-slate-50 transition-colors text-center">
@@ -584,7 +584,7 @@ export default function App() {
           <p className="text-lg text-slate-600 max-w-2xl mx-auto mb-10">
             Jadilah Jastiper Truzzi. Ambil pesanan yang searah dengan tujuanmu, sepakati harga secara transparan, dan dapatkan penghasilan tambahan tanpa tekanan.
           </p>
-          <a href="http://localhost:5174" className="inline-block border-2 border-slate-900 text-slate-900 px-8 py-3 rounded font-medium hover:bg-slate-50 transition-colors">
+          <a href="https://truzzi-jastiper.vercel.app" className="inline-block border-2 border-slate-900 text-slate-900 px-8 py-3 rounded font-medium hover:bg-slate-50 transition-colors">
             Daftar Jadi Jastiper
           </a>
         </div>
@@ -621,7 +621,7 @@ export default function App() {
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-10">
             Titip Sekarang, Biar Kami yang Bantu.
           </h2>
-          <a href="http://localhost:5173" className="inline-block bg-white text-primary px-10 py-4 rounded font-bold hover:bg-slate-100 transition-colors">
+          <a href="https://truzzi-web.vercel.app" className="inline-block bg-white text-primary px-10 py-4 rounded font-bold hover:bg-slate-100 transition-colors">
             Mulai Titip Sekarang
           </a>
         </div>
