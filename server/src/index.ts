@@ -28,10 +28,10 @@ import jastipProductRouter from './routes/jastip-products.js';
 
 const app = express();
 
-app.use(helmet());
+app.use((helmet as any)());
 app.use(morgan('dev'));
 
-const limiter = rateLimit({
+const limiter = (rateLimit as any)({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 5000, // Limit each IP to 5000 requests per windowMs
   message: 'Terlalu banyak request dari IP ini, coba lagi nanti.'
