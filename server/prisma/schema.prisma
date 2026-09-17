@@ -1,0 +1,438 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id              String              @id @default(cuid())
+  name            String
+  email           String              @unique
+  passwordHash    String?
+  phone           String?
+  photoUrl        String?
+  selectedArea    String?
+  role            UserRole            @default(customer)
+  googleId        String?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  addresses       Address[]
+  chatMessages    ChatMessage[]
+  escrows         EscrowTransaction[]
+  favorites       Favorite[]
+  postedGigs      Gig[]               @relation("GigPoster")
+  workedGigs      Gig[]               @relation("GigWorker")
+  gigReviews      GigReview[]
+  jastiperProfile Jastiper?
+  notifications   Notification[]
+  orders          Order[]
+  paymentMethods  PaymentMethod[]
+  topups          TopUpTransaction[]
+  userPromos      UserPromo[]
+  withdrawals     Withdrawal[]
+}
+
+model Order {
+  id                String             @id @default(cuid())
+  userId            String
+  serviceName       String
+  title             String
+  description       String?
+  status            OrderStatus        @default(ongoing)
+  statusText        String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  totalAmount       Float              @default(0)
+  jastiperId        String?
+  jastiperName      String?
+  jastiperPhone     String?
+  jastiperAvatar    String?
+  pickupAddress     String?
+  deliveryAddress   String?
+  chatRoomId        String?
+  danaBelanja       Float              @default(0)
+  ongkir            Float              @default(0)
+  biayaLayanan      Float              @default(0)
+  pickupLat         Float?
+  pickupLng         Float?
+  dropoffLat        Float?
+  dropoffLng        Float?
+  jastiperLat       Float?
+  jastiperLng       Float?
+  jarakKm           Float?
+  estimasiWaktu     String?
+  escrowId          String?
+  totalBelanjaStruk Float?
+  strukImageUrl     String?
+  deliveryProofUrl  String?
+  refundCustomer    Float?
+  kebijakanLebih    KebijakanLebih     @default(jangan_lebih)
+  pendingApproval   Boolean            @default(false)
+  requestedTopup    Float?
+  voucherCode       String?
+  voucherDiscount   Float?
+  orderType         OrderType          @default(jastip)
+  customerConfirmed Boolean            @default(false)
+  reviewRating      Int?
+  reviewText        String?
+  needsAdminReview  Boolean            @default(false)
+  adminReviewed     Boolean            @default(false)
+  completedAt       DateTime?
+  escrow            EscrowTransaction?
+  user              User               @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([jastiperId])
+  @@index([status])
+}
+
+model ChatMessage {
+  id          String      @id @default(cuid())
+  orderId     String
+  senderId    String
+  senderName  String?
+  senderRole  SenderRole  @default(customer)
+  message     String?
+  messageType MessageType @default(text)
+  mediaUrl    String?
+  isRead      Boolean     @default(false)
+  timestamp   DateTime    @default(now())
+  user        User        @relation(fields: [senderId], references: [id])
+
+  @@index([orderId])
+  @@index([senderId])
+}
+
+model Jastiper {
+  id                  String          @id
+  name                String
+  email               String?
+  phone               String?
+  photoUrl            String?
+  coverUrl            String?
+  bio                 String?
+  vehicleType         String?
+  vehiclePlate        String?
+  selectedArea        String?
+  category            String?
+  feeEstimate         String?
+  flatOngkir          Float           @default(10000)
+  isOnline            Boolean         @default(false)
+  isActive            Boolean         @default(true)
+  isJastipActive      Boolean         @default(true)
+  kycVerified         Boolean         @default(false)
+  kycKtpUrl           String?
+  kycSelfieUrl        String?
+  verified            Boolean         @default(false)
+  rating              Float           @default(0.0)
+  totalOrders         Int             @default(0)
+  openTripTitle       String?
+  openTripDestination String?
+  openTripSchedule    String?
+  openTripClosing     String?
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  favorites           Favorite[]
+  products            JastipProduct[]
+  user                User            @relation(fields: [id], references: [id])
+
+  @@index([isOnline])
+  @@index([selectedArea])
+  @@index([category])
+  @@index([isJastipActive])
+}
+
+model Withdrawal {
+  id            String           @id @default(cuid())
+  userId        String
+  amount        Float
+  bankName      String
+  accountNumber String
+  status        WithdrawalStatus @default(pending)
+  createdAt     DateTime         @default(now())
+  user          User             @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model Address {
+  id            String   @id @default(cuid())
+  userId        String
+  label         String   @default("Rumah")
+  recipientName String?
+  phone         String?
+  fullAddress   String
+  details       String?
+  isPrimary     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  user          User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model PaymentMethod {
+  id            String   @id @default(cuid())
+  userId        String
+  name          String
+  type          String
+  accountNumber String?
+  balance       Float?
+  isLinked      Boolean  @default(false)
+  isDefault     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  user          User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model Promo {
+  id              String      @id @default(cuid())
+  badge           String      @default("PROMO")
+  title           String
+  subtitle        String?
+  description     String?
+  code            String      @unique
+  period          String?
+  type            String      @default("discount")
+  category        String      @default("all")
+  minTransaction  Float       @default(0)
+  discountPercent Float?
+  discountFlat    Float?
+  maxDiscount     Float?
+  startDate       DateTime?
+  endDate         DateTime?
+  quota           Int?
+  usedCount       Int         @default(0)
+  budgetMax       Float?
+  budgetUsed      Float       @default(0)
+  targetUsers     String?
+  isNewUserOnly   Boolean     @default(false)
+  imageUrl        String?
+  gradient        String?
+  accent          String?
+  active          Boolean     @default(true)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @default(now()) @updatedAt
+  usages          UserPromo[]
+}
+
+model UserPromo {
+  id        String   @id @default(cuid())
+  userId    String
+  promoId   String
+  orderId   String?
+  createdAt DateTime @default(now())
+  promo     Promo    @relation(fields: [promoId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, promoId, orderId])
+}
+
+model Notification {
+  id         String   @id @default(cuid())
+  userId     String
+  category   String   @default("Pesanan")
+  title      String
+  body       String?
+  createdAt  DateTime @default(now())
+  isRead     Boolean  @default(false)
+  routeName  String?
+  routeExtra String?
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([isRead])
+}
+
+model Wallet {
+  id         String   @id
+  userId     String   @unique
+  balance    Float    @default(0)
+  totalTopUp Float    @default(0)
+  totalSpent Float    @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model EscrowTransaction {
+  id           String       @id @default(cuid())
+  orderId      String?      @unique
+  gigId        String?
+  userId       String
+  amount       Float        @default(0)
+  status       EscrowStatus @default(held)
+  serviceType  String?
+  createdAt    DateTime     @default(now())
+  releasedAt   DateTime?
+  danaBelanja  Float        @default(0)
+  ongkir       Float        @default(0)
+  biayaLayanan Float        @default(0)
+  order        Order?       @relation(fields: [orderId], references: [id])
+  user         User         @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([gigId])
+}
+
+model Gig {
+  id            String      @id @default(cuid())
+  posterId      String
+  workerId      String?
+  title         String
+  description   String
+  category      GigCategory @default(digital)
+  location      String?
+  budget        Float       @default(0)
+  biayaLayanan  Float       @default(0)
+  deadline      DateTime?
+  status        GigStatus   @default(open)
+  escrowId      String?
+  proofImageUrl String?
+  proofNote     String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  poster        User        @relation("GigPoster", fields: [posterId], references: [id])
+  worker        User?       @relation("GigWorker", fields: [workerId], references: [id])
+  reviews       GigReview[]
+
+  @@index([posterId])
+  @@index([workerId])
+  @@index([category])
+  @@index([status])
+}
+
+model GigReview {
+  id         String   @id @default(cuid())
+  gigId      String
+  reviewerId String
+  rating     Int      @default(5)
+  comment    String?
+  createdAt  DateTime @default(now())
+  gig        Gig      @relation(fields: [gigId], references: [id])
+  user       User     @relation(fields: [reviewerId], references: [id])
+
+  @@index([gigId])
+  @@index([reviewerId])
+}
+
+model TopUpTransaction {
+  id             String      @id @default(cuid())
+  userId         String
+  amount         Float       @default(0)
+  paymentMethod  String      @default("qris")
+  pakasirOrderId String?
+  status         TopUpStatus @default(pending)
+  createdAt      DateTime    @default(now())
+  completedAt    DateTime?
+  user           User        @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+/// Katalog barang yang dibawa jastiper dalam trip-nya.
+model JastipProduct {
+  id          String              @id @default(cuid())
+  jastiperId  String
+  title       String
+  description String?
+  price       Float               @default(0)
+  category    String?
+  images      String[]
+  published   Boolean             @default(true)
+  status      JastipProductStatus @default(active)
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  jastiper    Jastiper            @relation(fields: [jastiperId], references: [id])
+
+  @@index([jastiperId])
+  @@index([published])
+}
+
+/// Jastiper favorit milik customer.
+model Favorite {
+  id         String   @id @default(cuid())
+  userId     String
+  jastiperId String
+  createdAt  DateTime @default(now())
+  jastiper   Jastiper @relation(fields: [jastiperId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, jastiperId])
+  @@index([userId])
+  @@index([jastiperId])
+}
+
+enum OrderStatus {
+  ongoing
+  waiting_confirmation
+  completed
+  cancelled
+}
+
+enum OrderType {
+  jastip
+  suruh
+}
+
+enum KebijakanLebih {
+  jangan_lebih
+  boleh_lebih
+}
+
+enum EscrowStatus {
+  held
+  released
+  refunded
+}
+
+enum TopUpStatus {
+  pending
+  success
+  failed
+  completed
+}
+
+enum SenderRole {
+  customer
+  jastiper
+  support
+}
+
+enum MessageType {
+  text
+  image
+  video
+}
+
+enum GigCategory {
+  digital
+  fisik
+}
+
+enum GigStatus {
+  open
+  in_progress
+  submitted
+  completed
+  cancelled
+}
+
+enum UserRole {
+  customer
+  jastiper
+  admin
+}
+
+enum WithdrawalStatus {
+  pending
+  approved
+  rejected
+}
+
+enum JastipProductStatus {
+  active
+  inactive
+}

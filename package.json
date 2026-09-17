@@ -1,0 +1,25 @@
+{
+  "name": "Truzzi-web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Truzzi — React Web clone of the customer Flutter app (jastip & suruh on-demand delivery)",
+  "scripts": {
+    "dev": "concurrently -n server,web,driver,admin,landing -c magenta,cyan,yellow,blue,green \"npm run dev:server\" \"npm run dev:web\" \"npm run dev:jastiper\" \"npm run dev:admin\" \"npm run dev:landing\"",
+    "dev:web": "npm --prefix web run dev",
+    "dev:jastiper": "npm --prefix jastiper run dev",
+    "dev:admin": "npm --prefix admin run dev",
+    "dev:landing": "npm --prefix landing run dev",
+    "dev:server": "npm --prefix server run dev",
+    "build": "npm --prefix server run build && npm --prefix web run build && npm --prefix jastiper run build && npm --prefix admin run build && npm --prefix landing run build",
+    "build:web": "npm --prefix web run build",
+    "build:jastiper": "npm --prefix jastiper run build",
+    "build:admin": "npm --prefix admin run build",
+    "build:landing": "npm --prefix landing run build",
+    "build:server": "npm --prefix server run build",
+    "start": "npm --prefix server run start",
+    "type-check": "npm --prefix web run type-check && npm --prefix server run type-check && npm --prefix jastiper run type-check && npm --prefix admin run type-check && npm --prefix landing run type-check"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}
