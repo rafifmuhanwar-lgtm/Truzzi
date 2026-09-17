@@ -58,8 +58,13 @@ app.use(hpp());
 app.use(cookieParser());
 app.use(attachUser);
 
-app.get('/api/health', (_req, res) => {
-  res.json({ ok: true, demo: config.demo.enabled, time: new Date().toISOString() });
+app.use((req, res, next) => {
+  console.log('[DEBUG] Incoming:', req.method, req.url, req.originalUrl);
+  next();
+});
+
+app.get(['/', '/health', '/api/health'], (req, res) => {
+  res.json({ ok: true, url: req.url, originalUrl: req.originalUrl, demo: config.demo.enabled, time: new Date().toISOString() });
 });
 
 app.use('/api/auth', authRouter);
