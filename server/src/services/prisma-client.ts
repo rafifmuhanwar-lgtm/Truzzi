@@ -9,7 +9,7 @@ export function getPrisma(): PrismaClient {
   if (!prisma) {
     const url = process.env.DATABASE_URL ?? "";
     const pool = new pg.Pool({
-      connectionString: url,
+      connectionString: url.split("?")[0],
       ssl: { rejectUnauthorized: false },
     });
     const adapter = new PrismaPg(pool);
