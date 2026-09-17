@@ -1,10 +1,7 @@
-/**
- * Prisma client singleton — PostgreSQL (Prisma 7 + driver @prisma/adapter-pg).
- */
 import "dotenv/config";
 import pg from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../generated/prisma/client.js";
+import { PrismaClient } from "@prisma/client";
 
 let prisma: PrismaClient | null = null;
 
