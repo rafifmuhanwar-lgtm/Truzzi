@@ -8,7 +8,10 @@ let prisma: PrismaClient | null = null;
 export function getPrisma(): PrismaClient {
   if (!prisma) {
     const url = process.env.DATABASE_URL ?? "";
-    const pool = new pg.Pool({ connectionString: url });
+    const pool = new pg.Pool({
+      connectionString: url,
+      ssl: { rejectUnauthorized: false },
+    });
     const adapter = new PrismaPg(pool);
     prisma = new PrismaClient({ adapter });
   }
