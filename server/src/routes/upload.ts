@@ -38,8 +38,15 @@ router.use((req: Request, _res: Response, next: NextFunction) => {
 });
 
 const _dirname = path.dirname(fileURLToPath(import.meta.url));
-const uploadDir = path.resolve(_dirname, '../../', config.storage.uploadDir);
-fs.mkdirSync(uploadDir, { recursive: true });
+const uploadDir = process.env.VERCEL 
+  ? path.join('/tmp', config.storage.uploadDir) 
+  : path.resolve(_dirname, '../../', config.storage.uploadDir);
+
+try {
+  fs.mkdirSync(uploadDir, { recursive: true });
+} catch (err) {
+  console.warn('Could not create upload directory:', err);
+}
 
 // Folder lokal: simpan file ke disk dengan nama unik.
 const localStorage = multer.diskStorage({
