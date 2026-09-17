@@ -99,3 +99,5 @@ app.listen(config.server.port, () => {
   console.log(`Truzzi backend proxy → http://localhost:${config.server.port}`);
   console.log(`Demo mode: ${config.demo.enabled ? 'ON' : 'OFF'}`);
 });
+
+export default app;
