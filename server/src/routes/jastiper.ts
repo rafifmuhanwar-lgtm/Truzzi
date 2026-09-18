@@ -489,6 +489,28 @@ router.post('/orders/:id/confirm-received', async (req: Request, res: Response) 
       reviewText: reviewText || '',
     });
 
+    // Update rating jastiper/jastiper terkait
+    if (order?.jastiperId) {
+      const jastiperId = order.jastiperId;
+      try {
+        const jastiper = await db.getJastiper(jastiperId);
+        if (jastiper) {
+          const currentTotal = Number(jastiper.totalOrders || 0);
+          const currentRating = Number(jastiper.rating || 0);
+          const newRating = currentTotal === 0 || currentRating === 0
+            ? Number(rating)
+            : Number(((currentRating * currentTotal + Number(rating)) / (currentTotal + 1)).toFixed(1));
+
+          await db.upsertJastiper(jastiperId, {
+            rating: newRating,
+            totalOrders: currentTotal + 1,
+          });
+        }
+      } catch (err) {
+        console.error('Failed to update jastiper rating:', err);
+      }
+    }
+
     // Finalize
     const updated = await finalizeOrder(req.params.id, order);
 
