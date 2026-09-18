@@ -5,8 +5,9 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { API, errMsg } from '../lib/api';
 import { useAuthStore } from '../store/auth';
 import { formatRupiah, parseRupiah } from '../lib/format';
-import { ArrowLeft, ShieldCheck, Store, MapPin, Ticket } from '../components/icons';
+import { ArrowLeft, ShieldCheck, Store, MapPin, Ticket, ChevronRight } from '../components/icons';
 import { VoucherPickerSheet } from '../components/VoucherPickerSheet';
+import { consumeAddressPicked } from '../lib/address-picker';
 
 interface SummaryData {
   item: string;
@@ -40,6 +41,7 @@ export default function JastipSummary() {
 
   const [danaBelanja] = useState(() => parseRupiah(state?.budget ?? '0'));
   const [deliveryAddress, setDeliveryAddress] = useState(state?.dropoff || '');
+  const [selectedAddressObj, setSelectedAddressObj] = useState<any>(state?.dropoffData || null);
   const [calc, setCalc] = useState(!state?.isDirectInvoice);
   const [paying, setPaying] = useState(false);
   const [promoCode, setPromoCode] = useState('');
@@ -63,10 +65,18 @@ export default function JastipSummary() {
   const [isVoucherOpen, setIsVoucherOpen] = useState(false);
 
   useEffect(() => {
+    const p = consumeAddressPicked();
+    if (p) {
+      setDeliveryAddress(p.address);
+      setSelectedAddressObj(p.data);
+      return;
+    }
+
     if (!deliveryAddress && addrData?.length) {
       const primary = addrData.find((a: any) => a.isPrimary) || addrData[0];
       if (primary) {
-        setDeliveryAddress(`${primary.fullAddress || primary.recipientName} (${primary.phone || ''})`);
+        setDeliveryAddress(primary.fullAddress);
+        setSelectedAddressObj(primary);
       }
     }
   }, [addrData, deliveryAddress]);
@@ -134,8 +144,8 @@ export default function JastipSummary() {
         deliveryAddress: deliveryAddress.trim(),
         pickupLat: Number(state.pickupLat) || -6.2383,
         pickupLng: Number(state.pickupLng) || 106.9756,
-        dropoffLat: state.dropoffData?.lat,
-        dropoffLng: state.dropoffData?.lng,
+        dropoffLat: selectedAddressObj?.lat || state.dropoffData?.lat,
+        dropoffLng: selectedAddressObj?.lng || state.dropoffData?.lng,
         voucherCode: appliedPromo?.code || promoCode, // Add to track
       });
 
@@ -232,31 +242,46 @@ export default function JastipSummary() {
             <div className="flex justify-between py-1"><span className="text-sm text-ink-secondary">Catatan</span><span className="text-sm font-medium max-w-[55%] text-right">{state?.notes || '-'}</span></div>
           </div>
 
-          {/* Lokasi & Alamat Pengantaran */}
-          <div className="card-pad">
-            <div className="flex items-center gap-2">
-              <span className="p-2 rounded-lg bg-primary/10"><Store className="w-4 h-4 text-primary" /></span>
+          {/* Lokasi Pembelian */}
+          <div className="card-pad border border-slate-200">
+            <div className="flex items-center gap-3">
+              <span className="p-2 rounded-lg bg-primary/10"><Store className="w-5 h-5 text-primary" /></span>
               <div className="min-w-0 flex-1">
-                <p className="text-xs text-ink-secondary">Lokasi Pembelian</p>
-                <p className="text-sm font-medium line-clamp-1">{state?.pickup || 'Lokasi Penjual'}</p>
+                <p className="text-xs text-ink-secondary font-medium">Lokasi Pembelian</p>
+                <p className="text-sm font-bold text-ink truncate mt-0.5">{state?.pickup || 'Lokasi Penjual'}</p>
               </div>
             </div>
-            <div className="w-0.5 h-6 bg-border mx-[19px]" />
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <span className="p-2 rounded-lg bg-error/10"><MapPin className="w-4 h-4 text-error" /></span>
-                <div className="min-w-0 flex-1">
-                  <p className="text-xs text-ink-secondary">Alamat Pengantaran Customer *</p>
-                </div>
+          </div>
+
+          {/* Alamat Pengantaran (Shopee Style) */}
+          <div 
+            onClick={() => navigate('/delivery/address')}
+            className="bg-white rounded-2xl border border-slate-200 p-4 cursor-pointer active:bg-slate-50 transition-colors shadow-sm"
+          >
+            <div className="flex items-start gap-3">
+              <MapPin className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-semibold text-ink-secondary mb-1">Alamat Pengantaran Customer *</p>
+                {selectedAddressObj ? (
+                  <>
+                    <p className="font-bold text-sm text-ink mb-1">{selectedAddressObj.recipientName || selectedAddressObj.label}</p>
+                    <p className="text-[13px] text-ink-secondary leading-relaxed">
+                      {selectedAddressObj.fullAddress} {selectedAddressObj.details && `(${selectedAddressObj.details})`}
+                    </p>
+                    {(selectedAddressObj.village || selectedAddressObj.district || selectedAddressObj.city || selectedAddressObj.province) && (
+                      <p className="text-[13px] text-ink-secondary uppercase mt-0.5">
+                        {[selectedAddressObj.village, selectedAddressObj.district, selectedAddressObj.city, selectedAddressObj.province].filter(Boolean).join(', ')}{selectedAddressObj.postalCode ? `, ID ${selectedAddressObj.postalCode}` : ''}
+                      </p>
+                    )}
+                  </>
+                ) : (
+                  <p className="text-sm text-ink-secondary mt-1">{deliveryAddress || 'Pilih Alamat Pengantaran...'}</p>
+                )}
               </div>
-              <input
-                type="text"
-                value={deliveryAddress}
-                onChange={(e) => setDeliveryAddress(e.target.value)}
-                placeholder="Tulis alamat lengkap / patokan rumah Anda..."
-                className="w-full bg-[#F9FAFB] border border-border rounded-xl px-3 py-2 text-xs text-ink focus:outline-none focus:border-primary mt-1"
-              />
+              <ChevronRight className="w-5 h-5 text-ink-secondary shrink-0 self-center" />
             </div>
+            {/* Shopee-style striped border at the bottom */}
+            <div className="h-1 w-full mt-4 rounded-full" style={{ backgroundImage: 'repeating-linear-gradient(45deg, #ef4444 0, #ef4444 10px, transparent 10px, transparent 20px, #3b82f6 20px, #3b82f6 30px, transparent 30px, transparent 40px)' }} />
           </div>
           
           {/* Promo Code Section */}
