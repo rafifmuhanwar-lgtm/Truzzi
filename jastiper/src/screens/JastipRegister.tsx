@@ -166,52 +166,20 @@ export default function JastipRegister() {
                 className="w-full bg-background border border-border rounded-xl px-3 py-2.5 text-xs text-ink placeholder:text-ink-secondary/60 focus:outline-none focus:border-primary mt-1 resize-none"
               />
             </div>
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <label className="text-[11px] font-semibold text-ink-secondary">Wilayah *</label>
-                <select
-                  value={form.area}
-                  onChange={(e) => update('area', e.target.value)}
-                  className="w-full bg-background border border-border rounded-xl px-3 py-2.5 text-xs text-ink focus:outline-none focus:border-primary mt-1"
-                >
-                  <option value="">Pilih wilayah...</option>
-                  {AREAS.map((a) => <option key={a} value={a}>{a}</option>)}
-                </select>
-              </div>
-              <div>
-                <label className="text-[11px] font-semibold text-ink-secondary">Kategori Utama</label>
-                <select
-                  value={form.category}
-                  onChange={(e) => update('category', e.target.value)}
-                  className="w-full bg-background border border-border rounded-xl px-3 py-2.5 text-xs text-ink focus:outline-none focus:border-primary mt-1"
-                >
-                  {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-                </select>
-              </div>
-            </div>
-            <div>
-              <label className="text-[11px] font-semibold text-ink-secondary">Estimasi Jasa Titip (teks deskripsi)</label>
-              <input
-                value={form.feeEstimate}
-                onChange={(e) => update('feeEstimate', e.target.value)}
-                placeholder="Cth: Sudah all-in di harga katalog"
-                className="w-full bg-background border border-border rounded-xl px-3 py-2.5 text-xs text-ink placeholder:text-ink-secondary/60 focus:outline-none focus:border-primary mt-1"
-              />
-            </div>
+
+
             <div>
               <div className="flex items-center justify-between">
                 <label className="text-[11px] font-semibold text-ink-secondary">Tarif Ongkir Antar (Flat per Trip)</label>
-                <span className="text-[10px] font-bold text-primary">Maks. Rp 25.000</span>
               </div>
               <div className="relative mt-1">
                 <span className="absolute left-3 top-2.5 text-xs font-bold text-ink-secondary">Rp</span>
                 <input
                   type="number"
-                  max={25000}
                   min={0}
                   step={1000}
                   value={form.flatOngkir ?? 10000}
-                  onChange={(e) => update('flatOngkir', Math.min(25000, Math.max(0, Number(e.target.value) || 0)) as any)}
+                  onChange={(e) => update('flatOngkir', Math.max(0, Number(e.target.value) || 0) as any)}
                   placeholder="10000"
                   className="w-full bg-background border border-border rounded-xl pl-9 pr-3 py-2.5 text-xs text-ink font-semibold focus:outline-none focus:border-primary"
                 />
