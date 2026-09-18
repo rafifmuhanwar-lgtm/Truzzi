@@ -5,7 +5,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { API, errMsg } from '../lib/api';
 import { useAuthStore } from '../store/auth';
 import { formatRupiah, parseRupiah } from '../lib/format';
-import { ArrowLeft, ShieldCheck, Store, MapPin, Ticket, ChevronRight } from '../components/icons';
+import { ArrowLeft, ShieldCheck, MapPin, Ticket, ChevronRight } from '../components/icons';
 import { VoucherPickerSheet } from '../components/VoucherPickerSheet';
 import { consumeAddressPicked } from '../lib/address-picker';
 
