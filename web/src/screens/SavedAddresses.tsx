@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useState, useEffect, type FormEvent } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -181,50 +181,48 @@ function AddressModal({ address, onClose, onSave }: { address: Address | null; o
   const [selectedVill, setSelectedVill] = useState('');
 
   // Fetch Provinces
-  import('react').then(({ useEffect }) => {
-    useEffect(() => {
-      fetch('/wilayah/api/provinces.json')
-        .then((res) => res.json())
-        .then((res) => setProvinces(res.data || []))
-        .catch(console.error);
-    }, []);
-  
-    // Fetch Regencies
-    useEffect(() => {
-      if (!selectedProv) {
-        setRegencies([]); setSelectedReg(''); setDistricts([]); setSelectedDist(''); setVillages([]); setSelectedVill('');
-        return;
-      }
-      fetch(`/wilayah/api/regencies/${selectedProv}.json`)
-        .then((res) => res.json())
-        .then((res) => setRegencies(res.data || []))
-        .catch(console.error);
-    }, [selectedProv]);
-  
-    // Fetch Districts
-    useEffect(() => {
-      if (!selectedReg) {
-        setDistricts([]); setSelectedDist(''); setVillages([]); setSelectedVill('');
-        return;
-      }
-      fetch(`/wilayah/api/districts/${selectedReg}.json`)
-        .then((res) => res.json())
-        .then((res) => setDistricts(res.data || []))
-        .catch(console.error);
-    }, [selectedReg]);
-  
-    // Fetch Villages
-    useEffect(() => {
-      if (!selectedDist) {
-        setVillages([]); setSelectedVill('');
-        return;
-      }
-      fetch(`/wilayah/api/villages/${selectedDist}.json`)
-        .then((res) => res.json())
-        .then((res) => setVillages(res.data || []))
-        .catch(console.error);
-    }, [selectedDist]);
-  });
+  useEffect(() => {
+    fetch('/wilayah/api/provinces.json')
+      .then((res) => res.json())
+      .then((res) => setProvinces(res.data || []))
+      .catch(console.error);
+  }, []);
+
+  // Fetch Regencies
+  useEffect(() => {
+    if (!selectedProv) {
+      setRegencies([]); setSelectedReg(''); setDistricts([]); setSelectedDist(''); setVillages([]); setSelectedVill('');
+      return;
+    }
+    fetch(`/wilayah/api/regencies/${selectedProv}.json`)
+      .then((res) => res.json())
+      .then((res) => setRegencies(res.data || []))
+      .catch(console.error);
+  }, [selectedProv]);
+
+  // Fetch Districts
+  useEffect(() => {
+    if (!selectedReg) {
+      setDistricts([]); setSelectedDist(''); setVillages([]); setSelectedVill('');
+      return;
+    }
+    fetch(`/wilayah/api/districts/${selectedReg}.json`)
+      .then((res) => res.json())
+      .then((res) => setDistricts(res.data || []))
+      .catch(console.error);
+  }, [selectedReg]);
+
+  // Fetch Villages
+  useEffect(() => {
+    if (!selectedDist) {
+      setVillages([]); setSelectedVill('');
+      return;
+    }
+    fetch(`/wilayah/api/villages/${selectedDist}.json`)
+      .then((res) => res.json())
+      .then((res) => setVillages(res.data || []))
+      .catch(console.error);
+  }, [selectedDist]);
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
