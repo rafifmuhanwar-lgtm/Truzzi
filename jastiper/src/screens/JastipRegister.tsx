@@ -170,20 +170,19 @@ export default function JastipRegister() {
               <div className="relative mt-1">
                 <span className="absolute left-3 top-2.5 text-xs font-bold text-ink-secondary">Rp</span>
                 <input
-                  type="number"
-                  min={0}
-                  max={25000}
-                  step={1000}
-                  value={form.flatOngkir ?? 10000}
+                  type="text"
+                  inputMode="numeric"
+                  value={form.flatOngkir !== undefined ? new Intl.NumberFormat('id-ID').format(form.flatOngkir) : ''}
                   onChange={(e) => {
-                    let val = Number(e.target.value) || 0;
+                    const rawVal = e.target.value.replace(/\D/g, '');
+                    let val = Number(rawVal) || 0;
                     if (val > 25000) {
                       showToast('Tarif maksimal adalah Rp 25.000', 'error');
                       val = 25000;
                     }
                     update('flatOngkir', Math.max(0, val) as any);
                   }}
-                  placeholder="10000"
+                  placeholder="10.000"
                   className="w-full bg-background border border-border rounded-xl pl-9 pr-3 py-2.5 text-xs text-ink font-semibold focus:outline-none focus:border-primary"
                 />
               </div>
