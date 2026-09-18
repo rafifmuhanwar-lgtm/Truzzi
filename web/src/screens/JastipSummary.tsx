@@ -242,16 +242,7 @@ export default function JastipSummary() {
             <div className="flex justify-between py-1"><span className="text-sm text-ink-secondary">Catatan</span><span className="text-sm font-medium max-w-[55%] text-right">{state?.notes || '-'}</span></div>
           </div>
 
-          {/* Lokasi Pembelian */}
-          <div className="card-pad border border-slate-200">
-            <div className="flex items-center gap-3">
-              <span className="p-2 rounded-lg bg-primary/10"><Store className="w-5 h-5 text-primary" /></span>
-              <div className="min-w-0 flex-1">
-                <p className="text-xs text-ink-secondary font-medium">Lokasi Pembelian</p>
-                <p className="text-sm font-bold text-ink truncate mt-0.5">{state?.pickup || 'Lokasi Penjual'}</p>
-              </div>
-            </div>
-          </div>
+
 
           {/* Alamat Pengantaran (Shopee Style) */}
           <div 
