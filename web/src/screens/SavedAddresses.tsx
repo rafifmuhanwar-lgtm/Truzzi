@@ -102,14 +102,15 @@ export default function SavedAddresses() {
                   <div>
                     <h3 className="font-bold text-sm text-ink">{a.recipientName || a.label}</h3>
                     <div className="text-[13px] text-ink-secondary leading-relaxed mt-1">
-                      <p>{a.fullAddress}</p>
+                      <p>
+                        {a.fullAddress} {a.details && `(${a.details})`}
+                      </p>
                       {(a.village || a.district || a.city || a.province) && (
                         <p className="uppercase mt-0.5">
                           {[a.village, a.district, a.city, a.province].filter(Boolean).join(', ')}{a.postalCode ? `, ID ${a.postalCode}` : ''}
                         </p>
                       )}
                     </div>
-                    {a.details && <p className="text-xs italic text-ink-secondary mt-1">{a.details}</p>}
                     
                     <div className="mt-2.5 flex items-center gap-2">
                       {a.isPrimary && (

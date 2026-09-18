@@ -83,8 +83,9 @@ export default function DeliveryAddress() {
                     )}
                   </div>
                   <p className="font-bold mt-2.5">{a.recipientName || a.label}</p>
-                  <p className="text-sm text-ink-secondary line-clamp-2 mt-1">{a.fullAddress}</p>
-                  {a.details && <p className="text-xs italic text-ink-secondary mt-1">{a.details}</p>}
+                  <p className="text-sm text-ink-secondary line-clamp-2 mt-1">
+                    {a.fullAddress} {a.details && `(${a.details})`}
+                  </p>
                 </button>
               ))}
             </div>
