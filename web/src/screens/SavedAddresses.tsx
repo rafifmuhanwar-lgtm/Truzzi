@@ -352,8 +352,8 @@ function AddressModal({ address, onClose, onSave }: { address: Address | null; o
           </div>
         </div>
 
-        {input('fullAddress', 'Alamat Lengkap', 'Cth: Jl. Kemerdekaan No. 123, RT 01 RW 02')}
-        {input('details', 'Detail (Opsional)', 'Cth: Pagar hitam, depan warung')}
+        {input('fullAddress', 'Nama Jalan, Gedung, Perumahan', 'Cth: Perumahan Griya Setu, Jl. Dahlia V No. 20')}
+        {input('details', 'Detail RT/RW, Blok, Patokan (Opsional)', 'Cth: RT 11/RW 10, Blok D5, Pagar Hitam')}
 
         <div className="flex items-center justify-between py-2 border-t border-b border-divider mt-2">
           <div className="min-w-0 pr-4">
