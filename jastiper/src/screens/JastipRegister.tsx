@@ -5,12 +5,6 @@ import { API, errMsg } from '../lib/api';
 import { useAuthStore } from '../store/auth';
 import { ArrowLeft, Save, MapPin, Clock, ShoppingBag, User, Info, Camera, Image as ImageIcon, Trash2 } from 'lucide-react';
 
-const AREAS = [
-  'Jakarta Pusat', 'Jakarta Selatan', 'Jakarta Utara', 'Jakarta Barat', 'Jakarta Timur',
-  'Bekasi', 'Kota Bekasi', 'Depok', 'Bogor', 'Tangerang', 'Tangerang Selatan',
-  'Bandung', 'Jabodetabek',
-];
-const CATEGORIES = ['Kuliner', 'Home & Living', 'Beauty', 'Fashion', 'Snack', 'Umum', 'Campuran'];
 
 export default function JastipRegister() {
   const navigate = useNavigate();
