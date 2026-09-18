@@ -246,7 +246,7 @@ export default function JastipSummary() {
 
           {/* Alamat Pengantaran (Shopee Style) */}
           <div 
-            onClick={() => navigate('/delivery/address')}
+            onClick={() => navigate('/jastip/delivery-address')}
             className="bg-white rounded-2xl border border-slate-200 p-4 cursor-pointer active:bg-slate-50 transition-colors shadow-sm"
           >
             <div className="flex items-start gap-3">
