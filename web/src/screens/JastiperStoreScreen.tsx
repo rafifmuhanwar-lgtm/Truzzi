@@ -82,14 +82,21 @@ export default function JastiperStoreScreen() {
       enqueueSnackbar('Pilih minimal 1 barang pesanan', { variant: 'warning' });
       return;
     }
-    const orderData = {
-      jastiperId: jastiper.id || jastiper.jastiperId,
-      jastiperName: jastiper.name,
-      tripTitle: jastiper.openTripTitle,
-      items,
-      totalItemPrice: calculateTotalOrder(),
-    };
-    navigate('/jastip/summary', { state: { orderData } });
+    const total = calculateTotalOrder();
+    const itemNames = items.map(i => `${i.qty}x ${i.title}`).join(', ');
+    
+    navigate('/jastip/summary', { 
+      state: { 
+        jastiperId: jastiper.id || jastiper.jastiperId,
+        tripTitle: jastiper.openTripTitle,
+        item: itemNames,
+        budget: total.toString(),
+        pickup: 'Katalog Jastiper',
+        pickupLat: -6.2,
+        pickupLng: 106.8,
+        dropoff: '',
+      } 
+    });
   };
 
   const chatJastiper = async () => {

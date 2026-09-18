@@ -81,7 +81,7 @@ model Order {
   adminReviewed     Boolean            @default(false)
   completedAt       DateTime?
   escrow            EscrowTransaction?
-  user              User               @relation(fields: [userId], references: [id])
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([jastiperId])
@@ -99,7 +99,7 @@ model ChatMessage {
   mediaUrl    String?
   isRead      Boolean     @default(false)
   timestamp   DateTime    @default(now())
-  user        User        @relation(fields: [senderId], references: [id])
+  user        User        @relation(fields: [senderId], references: [id], onDelete: Cascade)
 
   @@index([orderId])
   @@index([senderId])
@@ -136,7 +136,7 @@ model Jastiper {
   updatedAt           DateTime        @updatedAt
   favorites           Favorite[]
   products            JastipProduct[]
-  user                User            @relation(fields: [id], references: [id])
+  user                User            @relation(fields: [id], references: [id], onDelete: Cascade)
 
   @@index([isOnline])
   @@index([selectedArea])
@@ -152,7 +152,7 @@ model Withdrawal {
   accountNumber String
   status        WithdrawalStatus @default(pending)
   createdAt     DateTime         @default(now())
-  user          User             @relation(fields: [userId], references: [id])
+  user          User             @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
@@ -167,7 +167,7 @@ model Address {
   details       String?
   isPrimary     Boolean  @default(false)
   createdAt     DateTime @default(now())
-  user          User     @relation(fields: [userId], references: [id])
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
@@ -182,7 +182,7 @@ model PaymentMethod {
   isLinked      Boolean  @default(false)
   isDefault     Boolean  @default(false)
   createdAt     DateTime @default(now())
-  user          User     @relation(fields: [userId], references: [id])
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
@@ -224,8 +224,8 @@ model UserPromo {
   promoId   String
   orderId   String?
   createdAt DateTime @default(now())
-  promo     Promo    @relation(fields: [promoId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
+  promo     Promo    @relation(fields: [promoId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, promoId, orderId])
 }
@@ -240,7 +240,7 @@ model Notification {
   isRead     Boolean  @default(false)
   routeName  String?
   routeExtra String?
-  user       User     @relation(fields: [userId], references: [id])
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([isRead])
@@ -269,8 +269,8 @@ model EscrowTransaction {
   danaBelanja  Float        @default(0)
   ongkir       Float        @default(0)
   biayaLayanan Float        @default(0)
-  order        Order?       @relation(fields: [orderId], references: [id])
-  user         User         @relation(fields: [userId], references: [id])
+  order        Order?       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([gigId])
@@ -293,8 +293,8 @@ model Gig {
   proofNote     String?
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
-  poster        User        @relation("GigPoster", fields: [posterId], references: [id])
-  worker        User?       @relation("GigWorker", fields: [workerId], references: [id])
+  poster        User        @relation("GigPoster", fields: [posterId], references: [id], onDelete: Cascade)
+  worker        User?       @relation("GigWorker", fields: [workerId], references: [id], onDelete: Cascade)
   reviews       GigReview[]
 
   @@index([posterId])
@@ -310,8 +310,8 @@ model GigReview {
   rating     Int      @default(5)
   comment    String?
   createdAt  DateTime @default(now())
-  gig        Gig      @relation(fields: [gigId], references: [id])
-  user       User     @relation(fields: [reviewerId], references: [id])
+  gig        Gig      @relation(fields: [gigId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
 
   @@index([gigId])
   @@index([reviewerId])
@@ -326,7 +326,7 @@ model TopUpTransaction {
   status         TopUpStatus @default(pending)
   createdAt      DateTime    @default(now())
   completedAt    DateTime?
-  user           User        @relation(fields: [userId], references: [id])
+  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
@@ -344,7 +344,7 @@ model JastipProduct {
   status      JastipProductStatus @default(active)
   createdAt   DateTime            @default(now())
   updatedAt   DateTime            @updatedAt
-  jastiper    Jastiper            @relation(fields: [jastiperId], references: [id])
+  jastiper    Jastiper            @relation(fields: [jastiperId], references: [id], onDelete: Cascade)
 
   @@index([jastiperId])
   @@index([published])
@@ -356,8 +356,8 @@ model Favorite {
   userId     String
   jastiperId String
   createdAt  DateTime @default(now())
-  jastiper   Jastiper @relation(fields: [jastiperId], references: [id])
-  user       User     @relation(fields: [userId], references: [id])
+  jastiper   Jastiper @relation(fields: [jastiperId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, jastiperId])
   @@index([userId])
