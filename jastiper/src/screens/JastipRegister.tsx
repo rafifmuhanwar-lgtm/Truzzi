@@ -178,7 +178,7 @@ export default function JastipRegister() {
                   onChange={(e) => {
                     let val = Number(e.target.value) || 0;
                     if (val > 25000) {
-                      showToast('Tarif maksimal adalah Rp 25.000', 'warning');
+                      showToast('Tarif maksimal adalah Rp 25.000', 'error');
                       val = 25000;
                     }
                     update('flatOngkir', Math.max(0, val) as any);
