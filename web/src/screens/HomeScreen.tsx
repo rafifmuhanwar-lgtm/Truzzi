@@ -473,66 +473,6 @@ export default function HomeScreen() {
 
 
 
-        {/* ── Jastiper Near Me ── */}
-        <div className="mt-7">
-          <div className="px-6 flex items-center justify-between">
-            <div className="min-w-0">
-              <h2 className="text-base font-bold flex items-center gap-2">Jastiper Terdekat <Globe className="w-5 h-5 text-primary" /></h2>
-              <p className="text-xs text-ink-secondary mt-0.5">Jastiper terdekat dari lokasimu</p>
-            </div>
-            <button onClick={() => navigate('/jastip')} className="text-xs text-primary font-semibold shrink-0 flex items-center gap-1">
-              Lihat Semua <ArrowRight className="w-3 h-3" />
-            </button>
-          </div>
-          <div className="mt-3.5 px-6 flex gap-3.5 overflow-x-auto no-scrollbar">
-            {jastipers.slice(0, 4).map((j) => (
-              <button key={j.id} onClick={() => setSelectedJastiper(j)} className="card w-[140px] shrink-0 text-left overflow-hidden hover:shadow-soft transition-shadow">
-                <div className="h-[80px] bg-surface rounded-xl flex items-center justify-center overflow-hidden">
-                  {j.photoUrl ? <img src={j.photoUrl} alt="" className="w-full h-full object-cover" /> : <span className="text-3xl">📦</span>}
-                </div>
-                <div className="p-3">
-                  <p className="text-[12px] font-bold truncate">{j.name}</p>
-                  <div className="flex items-center gap-1 mt-0.5">
-                    <MapPin className="w-3 h-3 text-ink-secondary" />
-                    <span className="text-[9px] text-ink-secondary">{j.distanceKm ? `${j.distanceKm} km` : j.area ?? '-'}</span>
-                  </div>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Inspirasi Titip Jastip */}
-        <div className="mt-7">
-          <div className="px-6 flex items-center justify-between">
-            <div className="min-w-0">
-              <h2 className="text-base font-bold">Inspirasi Titip Jastip</h2>
-              <p className="text-xs text-ink-secondary mt-0.5">Ide belanja yang bisa dibantu jastiper terpercaya</p>
-            </div>
-            <button onClick={() => navigate('/inspirations', { state: { service: 'titip' } })} className="text-xs text-primary font-semibold shrink-0">
-              Lihat Semua
-            </button>
-          </div>
-          <div className="mt-3.5 px-6 flex gap-3.5 overflow-x-auto no-scrollbar">
-            {TITIP_IDEAS.map((s) => (
-              <button key={s.title} onClick={() => navigate('/inspirations', { state: { service: 'titip', selected: s } })} className="card w-[164px] shrink-0 text-left overflow-hidden hover:shadow-soft transition-shadow">
-                <div className="h-[76px] flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${s.color}, ${s.color}cc)` }}>
-                  <span className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-white/20 text-white">
-                    <s.icon className="w-6 h-6" />
-                  </span>
-                </div>
-                <div className="p-3.5">
-                  <p className="text-[13px] font-bold truncate">{s.title}</p>
-                  <p className="text-[11px] text-ink-secondary mt-0.5 line-clamp-2 leading-snug">{s.subtitle}</p>
-                  <span className="inline-flex items-center gap-1 mt-2 text-[11px] font-semibold" style={{ color: s.color }}>
-                    Lihat Detail <ChevronRight className="w-3.5 h-3.5" />
-                  </span>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-
       </div>
 
       {/* Bottom sheet detail promo */}
