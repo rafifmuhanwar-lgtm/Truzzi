@@ -156,9 +156,9 @@ function OrderCard({ order }: { order: Order }) {
         </p>
       ) : (
         <p className="text-body2 pt-0.5">
-          <span className="font-semibold">Ongkir:</span> {formatRupiah(order.ongkir)}
-          {Number(order.danaBelanja) > 0 && (
-            <span className="text-ink-secondary"> (Belanja: {formatRupiah(order.danaBelanja)})</span>
+          <span className="font-semibold">Belanja:</span> {formatRupiah(order.danaBelanja || 0)}
+          {Number(order.ongkir) > 0 && (
+            <span className="text-ink-secondary"> (Ongkir: {formatRupiah(order.ongkir)})</span>
           )}
         </p>
       )}
