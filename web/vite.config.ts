@@ -6,6 +6,11 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
+      '/wilayah': {
+        target: 'https://wilayah.id',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/wilayah/, '')
+      },
       '/api': {
         target: 'http://localhost:4000',
         changeOrigin: true,
