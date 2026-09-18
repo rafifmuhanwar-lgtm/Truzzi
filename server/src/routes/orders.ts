@@ -418,12 +418,10 @@ router.post('/:id/review', requireUser, async (req: Request, res: Response) => {
     const rating = Math.min(5, Math.max(1, Number(body.rating) || 5));
     const comment = body.comment || body.review || '';
 
-    const review = await db.createOrderReview({
-      orderId: req.params.id,
-      userId: user.id,
-      userName: user.name,
-      rating,
-      comment,
+    // Update review data to the order itself
+    const review = await db.updateOrder(req.params.id, {
+      reviewRating: rating,
+      reviewText: comment,
     });
 
     // Update rating jastiper/jastiper terkait
