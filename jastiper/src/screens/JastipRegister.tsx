@@ -165,15 +165,24 @@ export default function JastipRegister() {
             <div>
               <div className="flex items-center justify-between">
                 <label className="text-[11px] font-semibold text-ink-secondary">Tarif Ongkir Antar (Flat per Trip)</label>
+                <span className="text-[10px] font-bold text-primary">Maks. Rp 25.000</span>
               </div>
               <div className="relative mt-1">
                 <span className="absolute left-3 top-2.5 text-xs font-bold text-ink-secondary">Rp</span>
                 <input
                   type="number"
                   min={0}
+                  max={25000}
                   step={1000}
                   value={form.flatOngkir ?? 10000}
-                  onChange={(e) => update('flatOngkir', Math.max(0, Number(e.target.value) || 0) as any)}
+                  onChange={(e) => {
+                    let val = Number(e.target.value) || 0;
+                    if (val > 25000) {
+                      showToast('Tarif maksimal adalah Rp 25.000', 'warning');
+                      val = 25000;
+                    }
+                    update('flatOngkir', Math.max(0, val) as any);
+                  }}
                   placeholder="10000"
                   className="w-full bg-background border border-border rounded-xl pl-9 pr-3 py-2.5 text-xs text-ink font-semibold focus:outline-none focus:border-primary"
                 />

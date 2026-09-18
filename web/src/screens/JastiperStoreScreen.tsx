@@ -91,6 +91,7 @@ export default function JastiperStoreScreen() {
         tripTitle: jastiper.openTripTitle,
         item: itemNames,
         budget: total.toString(),
+        ongkirCustom: jastiper.flatOngkir ?? 10000,
         pickup: 'Katalog Jastiper',
         pickupLat: -6.2,
         pickupLng: 106.8,
