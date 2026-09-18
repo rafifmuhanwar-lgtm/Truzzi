@@ -20,12 +20,11 @@ import {
   MyLocation,
   Bike,
   Sparkles,
-  PlusCircle, Flame, Star, Globe, ArrowRight,
+  PlusCircle, Flame, Star, ArrowRight,
   Heart, MessageCircle,
 } from '../components/icons';
 import jastiperRunning from '../assets/images/jastiper_running.png';
 import Carousel from '../components/Carousel';
-import { TITIP_IDEAS } from '../lib/inspirations';
 
 /** Definisi slide banner promo — semuanya memakai layout identik agar ukurannya serasi. */
 type PromoSlideDef = {
@@ -217,12 +216,11 @@ export default function HomeScreen() {
 
   const { data: promosData } = useQuery({ queryKey: ['promos'], queryFn: () => API.promos.list() });
   const { data: claimsData } = useQuery({ queryKey: ['my-promos'], queryFn: () => API.promos.mine() });
-  const { data: jastipersData } = useQuery({ queryKey: ['jastipers'], queryFn: () => API.jastipers.list(), staleTime: 60000 });
+  useQuery({ queryKey: ['jastipers'], queryFn: () => API.jastipers.list(), staleTime: 60000 });
   const { data: popularData } = useQuery({ queryKey: ['jastipers-popular'], queryFn: () => API.jastipers.popular(), staleTime: 60000 });
   const { data: newestData } = useQuery({ queryKey: ['jastipers-newest'], queryFn: () => API.jastipers.newest(), staleTime: 60000 });
   const { data: favoritesData } = useQuery({ queryKey: ['favorites'], queryFn: () => API.favorites.list(), staleTime: 30000 });
   const favorites: Jastiper[] = favoritesData?.favorites ?? [];
-  const jastipers: Jastiper[] = jastipersData?.jastipers ?? [];
   const popularJastipers: Jastiper[] = popularData?.jastipers ?? [];
   const newestJastipers: Jastiper[] = newestData?.jastipers ?? [];
   const myClaims: any[] = claimsData?.claims ?? [];
