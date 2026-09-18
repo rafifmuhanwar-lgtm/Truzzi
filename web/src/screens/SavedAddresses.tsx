@@ -109,10 +109,16 @@ export default function SavedAddresses() {
                   </div>
                 </div>
                 <p className="font-bold mt-2.5">{a.recipientName || a.label}</p>
-                <p className="text-sm text-ink-secondary">{a.phone}</p>
                 <div className="flex items-start gap-1.5 mt-1">
                   <MapPin className="w-4 h-4 text-ink-secondary shrink-0 mt-0.5" />
-                  <p className="text-sm text-ink-secondary leading-relaxed">{a.fullAddress}</p>
+                  <div className="text-sm text-ink-secondary leading-relaxed">
+                    <p>{a.fullAddress}</p>
+                    {(a.village || a.district || a.city || a.province) && (
+                      <p className="text-[13px] opacity-80 mt-0.5">
+                        {[a.village, a.district, a.city, a.province].filter(Boolean).join(', ')} {a.postalCode}
+                      </p>
+                    )}
+                  </div>
                 </div>
                 {a.details && <p className="text-xs italic text-ink-secondary mt-1">{a.details}</p>}
                 {!a.isPrimary && (

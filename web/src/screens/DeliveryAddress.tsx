@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { API } from '../lib/api';
@@ -20,6 +20,12 @@ export default function DeliveryAddress() {
     enabled: !!user,
   });
   const addresses = data ?? [];
+
+  useEffect(() => {
+    if (!isLoading && addresses.length === 0) {
+      navigate('/profile/addresses', { replace: true, state: { select_for: 'delivery' } });
+    }
+  }, [isLoading, addresses.length, navigate]);
 
   const pick = (a: Address) => {
     emitAddressPicked({ address: a.fullAddress, data: a });

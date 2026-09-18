@@ -118,15 +118,23 @@ export default function OrderDetail() {
 
   function openNavigation() {
     if (!order) return;
-    const target =
-      (order.statusText ?? '') === 'Menuju Lokasi'
-        ? { lat: order.pickupLat, lng: order.pickupLng }
-        : { lat: order.dropoffLat, lng: order.dropoffLng };
-    if (target.lat == null || target.lng == null) {
-      enqueueSnackbar('Koordinat tidak tersedia', { variant: 'warning' });
+    const isPickup = (order.statusText ?? '') === 'Menuju Lokasi';
+    
+    // First try using exact string address if available, otherwise fallback to coordinates
+    let destination = '';
+    
+    if (isPickup) {
+      destination = order.pickupAddress ? encodeURIComponent(order.pickupAddress) : (order.pickupLat && order.pickupLng ? `${order.pickupLat},${order.pickupLng}` : '');
+    } else {
+      // For dropoff, the detailed address is usually better for maps than default coordinates
+      destination = order.deliveryAddress ? encodeURIComponent(order.deliveryAddress) : (order.dropoffLat && order.dropoffLng ? `${order.dropoffLat},${order.dropoffLng}` : '');
+    }
+
+    if (!destination) {
+      enqueueSnackbar('Alamat tujuan tidak tersedia', { variant: 'warning' });
       return;
     }
-    window.open(`https://www.google.com/maps/dir/?api=1&destination=${target.lat},${target.lng}&travelmode=driving`, '_blank');
+    window.open(`https://www.google.com/maps/dir/?api=1&destination=${destination}&travelmode=driving`, '_blank');
   }
 
   if (!order) {
