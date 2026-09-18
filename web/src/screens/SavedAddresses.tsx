@@ -139,10 +139,17 @@ export default function SavedAddresses() {
   );
 }
 
+type Region = { code: string; name: string };
+
 interface AddressFormData {
   label: string;
   recipientName: string;
   phone: string;
+  province: string;
+  city: string;
+  district: string;
+  village: string;
+  postalCode: string;
   fullAddress: string;
   details?: string;
   isPrimary?: boolean;
@@ -153,14 +160,89 @@ function AddressModal({ address, onClose, onSave }: { address: Address | null; o
     label: address?.label ?? 'Rumah',
     recipientName: address?.recipientName ?? '',
     phone: address?.phone ?? '',
+    province: address?.province ?? '',
+    city: address?.city ?? '',
+    district: address?.district ?? '',
+    village: address?.village ?? '',
+    postalCode: address?.postalCode ?? '',
     fullAddress: address?.fullAddress ?? '',
     details: address?.details ?? '',
+    isPrimary: address?.isPrimary ?? false,
+  });
+
+  const [provinces, setProvinces] = useState<Region[]>([]);
+  const [regencies, setRegencies] = useState<Region[]>([]);
+  const [districts, setDistricts] = useState<Region[]>([]);
+  const [villages, setVillages] = useState<Region[]>([]);
+
+  const [selectedProv, setSelectedProv] = useState('');
+  const [selectedReg, setSelectedReg] = useState('');
+  const [selectedDist, setSelectedDist] = useState('');
+  const [selectedVill, setSelectedVill] = useState('');
+
+  // Fetch Provinces
+  import('react').then(({ useEffect }) => {
+    useEffect(() => {
+      fetch('/wilayah/api/provinces.json')
+        .then((res) => res.json())
+        .then((res) => setProvinces(res.data || []))
+        .catch(console.error);
+    }, []);
+  
+    // Fetch Regencies
+    useEffect(() => {
+      if (!selectedProv) {
+        setRegencies([]); setSelectedReg(''); setDistricts([]); setSelectedDist(''); setVillages([]); setSelectedVill('');
+        return;
+      }
+      fetch(`/wilayah/api/regencies/${selectedProv}.json`)
+        .then((res) => res.json())
+        .then((res) => setRegencies(res.data || []))
+        .catch(console.error);
+    }, [selectedProv]);
+  
+    // Fetch Districts
+    useEffect(() => {
+      if (!selectedReg) {
+        setDistricts([]); setSelectedDist(''); setVillages([]); setSelectedVill('');
+        return;
+      }
+      fetch(`/wilayah/api/districts/${selectedReg}.json`)
+        .then((res) => res.json())
+        .then((res) => setDistricts(res.data || []))
+        .catch(console.error);
+    }, [selectedReg]);
+  
+    // Fetch Villages
+    useEffect(() => {
+      if (!selectedDist) {
+        setVillages([]); setSelectedVill('');
+        return;
+      }
+      fetch(`/wilayah/api/villages/${selectedDist}.json`)
+        .then((res) => res.json())
+        .then((res) => setVillages(res.data || []))
+        .catch(console.error);
+    }, [selectedDist]);
   });
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
     if (!form.fullAddress.trim()) return;
-    onSave(form);
+
+    // Build the final form data mapping the selected region codes to their names
+    const provName = provinces.find(p => p.code === selectedProv)?.name || form.province;
+    const regName = regencies.find(r => r.code === selectedReg)?.name || form.city;
+    const distName = districts.find(d => d.code === selectedDist)?.name || form.district;
+    const villName = villages.find(v => v.code === selectedVill)?.name || form.village;
+
+    onSave({
+      ...form,
+      province: provName,
+      city: regName,
+      district: distName,
+      village: villName,
+    });
   };
 
   const input = (key: keyof AddressFormData, label: string, placeholder: string, type = 'text') => (
@@ -177,14 +259,109 @@ function AddressModal({ address, onClose, onSave }: { address: Address | null; o
   );
 
   return (
-    <div className="fixed inset-0 z-[1500] bg-black/40 flex items-end sm:items-center justify-center" onClick={onClose}>
-      <form onSubmit={submit} onClick={(e) => e.stopPropagation()} className="bg-white w-full sm:max-w-lg sm:rounded-3xl rounded-t-3xl p-6 space-y-3">
+    <div className="fixed inset-0 z-[1500] bg-black/40 flex items-end sm:items-center justify-center overflow-y-auto" onClick={onClose}>
+      <form onSubmit={submit} onClick={(e) => e.stopPropagation()} className="bg-white w-full sm:max-w-lg sm:rounded-3xl rounded-t-3xl p-6 space-y-3 mt-auto sm:my-auto max-h-[90vh] overflow-y-auto">
         <h3 className="text-lg font-bold">{address ? 'Edit Alamat' : 'Tambah Alamat Baru'}</h3>
-        {input('label', 'Label', 'Rumah / Kantor / Lainnya')}
-        {input('recipientName', 'Nama Penerima', 'Nama lengkap penerima')}
-        {input('phone', 'Nomor Telepon', '08xxxxxxxxxx', 'tel')}
-        {input('fullAddress', 'Alamat Lengkap', 'Jl. ... No. ..., kecamatan, kota, provinsi, kode pos')}
-        {input('details', 'Detail (Opsional)', 'Contoh: Pagar hitam, samping minimarket')}
+        
+        <div>
+          <label className="text-xs font-medium mb-1 block text-ink-secondary">Label</label>
+          <select
+            value={form.label}
+            onChange={(e) => setForm((f) => ({ ...f, label: e.target.value }))}
+            className="input-base"
+          >
+            <option value="Rumah">Rumah</option>
+            <option value="Kantor">Kantor</option>
+            <option value="Lainnya">Lainnya</option>
+          </select>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="text-xs font-medium mb-1 block text-ink-secondary">Provinsi</label>
+            <select
+              value={selectedProv}
+              onChange={(e) => setSelectedProv(e.target.value)}
+              className="input-base text-sm truncate"
+            >
+              <option value="">{form.province || 'Pilih Provinsi...'}</option>
+              {provinces.map((p) => (
+                <option key={p.code} value={p.code}>{p.name}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="text-xs font-medium mb-1 block text-ink-secondary">Kota/Kabupaten</label>
+            <select
+              value={selectedReg}
+              onChange={(e) => setSelectedReg(e.target.value)}
+              className="input-base text-sm truncate"
+              disabled={!selectedProv && !form.city}
+            >
+              <option value="">{form.city || 'Pilih Kota...'}</option>
+              {regencies.map((r) => (
+                <option key={r.code} value={r.code}>{r.name}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="text-xs font-medium mb-1 block text-ink-secondary">Kecamatan</label>
+            <select
+              value={selectedDist}
+              onChange={(e) => setSelectedDist(e.target.value)}
+              className="input-base text-sm truncate"
+              disabled={!selectedReg && !form.district}
+            >
+              <option value="">{form.district || 'Pilih Kecamatan...'}</option>
+              {districts.map((d) => (
+                <option key={d.code} value={d.code}>{d.name}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="text-xs font-medium mb-1 block text-ink-secondary">Desa/Kelurahan</label>
+            <select
+              value={selectedVill}
+              onChange={(e) => setSelectedVill(e.target.value)}
+              className="input-base text-sm truncate"
+              disabled={!selectedDist && !form.village}
+            >
+              <option value="">{form.village || 'Pilih Desa...'}</option>
+              {villages.map((v) => (
+                <option key={v.code} value={v.code}>{v.name}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div className="col-span-2">
+            {input('postalCode', 'Kode Pos', 'Masukkan kode pos', 'number')}
+          </div>
+        </div>
+
+        {input('fullAddress', 'Alamat Lengkap', 'Cth: Jl. Kemerdekaan No. 123, RT 01 RW 02')}
+        {input('details', 'Detail (Opsional)', 'Cth: Pagar hitam, depan warung')}
+
+        <div className="flex items-center justify-between py-2 border-t border-b border-divider mt-2">
+          <div className="min-w-0 pr-4">
+            <p className="text-sm font-semibold text-ink">Atur sebagai alamat utama</p>
+            <p className="text-[11px] text-ink-secondary">Gunakan alamat ini sebagai prioritas</p>
+          </div>
+          <label className="relative inline-flex items-center cursor-pointer shrink-0">
+            <input 
+              type="checkbox" 
+              className="sr-only peer"
+              checked={form.isPrimary}
+              onChange={(e) => setForm((f) => ({ ...f, isPrimary: e.target.checked }))}
+            />
+            <div className="w-11 h-6 bg-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+          </label>
+        </div>
+
         <div className="flex gap-2 pt-2">
           <button type="button" className="btn-outline flex-1" onClick={onClose}>Batal</button>
           <button type="submit" className="btn-primary flex-1">{address ? 'Simpan' : 'Simpan'}</button>

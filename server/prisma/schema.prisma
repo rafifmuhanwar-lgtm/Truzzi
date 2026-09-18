@@ -163,6 +163,11 @@ model Address {
   label         String   @default("Rumah")
   recipientName String?
   phone         String?
+  province      String?
+  city          String?
+  district      String?
+  village       String?
+  postalCode    String?
   fullAddress   String
   details       String?
   isPrimary     Boolean  @default(false)

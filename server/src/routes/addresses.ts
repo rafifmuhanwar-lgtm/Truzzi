@@ -50,8 +50,13 @@ router.post('/', requireUser, async (req: Request, res: Response) => {
     const addressId = `addr_${Date.now().toString(36)}${Math.random().toString(16).slice(2, 6)}`;
     const saved = await db.saveAddress(addressId, user.id, {
       label: body.label || 'Rumah',
-      recipientName: body.recipientName || '',
-      phone: body.phone || '',
+      recipientName: body.recipientName || user.name || '',
+      phone: body.phone || user.phone || '',
+      province: body.province || '',
+      city: body.city || '',
+      district: body.district || '',
+      village: body.village || '',
+      postalCode: body.postalCode || '',
       fullAddress: body.fullAddress || '',
       details: body.details ?? '',
       isPrimary: body.isPrimary === true || isFirst,
@@ -72,6 +77,11 @@ router.patch('/:id', requireUser, async (req: Request, res: Response) => {
     if (body.label !== undefined) upd.label = body.label;
     if (body.recipientName !== undefined) upd.recipientName = body.recipientName;
     if (body.phone !== undefined) upd.phone = body.phone;
+    if (body.province !== undefined) upd.province = body.province;
+    if (body.city !== undefined) upd.city = body.city;
+    if (body.district !== undefined) upd.district = body.district;
+    if (body.village !== undefined) upd.village = body.village;
+    if (body.postalCode !== undefined) upd.postalCode = body.postalCode;
     if (body.fullAddress !== undefined) upd.fullAddress = body.fullAddress;
     if (body.details !== undefined) upd.details = body.details;
     if (body.isPrimary === true) {

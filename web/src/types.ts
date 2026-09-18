@@ -68,6 +68,11 @@ export interface Address {
   label: string;
   recipientName: string;
   phone: string;
+  province?: string;
+  city?: string;
+  district?: string;
+  village?: string;
+  postalCode?: string;
   fullAddress: string;
   details?: string | null;
   isPrimary: boolean;
