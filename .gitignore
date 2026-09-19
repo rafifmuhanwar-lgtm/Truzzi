@@ -10,3 +10,11 @@ coverage/
 docs/
 *.pdf
 opencode.json
+.cursor/
+.gemini/
+.codex/
+.codegraph/
+.claude/
+.mcp.json
+
+server/vercel.env

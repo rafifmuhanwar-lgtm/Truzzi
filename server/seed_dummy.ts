@@ -9,7 +9,7 @@ async function main() {
   // Create dummy Customer
   const customer = await prisma.user.upsert({
     where: { email: 'customer@truzzi.id' },
-    update: {},
+    update: { /* ignore */ },
     create: {
       id: 'usr_customer_01',
       email: 'customer@truzzi.id',
@@ -24,7 +24,7 @@ async function main() {
   // Create dummy Jastiper
   const jastiperUser = await prisma.user.upsert({
     where: { email: 'jastiper@truzzi.id' },
-    update: {},
+    update: { /* ignore */ },
     create: {
       id: 'usr_jastiper_01',
       email: 'jastiper@truzzi.id',
@@ -56,3 +56,4 @@ main().catch((e) => {
   console.error(e);
   process.exit(1);
 });
+

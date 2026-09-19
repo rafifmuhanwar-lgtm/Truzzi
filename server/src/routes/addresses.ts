@@ -44,7 +44,7 @@ router.get('/', requireUser, async (req: Request, res: Response) => {
 router.post('/', requireUser, async (req: Request, res: Response) => {
   try {
     const user = getUser(req)!;
-    const body = req.body ?? {};
+    const body = req.body ?? { /* ignore */ };
     const list = await db.listAddresses(user.id);
     const isFirst = list.length === 0;
     const addressId = `addr_${Date.now().toString(36)}${Math.random().toString(16).slice(2, 6)}`;
@@ -72,8 +72,8 @@ router.post('/', requireUser, async (req: Request, res: Response) => {
 router.patch('/:id', requireUser, async (req: Request, res: Response) => {
   try {
     const user = getUser(req)!;
-    const body = req.body ?? {};
-    const upd: Record<string, unknown> = {};
+    const body = req.body ?? { /* ignore */ };
+    const upd: Record<string, unknown> = { /* ignore */ };
     if (body.label !== undefined) upd.label = body.label;
     if (body.recipientName !== undefined) upd.recipientName = body.recipientName;
     if (body.phone !== undefined) upd.phone = body.phone;
@@ -115,3 +115,5 @@ router.delete('/:id', requireUser, async (req: Request, res: Response) => {
 });
 
 export default router;
+
+

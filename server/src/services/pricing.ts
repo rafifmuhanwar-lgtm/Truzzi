@@ -36,3 +36,4 @@ function roundUp(amount: number, nearest: number): number {
   const factor = 1.0 / nearest;
   return Math.ceil(amount * factor) / factor;
 }
+

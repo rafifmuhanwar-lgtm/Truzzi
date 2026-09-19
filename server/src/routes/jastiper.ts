@@ -15,6 +15,8 @@ import {
   verifySession,
 } from '../services/session.js';
 import * as db from '../services/data.js';
+import { validate } from '../middleware/validate.js';
+import { jastiperRegisterSchema, jastiperKycSchema } from '../schemas/jastiper.schema.js';
 import { hitungSettlement } from '../services/escrow.js';
 import { getPrisma } from '../services/prisma-client.js';
 
@@ -118,24 +120,9 @@ async function jastiperMe(userId: string): Promise<Doc | null> {
 // ── Auth ──
 
 // POST /api/jastiper/register {name,email,password,phone} — daftar akun kurir
-router.post('/register', async (req: Request, res: Response) => {
+router.post('/register', validate(jastiperRegisterSchema), async (req: Request, res: Response) => {
   try {
-    const body = req.body ?? {};
-    const name = String(body.name ?? '').trim();
-    const email = String(body.email ?? '')
-      .trim()
-      .toLowerCase();
-    const password = String(body.password ?? '');
-    const phone = String(body.phone ?? '').trim();
-
-    // Validasi persis register_screen.dart
-    if (name.length < 3) return res.status(400).json({ message: 'Nama minimal 3 karakter' });
-    if (!email.includes('@') || !email.includes('.'))
-      return res.status(400).json({ message: 'Format email tidak valid' });
-    if (phone.length < 10 || !phone.startsWith('08'))
-      return res.status(400).json({ message: 'Nomor telepon tidak valid (08xxxxxxxxxx)' });
-    if (password.length < 8)
-      return res.status(400).json({ message: 'Password minimal 8 karakter' });
+    const { name, email, password, phone } = req.body;
 
     if (config.data.engine === 'postgres') {
       const exists = await getPrisma().user.findUnique({ where: { email } });
@@ -175,8 +162,8 @@ router.put('/profile', requireJastiper, async (req: Request, res: Response) => {
   try {
     const user = getUser(req)!;
     await ensureJastiperProfile(user.id);
-    const body = req.body ?? {};
-    const patch: Doc = {};
+    const body = req.body ?? { /* ignore */ };
+    const patch: Doc = { /* ignore */ };
     if (typeof body.name === 'string' && body.name.trim()) patch.name = body.name.trim();
     if (typeof body.phone === 'string') patch.phone = body.phone;
     if (typeof body.photoUrl === 'string') patch.photoUrl = body.photoUrl;
@@ -186,7 +173,7 @@ router.put('/profile', requireJastiper, async (req: Request, res: Response) => {
 
     await db.updateJastiper(user.id, patch);
     // Sinkronkan nama/telepon/foto/area ke User juga (dipakai chat & session).
-    const userPatch: Doc = {};
+    const userPatch: Doc = { /* ignore */ };
     if (patch.name) userPatch.name = patch.name;
     if (patch.phone !== undefined) userPatch.phone = patch.phone;
     if (patch.photoUrl !== undefined) userPatch.photoUrl = patch.photoUrl;
@@ -202,14 +189,12 @@ router.put('/profile', requireJastiper, async (req: Request, res: Response) => {
 });
 
 // POST /api/jastiper/kyc {ktpUrl, selfieUrl} — simpan dokumen KYC (menunggu review admin)
-router.post('/kyc', requireJastiper, async (req: Request, res: Response) => {
+router.post('/kyc', requireJastiper, validate(jastiperKycSchema), async (req: Request, res: Response) => {
   try {
     const user = getUser(req)!;
     await ensureJastiperProfile(user.id);
-    const { ktpUrl, selfieUrl } = req.body ?? {};
-    if (!ktpUrl || !selfieUrl) {
-      return res.status(400).json({ message: 'Harap foto KTP dan Selfie terlebih dahulu' });
-    }
+    const { ktpUrl, selfieUrl } = req.body;
+    
     await db.updateJastiper(user.id, {
       kycKtpUrl: ktpUrl,
       kycSelfieUrl: selfieUrl,
@@ -441,35 +426,17 @@ router.post('/orders/:id/complete', requireJastiper, async (req: Request, res: R
       }
     }
 
-    // Auto-confirm setelah 6 jam
-    setTimeout(
-      async () => {
-        try {
-          const latestOrder = await db.getOrder(req.params.id);
-          if (
-            latestOrder &&
-            latestOrder.status === 'waiting_confirmation' &&
-            !latestOrder.customerConfirmed
-          ) {
-            await finalizeOrder(req.params.id, latestOrder);
-          }
-        } catch (e) {
-          console.error('Auto-confirm error:', e);
-        }
-      },
-      6 * 60 * 60 * 1000,
-    ); // 6 jam
-
-    res.json({ order: updated });
+    res.json({ message: 'Selesai diantar, menunggu konfirmasi pelanggan', order: updated });
   } catch (e) {
     console.error(e);
-    res.status(400).json({ message: 'Gagal menyelesaikan pesanan' });
+    res.status(400).json({ message: 'Gagal menandai order selesai' });
   }
 });
 
 // ── Shared: Finalize order (release escrow, refund, notify) ──
 
-async function finalizeOrder(orderId: string, order: any) {
+export async function finalizeOrder(orderId: string, order: any) {
+  // Saldo ditahan ke jastiper
   const updated = await db.updateOrder(orderId, {
     status: 'completed',
     statusText: 'Pesanan Selesai',
@@ -537,7 +504,7 @@ router.post('/orders/:id/confirm-received', async (req: Request, res: Response) 
     if (order.status !== 'waiting_confirmation')
       return res.status(400).json({ message: 'Pesanan tidak dalam status menunggu konfirmasi' });
 
-    const { rating, reviewText } = req.body || {};
+    const { rating, reviewText } = req.body || { /* ignore */ };
     if (!rating || rating < 1 || rating > 5)
       return res.status(400).json({ message: 'Rating harus 1-5' });
 
@@ -664,3 +631,5 @@ router.post('/withdrawals', requireJastiper, async (req: Request, res: Response)
 });
 
 export default router;
+
+

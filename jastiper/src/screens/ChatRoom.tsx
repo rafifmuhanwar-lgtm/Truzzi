@@ -55,7 +55,7 @@ export default function ChatRoomScreen() {
     queryKey: ['chat-messages', roomId],
     queryFn: () => API.chat.messages(roomId),
     enabled: !!roomId,
-    refetchInterval: 4000,
+    refetchInterval: 10000,
   });
   const messages = msgData?.messages ?? [];
 
@@ -72,6 +72,7 @@ export default function ChatRoomScreen() {
   // Banner expired — persis Flutter: input terkunci 3 jam setelah selesai.
   const expired =
     order?.status === 'completed' &&
+    // eslint-disable-next-line react-hooks/purity
     Date.now() - Date.parse(order.updatedAt ?? order.createdAt) >= THREE_HOURS;
 
   async function send(payload?: string) {
@@ -530,3 +531,4 @@ export default function ChatRoomScreen() {
     </div>
   );
 }
+

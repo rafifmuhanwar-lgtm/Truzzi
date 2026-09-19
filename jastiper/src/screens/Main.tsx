@@ -26,7 +26,7 @@ export default function Main() {
   const { data: roomData } = useQuery({
     queryKey: ['chat-rooms'],
     queryFn: () => API.chat.rooms(),
-    refetchInterval: 8000,
+    refetchInterval: 10000,
   });
 
   const hasUnreadChat = (roomData?.rooms ?? []).some((r: any) => (r.unreadCount || 0) > 0);
@@ -71,3 +71,4 @@ export default function Main() {
     </div>
   );
 }
+

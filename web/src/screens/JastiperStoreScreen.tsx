@@ -70,6 +70,7 @@ export default function JastiperStoreScreen() {
       const current = prev[productId] || 0;
       const next = Math.max(0, current + delta);
       if (next === 0) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { [productId]: _, ...rest } = prev;
         return rest;
       }

@@ -16,11 +16,11 @@ export function usePlacesQuery(q: string, lat?: number, lng?: number) {
 
   useEffect(() => {
     if (!q.trim()) {
-      setResults([]);
+      setTimeout(() => setResults([]), 0);
       return;
     }
     let cancelled = false;
-    setLoading(true);
+    setTimeout(() => setLoading(true), 0);
     const t = setTimeout(async () => {
       try {
         const { results: r } = await API.location.places(q, lat, lng);
@@ -47,8 +47,10 @@ export function useReverseGeocode(lat: number, lng: number) {
 
   useEffect(() => {
     let cancelled = false;
-    setError(null);
-    setAddress('');
+    setTimeout(() => {
+      setError(null);
+      setAddress('');
+    }, 0);
     const t = setTimeout(async () => {
       try {
         const { result } = await API.location.reverseGeocode(lat, lng);

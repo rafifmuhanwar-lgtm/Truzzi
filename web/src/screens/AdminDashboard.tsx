@@ -1214,13 +1214,13 @@ export default function AdminDashboard() {
                             {w.jastiperId || w.userId || 'User'}
                           </td>
                           <td className="p-3.5 text-slate-400 text-[11px]">
-                            {new Date(w.createdAt || Date.now()).toLocaleString('id-ID', {
+                            {w.createdAt ? new Date(w.createdAt).toLocaleString('id-ID', {
                               day: 'numeric',
                               month: 'short',
                               year: 'numeric',
                               hour: '2-digit',
                               minute: '2-digit',
-                            })}
+                            }) : '-'}
                           </td>
                           <td className="p-3.5 font-extrabold text-amber-400 text-sm">
                             {formatRupiah(w.amount)}

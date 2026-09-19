@@ -56,21 +56,23 @@ export default function JastipRegister() {
   useEffect(() => {
     if (jastiperData?.jastiper) {
       const j = jastiperData.jastiper;
-      setForm({
-        name: j.name ?? user?.name ?? '',
-        bio: j.bio ?? '',
-        area: j.area ?? '',
-        category: j.category ?? 'Kuliner',
-        feeEstimate: j.feeEstimate ?? '',
-        flatOngkir: j.flatOngkir ?? 10000,
-        photoUrl: j.photoUrl ?? user?.photoUrl ?? '',
-        coverUrl: j.coverUrl ?? '',
-        openTripTitle: j.openTripTitle ?? '',
-        openTripDestination: j.openTripDestination ?? '',
-        openTripSchedule: j.openTripSchedule ?? '',
-        openTripClosing: j.openTripClosing ?? '',
-        isJastipActive: j.isJastipActive !== false,
-      });
+      setTimeout(() => {
+        setForm({
+          name: j.name ?? user?.name ?? '',
+          bio: j.bio ?? '',
+          area: j.area ?? '',
+          category: j.category ?? 'Kuliner',
+          feeEstimate: j.feeEstimate ?? '',
+          flatOngkir: j.flatOngkir ?? 10000,
+          photoUrl: j.photoUrl ?? user?.photoUrl ?? '',
+          coverUrl: j.coverUrl ?? '',
+          openTripTitle: j.openTripTitle ?? '',
+          openTripDestination: j.openTripDestination ?? '',
+          openTripSchedule: j.openTripSchedule ?? '',
+          openTripClosing: j.openTripClosing ?? '',
+          isJastipActive: j.isJastipActive !== false,
+        });
+      }, 0);
     }
   }, [jastiperData, user]);
 
@@ -389,3 +391,4 @@ export default function JastipRegister() {
     </div>
   );
 }
+

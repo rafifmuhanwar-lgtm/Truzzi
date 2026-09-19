@@ -74,7 +74,7 @@ export async function createQris(opts: CreateQrisOptions): Promise<QrisResult> {
     qris_method: opts.qrisMethod,
     callback_url: opts.callbackUrl,
     umkm_name: opts.umkmName,
-    ...(opts.test ? { test: 1 } : {}),
+    ...(opts.test ? { test: 1 } : { /* ignore */ }),
   }) as Promise<QrisResult>;
 }
 
@@ -113,3 +113,4 @@ export function verifySignature(rawBody: string, signature: string | undefined):
     return false;
   }
 }
+

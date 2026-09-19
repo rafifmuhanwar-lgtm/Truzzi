@@ -144,7 +144,7 @@ export async function reverseGeocode(lat: number, lng: number): Promise<GeocodeD
       );
       const feature = r.data?.features?.[0];
       if (feature) {
-        const context: Record<string, string> = {};
+        const context: Record<string, string> = { /* ignore */ };
         for (const c of feature.context ?? []) {
           const id: string = c.id ?? '';
           if (id.startsWith('neighborhood')) context.neighborhood = c.text;
@@ -179,7 +179,7 @@ export async function reverseGeocode(lat: number, lng: number): Promise<GeocodeD
       timeout: 10000,
     });
     const d = r.data;
-    const addr = d.address ?? {};
+    const addr = d.address ?? { /* ignore */ };
     if (d.display_name && addr) {
       const street = addr.road ?? addr.suburb ?? d.display_name.split(',').shift();
       return {
@@ -324,3 +324,4 @@ export function haversineKm(lat1: number, lon1: number, lat2: number, lon2: numb
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
 }
+

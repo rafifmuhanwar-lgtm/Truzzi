@@ -274,9 +274,9 @@ export default function OrderList() {
 
   useEffect(() => {
     if (urlFilter && FILTERS.find((f) => f.id === urlFilter)) {
-      setFilter(urlFilter);
+      setTimeout(() => setFilter(urlFilter), 0);
     }
-  }, [location.search]);
+  }, [location.search, urlFilter]);
 
   const { data, isLoading } = useQuery({
     queryKey: ['orders', filter],

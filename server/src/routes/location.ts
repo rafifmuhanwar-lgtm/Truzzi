@@ -55,3 +55,5 @@ router.get('/api/places/search', async (req: Request, res: Response) => {
 });
 
 export default router;
+
+

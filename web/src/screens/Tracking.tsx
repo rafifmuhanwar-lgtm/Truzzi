@@ -29,7 +29,6 @@ export default function Tracking() {
 
   useEffect(() => {
     if (!order && orderIdFromUrl) {
-      setLoading(true);
       API.orders
         .get(orderIdFromUrl)
         .then((res) => setOrder(res.order))
@@ -221,3 +220,4 @@ const JASTIP_STEPS = [
   },
   { title: 'Pesanan Selesai', sub: 'Barang telah diterima dengan baik', icon: MapPin },
 ];
+

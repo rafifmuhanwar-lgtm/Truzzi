@@ -13,7 +13,7 @@ router.get('/promos', async (_req, res) => {
     // but we can return all active ones for display.
     const activePromos = promos.filter((p: any) => p.active !== false);
     res.json({ promos: activePromos });
-  } catch (e) {
+  } catch {
     res.status(500).json({ promos: [] });
   }
 });
@@ -23,7 +23,7 @@ router.get('/promos', async (_req, res) => {
 router.post('/promos/validate', requireUser, async (req: any, res: any) => {
   try {
     const { code, cartAmount, category } = req.body;
-    const userId = req.user.id;
+
 
     if (!code) return res.status(400).json({ valid: false, message: 'Kode promo harus diisi' });
 
@@ -114,7 +114,7 @@ router.post('/promos/validate', requireUser, async (req: any, res: any) => {
 router.post('/promos/claim', requireUser, async (req: any, res: any) => {
   try {
     const { code } = req.body;
-    const userId = req.user.id;
+
 
     if (!code) return res.status(400).json({ success: false, message: 'Kode promo harus diisi' });
 
@@ -171,7 +171,7 @@ router.post('/promos/claim', requireUser, async (req: any, res: any) => {
 // Mengambil daftar promo yang sudah diklaim oleh user (unused)
 router.get('/promos/mine', requireUser, async (req: any, res: any) => {
   try {
-    const userId = req.user.id;
+
 
     // Find unused claims
     const claims = await getPrisma().userPromo.findMany({
@@ -204,3 +204,10 @@ router.get('/promos/mine', requireUser, async (req: any, res: any) => {
 });
 
 export default router;
+
+
+
+
+
+
+

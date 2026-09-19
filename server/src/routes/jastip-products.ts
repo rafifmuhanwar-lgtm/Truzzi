@@ -20,7 +20,7 @@ router.get('/', requireUser, async (req: Request, res: Response) => {
 router.post('/', requireUser, async (req: Request, res: Response) => {
   try {
     const user = getUser(req)!;
-    const body = req.body ?? {};
+    const body = req.body ?? { /* ignore */ };
     if (!body.title || body.price === undefined) {
       return res.status(400).json({ message: 'Judul dan harga wajib diisi' });
     }
@@ -56,7 +56,7 @@ router.post('/', requireUser, async (req: Request, res: Response) => {
 // PATCH /api/jastip-products/:id — update produk jastip
 router.patch('/:id', requireUser, async (req: Request, res: Response) => {
   try {
-    const body = req.body ?? {};
+    const body = req.body ?? { /* ignore */ };
     const product = await db.updateJastipProduct(req.params.id, body);
     res.json({ product });
   } catch (e) {
@@ -88,3 +88,5 @@ router.post('/:id/toggle-publish', requireUser, async (req: Request, res: Respon
 });
 
 export default router;
+
+

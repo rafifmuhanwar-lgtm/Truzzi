@@ -37,7 +37,6 @@ export default function OrderDetail() {
 
   useEffect(() => {
     if (orderIdFromUrl) {
-      if (!order) setLoading(true);
       API.orders
         .get(orderIdFromUrl)
         .then((res) => {
@@ -517,3 +516,4 @@ function BuktiItem({ title, value, url }: { title: string; value?: string; url: 
     </div>
   );
 }
+

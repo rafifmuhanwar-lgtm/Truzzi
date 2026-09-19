@@ -30,7 +30,7 @@ export default function CsChat() {
   const { data: msgData } = useQuery<{ messages: ChatMessage[] }>({
     queryKey: ['chat-messages', roomId],
     queryFn: () => API.chat.messages(roomId),
-    refetchInterval: 4000,
+    refetchInterval: 10000,
   });
   const messages = msgData?.messages ?? [];
 
@@ -164,3 +164,4 @@ export default function CsChat() {
     </div>
   );
 }
+

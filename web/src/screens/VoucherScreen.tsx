@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState , useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { useQuery } from '@tanstack/react-query';
@@ -81,23 +81,25 @@ export default function VoucherScreen() {
 
   const { data: promosData } = useQuery({ queryKey: ['promos'], queryFn: () => API.promos.list() });
 
-  const dynamicVouchers: VoucherItem[] = (promosData?.promos ?? []).map((p: any) => ({
-    id: p.id || Math.random().toString(),
-    code: p.code || 'TRUZZI',
-    title: p.title,
-    subtitle: p.subtitle || 'Promo spesial untuk Anda',
-    category: 'all',
-    badge: p.badge || 'PROMO TRUZZI',
-    badgeType: 'exclusive',
-    discountText: p.code ? `Gunakan Kode: ${p.code}` : 'Promo Spesial',
-    gradient: p.gradient || 'from-[#7F1D3E] via-[#9B234D] to-[#5C1A3A]',
-    accent: p.accent || 'text-primary',
-    period: p.period || 'Berlaku s.d. Selesai',
-    minTransaction: 'Tanpa min. transaksi',
-    details: [p.subtitle || 'Promo menarik untuk Anda', 'Berlaku di aplikasi Truzzi'],
-    terms: ['Syarat & Ketentuan berlaku'],
-    isNew: true,
-  }));
+  const dynamicVouchers: VoucherItem[] = useMemo(() => {
+    return (promosData?.promos ?? []).map((p: any, index: number) => ({
+      id: p.id || `dynamic-${index}`,
+      code: p.code || 'TRUZZI',
+      title: p.title,
+      subtitle: p.subtitle || 'Promo spesial untuk Anda',
+      category: 'all',
+      badge: p.badge || 'PROMO TRUZZI',
+      badgeType: 'exclusive',
+      discountText: p.code ? `Gunakan Kode: ${p.code}` : 'Promo Spesial',
+      gradient: p.gradient || 'from-[#7F1D3E] via-[#9B234D] to-[#5C1A3A]',
+      accent: p.accent || 'text-primary',
+      period: p.period || 'Berlaku s.d. Selesai',
+      minTransaction: 'Tanpa min. transaksi',
+      details: [p.subtitle || 'Promo menarik untuk Anda', 'Berlaku di aplikasi Truzzi'],
+      terms: ['Syarat & Ketentuan berlaku'],
+      isNew: true,
+    }));
+  }, [promosData]);
 
   const allVouchers = [...dynamicVouchers, ...VOUCHER_LIST];
 
@@ -502,3 +504,4 @@ export default function VoucherScreen() {
     </div>
   );
 }
+

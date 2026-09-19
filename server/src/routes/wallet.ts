@@ -81,7 +81,7 @@ router.get('/:userId/withdrawals', requireUser, async (req: Request, res: Respon
 router.post('/withdraw', requireUser, async (req: Request, res: Response) => {
   try {
     const user = getUser(req)!;
-    const body = req.body ?? {};
+    const body = req.body ?? { /* ignore */ };
     const amount = Math.round(Number(body.amount ?? 0)) || 0;
     const method = String(body.method ?? 'gopay').toLowerCase();
     const accountNumber = String(body.accountNumber ?? '').trim();
@@ -175,3 +175,5 @@ router.post('/withdraw', requireUser, async (req: Request, res: Response) => {
 
 export { PRESET_AMOUNTS };
 export default router;
+
+

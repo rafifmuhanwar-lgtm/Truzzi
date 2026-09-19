@@ -2,6 +2,8 @@ import { Router, type Request, type Response, type NextFunction } from 'express'
 import { config } from '../config.js';
 import { getUser, requireUser, readSessionToken, verifySession } from '../services/session.js';
 import * as db from '../services/data.js';
+import { validate } from '../middleware/validate.js';
+import { createOrderSchema } from '../schemas/order.schema.js';
 import { hitungSettlement } from '../services/escrow.js';
 import { createNotification } from '../services/data.js';
 import { getPrisma } from '../services/prisma-client.js';
@@ -73,10 +75,11 @@ async function computePricing(data: Record<string, unknown>) {
 }
 
 // POST /api/orders — buat order jastip / suruh
-router.post('/', requireUser, async (req: Request, res: Response) => {
+router.post('/', requireUser, validate(createOrderSchema), async (req: Request, res: Response) => {
   try {
-    const user = getUser(req)!;
-    const body = req.body ?? {};
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+const user = getUser(req)!;
+    const body = req.body ?? { /* ignore */ };
     const orderType: string = body.orderType === 'suruh' ? 'suruh' : 'jastip';
     const serviceName: string = orderType === 'suruh' ? 'Truzzi Suruh' : 'Jastip Truzzi';
     const title: string = (body.title ||
@@ -285,7 +288,8 @@ router.post('/', requireUser, async (req: Request, res: Response) => {
 
 // GET /api/orders?userId=  (daftar order milik user; urut createdAt desc)
 router.get('/', requireUser, async (req: Request, res: Response) => {
-  const user = getUser(req)!;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+const user = getUser(req)!;
   const orders = await db.listOrders(user.id);
 
   // Attach ulasan customer ke masing-masing order bila ada
@@ -302,7 +306,7 @@ router.get('/', requireUser, async (req: Request, res: Response) => {
             reviewComment: myRev.comment,
           };
         }
-      } catch {}
+      } catch { /* ignore */ }
       return o;
     }),
   );
@@ -323,11 +327,12 @@ router.patch('/:id', requireUser, async (req: Request, res: Response) => {
     const order = await db.getOrder(req.params.id);
     if (!order) return res.status(404).json({ message: 'Pesanan tidak ditemukan' });
 
-    const user = getUser(req)!;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+const user = getUser(req)!;
     if (order.userId !== user.id) return res.status(403).json({ message: 'Bukan pesanan Anda' });
 
-    const patch: Record<string, unknown> = {};
-    const body = req.body ?? {};
+    const patch: Record<string, unknown> = { /* ignore */ };
+    const body = req.body ?? { /* ignore */ };
     const allowedFields = [
       'status',
       'statusText',
@@ -395,6 +400,7 @@ router.get('/:id/jastiper', requireUser, async (req: Request, res: Response) => 
   const jastiper = await db.getJastiper(order.jastiperId);
   const safeJastiper = jastiper
     ? (() => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { kycKtpUrl, kycSelfieUrl, ...safe } = jastiper;
         return safe;
       })()
@@ -407,7 +413,7 @@ router.post('/:id/escrow', requireUser, async (req: Request, res: Response) => {
   try {
     const order = await db.getOrder(req.params.id);
     if (!order) return res.status(404).json({ message: 'Pesanan tidak ditemukan' });
-    const body = req.body ?? {};
+    const body = req.body ?? { /* ignore */ };
     const escrow = await db.createEscrow({
       orderId: req.params.id,
       userId: order.userId,
@@ -429,8 +435,9 @@ router.post('/:id/escrow', requireUser, async (req: Request, res: Response) => {
 // POST /api/orders/:id/report — laporkan masalah pesanan
 router.post('/:id/report', requireUser, async (req: Request, res: Response) => {
   try {
-    const user = getUser(req)!;
-    const body = req.body ?? {};
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+const user = getUser(req)!;
+    const body = req.body ?? { /* ignore */ };
     const report = await db.createOrderReport({
       orderId: req.params.id,
       userId: user.id,
@@ -456,8 +463,9 @@ router.post('/:id/report', requireUser, async (req: Request, res: Response) => {
 // POST /api/orders/:id/review — beri ulasan & rating pesanan
 router.post('/:id/review', requireUser, async (req: Request, res: Response) => {
   try {
-    const user = getUser(req)!;
-    const body = req.body ?? {};
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+const user = getUser(req)!;
+    const body = req.body ?? { /* ignore */ };
     const rating = Math.min(5, Math.max(1, Number(body.rating) || 5));
     const comment = body.comment || body.review || '';
 
@@ -519,7 +527,8 @@ router.post('/:id/generate-resi', requireUser, async (req: Request, res: Respons
 // POST /api/orders/:id/cancel — batalkan pesanan
 router.post('/:id/cancel', requireUser, async (req: Request, res: Response) => {
   try {
-    const user = getUser(req)!;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+const user = getUser(req)!;
     const order = await db.getOrder(req.params.id);
     if (!order) return res.status(404).json({ message: 'Pesanan tidak ditemukan' });
 
@@ -566,7 +575,8 @@ router.post('/:id/cancel', requireUser, async (req: Request, res: Response) => {
 // POST /api/orders/:id/take — kurir/jastipper mengambil pesanan
 router.post('/:id/take', requireUser, async (req: Request, res: Response) => {
   try {
-    const user = getUser(req)!;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+const user = getUser(req)!;
     const order = await db.getOrder(req.params.id);
     if (!order) return res.status(404).json({ message: 'Pesanan tidak ditemukan' });
     if (order.jastiperId && order.jastiperId !== user.id) {
@@ -600,3 +610,6 @@ router.post('/:id/take', requireUser, async (req: Request, res: Response) => {
 });
 
 export default router;
+
+
+

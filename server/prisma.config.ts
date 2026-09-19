@@ -14,3 +14,4 @@ export default defineConfig({
     command: 'tsx prisma/seed.ts',
   },
 });
+

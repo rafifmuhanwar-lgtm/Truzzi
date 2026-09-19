@@ -98,13 +98,13 @@ export default function PaymentMethods() {
                       <span className="font-medium text-slate-500">{w.accountNumber}</span>
                     </p>
                     <p className="text-[10px] text-slate-400">
-                      {new Date(w.createdAt || Date.now()).toLocaleDateString('id-ID', {
+                      {w.createdAt ? new Date(w.createdAt).toLocaleDateString('id-ID', {
                         day: 'numeric',
                         month: 'short',
                         year: 'numeric',
                         hour: '2-digit',
                         minute: '2-digit',
-                      })}
+                      }) : '-'}
                     </p>
                   </div>
                   <div className="text-right space-y-0.5">

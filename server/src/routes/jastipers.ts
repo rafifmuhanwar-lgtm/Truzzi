@@ -6,6 +6,7 @@ const router = Router();
 
 function sanitizeJastiper(j: any) {
   if (!j) return j;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { kycKtpUrl, kycSelfieUrl, ...safe } = j;
   return safe;
 }
@@ -86,7 +87,7 @@ router.get('/me', requireUser, async (req: Request, res: Response) => {
 router.post('/register', requireUser, async (req: Request, res: Response) => {
   try {
     const user = getUser(req)!;
-    const body = req.body ?? {};
+    const body = req.body ?? { /* ignore */ };
     if (!body.name && !user.name) {
       return res.status(400).json({ message: 'Nama jastiper wajib diisi' });
     }
@@ -121,7 +122,7 @@ router.post('/register', requireUser, async (req: Request, res: Response) => {
 router.put('/me', requireUser, async (req: Request, res: Response) => {
   try {
     const user = getUser(req)!;
-    const body = req.body ?? {};
+    const body = req.body ?? { /* ignore */ };
     if (body.flatOngkir !== undefined) {
       let flat = Number(body.flatOngkir);
       if (isNaN(flat) || flat < 0) flat = 10000;
@@ -160,3 +161,5 @@ router.get('/:id/products', async (req: Request, res: Response) => {
 });
 
 export default router;
+
+

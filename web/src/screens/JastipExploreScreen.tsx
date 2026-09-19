@@ -94,7 +94,8 @@ export default function JastipExploreScreen() {
       }
       return true;
     });
-  }, [jastipers, selectedArea, selectedCategory, searchQuery]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [jastipersData?.jastipers, selectedArea, selectedCategory, searchQuery]);
 
   const toggleFavorite = async (jastiperId: string) => {
     const isFav = favorites.some((f: any) => f.jastiperId === jastiperId || f.id === jastiperId);

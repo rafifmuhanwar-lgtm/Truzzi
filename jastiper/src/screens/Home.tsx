@@ -16,12 +16,12 @@ export default function Home() {
   const { data: earningsData } = useQuery<Earnings>({
     queryKey: ['jastiper-earnings'],
     queryFn: () => API.jastiper.earnings(),
-    refetchInterval: 5000,
+    refetchInterval: 10000,
   });
   const { data: availData } = useQuery<{ orders: Order[] }>({
     queryKey: ['jastiper-available'],
     queryFn: () => API.jastiper.availableOrders(),
-    refetchInterval: 5000,
+    refetchInterval: 10000,
   });
 
   async function toggleOnline() {
@@ -187,3 +187,4 @@ function MenuButton({
     </button>
   );
 }
+

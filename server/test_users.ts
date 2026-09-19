@@ -1,4 +1,4 @@
-﻿import { getPrisma } from './src/services/prisma-client.js';
+import { getPrisma } from './src/services/prisma-client.js';
 
 async function main() {
   const prisma = getPrisma();
@@ -10,3 +10,4 @@ async function main() {
   }
 }
 main();
+

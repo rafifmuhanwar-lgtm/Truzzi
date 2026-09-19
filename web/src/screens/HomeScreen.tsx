@@ -265,7 +265,8 @@ export default function HomeScreen() {
   const orders: Order[] = ordersData?.orders ?? [];
   const activeOrder = useMemo(
     () => orders.find((o) => o.status === 'processing' || o.status === 'shipping'),
-    [orders],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [ordersData?.orders],
   );
 
   const { data: promosData } = useQuery({ queryKey: ['promos'], queryFn: () => API.promos.list() });

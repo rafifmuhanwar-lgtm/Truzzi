@@ -177,7 +177,7 @@ router.get('/promos', async (_req: Request, res: Response) => {
 // POST /api/admin/promos — Upload / buat banner promo baru
 router.post('/promos', async (req: Request, res: Response) => {
   try {
-    const body = req.body ?? {};
+    const body = req.body ?? { /* ignore */ };
     if (!body.title) {
       return res.status(400).json({ message: 'Judul Banner wajib diisi' });
     }
@@ -242,7 +242,7 @@ router.get('/users', async (_req: Request, res: Response) => {
 router.patch('/users/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const updated = await db.updateUser(id, req.body ?? {});
+    const updated = await db.updateUser(id, req.body ?? { /* ignore */ });
     res.json({ success: true, message: 'Data pengguna diperbarui', user: updated });
   } catch (e) {
     console.error(e);
@@ -275,7 +275,7 @@ router.get('/jastipers', async (_req: Request, res: Response) => {
 router.patch('/jastipers/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const updated = await db.updateJastiper(id, req.body ?? {});
+    const updated = await db.updateJastiper(id, req.body ?? { /* ignore */ });
     res.json({ success: true, message: 'Data mitra berhasil diperbarui', jastiper: updated });
   } catch (e) {
     console.error(e);
@@ -308,7 +308,7 @@ router.get('/orders', async (_req: Request, res: Response) => {
 router.patch('/orders/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const updated = await db.updateOrder(id, req.body ?? {});
+    const updated = await db.updateOrder(id, req.body ?? { /* ignore */ });
     res.json({ success: true, message: 'Status pesanan diperbarui', order: updated });
   } catch (e) {
     console.error(e);
@@ -350,3 +350,5 @@ router.delete('/gigs/:id', async (req: Request, res: Response) => {
 });
 
 export default router;
+
+

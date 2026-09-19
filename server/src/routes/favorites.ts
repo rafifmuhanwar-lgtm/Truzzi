@@ -6,6 +6,7 @@ const router = Router();
 
 function sanitizeJastiper(j: any) {
   if (!j) return j;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { kycKtpUrl, kycSelfieUrl, ...safe } = j;
   return safe;
 }
@@ -30,7 +31,7 @@ router.get('/', requireUser, async (req: Request, res: Response) => {
 router.post('/', requireUser, async (req: Request, res: Response) => {
   try {
     const user = getUser(req)!;
-    const { jastiperId } = req.body ?? {};
+    const { jastiperId } = req.body ?? { /* ignore */ };
     if (!jastiperId) return res.status(400).json({ message: 'jastiperId wajib diisi' });
     const fav = await db.addFavorite(user.id, String(jastiperId));
     res.status(201).json({ favorite: fav });
@@ -65,3 +66,5 @@ router.get('/check/:jastiperId', requireUser, async (req: Request, res: Response
 });
 
 export default router;
+
+

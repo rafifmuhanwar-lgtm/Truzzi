@@ -14,6 +14,51 @@ const VEHICLE_TYPES = [
 ];
 
 /** KYC — verifikasi identitas + data kendaraan & alamat domisili (digabung dari onboarding). */
+function PhotoSlot({
+  label,
+  hint,
+  url,
+  inputRef,
+  onPick,
+}: {
+  label: string;
+  hint: string;
+  url: string | null;
+  inputRef: React.RefObject<HTMLInputElement>;
+  onPick: (f?: File) => void;
+}) {
+  return (
+    <div>
+      <h3 className="font-semibold text-ink">{label}</h3>
+      <p className="text-small text-ink-secondary mt-0.5">{hint}</p>
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        className="hidden"
+        onChange={(e) => onPick(e.target.files?.[0])}
+      />
+      <button
+        type="button"
+        onClick={() => inputRef.current?.click()}
+        className={`mt-2 w-full aspect-[4/3] rounded-card border-2 border-dashed overflow-hidden flex items-center justify-center transition-colors ${
+          url ? 'border-success bg-success/5' : 'border-border bg-white hover:border-primary'
+        }`}
+      >
+        {url ? (
+          <img src={url} alt={label} className="w-full h-full object-cover" />
+        ) : (
+          <span className="flex flex-col items-center gap-2 text-ink-secondary">
+            <Camera size={32} />
+            <span className="text-sm">Tap untuk ambil foto</span>
+          </span>
+        )}
+      </button>
+    </div>
+  );
+}
+
 export default function Kyc() {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -46,12 +91,14 @@ export default function Kyc() {
   // Fetch Regencies
   useEffect(() => {
     if (!selectedProv) {
-      setRegencies([]);
-      setSelectedReg('');
-      setDistricts([]);
-      setSelectedDist('');
-      setVillages([]);
-      setSelectedVill('');
+      setTimeout(() => {
+        setRegencies([]);
+        setSelectedReg('');
+        setDistricts([]);
+        setSelectedDist('');
+        setVillages([]);
+        setSelectedVill('');
+      }, 0);
       return;
     }
     fetch(`/wilayah/api/regencies/${selectedProv}.json`)
@@ -63,10 +110,12 @@ export default function Kyc() {
   // Fetch Districts
   useEffect(() => {
     if (!selectedReg) {
-      setDistricts([]);
-      setSelectedDist('');
-      setVillages([]);
-      setSelectedVill('');
+      setTimeout(() => {
+        setDistricts([]);
+        setSelectedDist('');
+        setVillages([]);
+        setSelectedVill('');
+      }, 0);
       return;
     }
     fetch(`/wilayah/api/districts/${selectedReg}.json`)
@@ -78,8 +127,10 @@ export default function Kyc() {
   // Fetch Villages
   useEffect(() => {
     if (!selectedDist) {
-      setVillages([]);
-      setSelectedVill('');
+      setTimeout(() => {
+        setVillages([]);
+        setSelectedVill('');
+      }, 0);
       return;
     }
     fetch(`/wilayah/api/villages/${selectedDist}.json`)
@@ -160,50 +211,7 @@ export default function Kyc() {
     }
   }
 
-  function PhotoSlot({
-    label,
-    hint,
-    url,
-    inputRef,
-    onPick,
-  }: {
-    label: string;
-    hint: string;
-    url: string | null;
-    inputRef: React.RefObject<HTMLInputElement>;
-    onPick: (f?: File) => void;
-  }) {
-    return (
-      <div>
-        <h3 className="font-semibold text-ink">{label}</h3>
-        <p className="text-small text-ink-secondary mt-0.5">{hint}</p>
-        <input
-          ref={inputRef}
-          type="file"
-          accept="image/*"
-          capture="environment"
-          className="hidden"
-          onChange={(e) => onPick(e.target.files?.[0])}
-        />
-        <button
-          type="button"
-          onClick={() => inputRef.current?.click()}
-          className={`mt-2 w-full aspect-[4/3] rounded-card border-2 border-dashed overflow-hidden flex items-center justify-center transition-colors ${
-            url ? 'border-success bg-success/5' : 'border-border bg-white hover:border-primary'
-          }`}
-        >
-          {url ? (
-            <img src={url} alt={label} className="w-full h-full object-cover" />
-          ) : (
-            <span className="flex flex-col items-center gap-2 text-ink-secondary">
-              <Camera size={32} />
-              <span className="text-sm">Tap untuk ambil foto</span>
-            </span>
-          )}
-        </button>
-      </div>
-    );
-  }
+
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -369,3 +377,4 @@ export default function Kyc() {
 function kycDone(ktp: string | null, selfie: string | null): boolean {
   return Boolean(ktp && selfie);
 }
+

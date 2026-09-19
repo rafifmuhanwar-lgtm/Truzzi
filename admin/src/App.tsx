@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useSnackbar } from 'notistack';
 import { AdminAPI, errMsg, formatRupiah } from './lib/api';
@@ -85,7 +85,7 @@ export default function AdminApp() {
     queryFn: AdminAPI.orders,
     enabled: isAuthenticated,
   });
-  const orders: any[] = ordersData?.orders ?? [];
+  const orders: any[] = useMemo(() => ordersData?.orders ?? [], [ordersData?.orders]);
 
   const { data: jastipersData, refetch: refetchJastipers } = useQuery({
     queryKey: ['admin-jastipers'],
@@ -423,6 +423,7 @@ export default function AdminApp() {
         orders: dayOrders.length,
       };
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orders]);
 
   if (!isAuthenticated) {

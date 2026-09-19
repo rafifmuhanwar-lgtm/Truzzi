@@ -18,14 +18,14 @@ async function main() {
     try {
       await prisma.courier.create({ data: { id: 'fake-id', name: 'X', email: 'x@x.id' } });
       console.log('ERROR: should have failed');
-    } catch (e) {
+    } catch {
       console.log('FK working - rejected invalid courier');
     }
 
     await prisma.courier.delete({ where: { id: user.id } });
     await prisma.user.delete({ where: { id: user.id } });
     console.log('Cleanup done');
-  } catch (e) {
+  } catch {
     console.error('Error:', e);
   } finally {
     await prisma.$disconnect();
@@ -33,3 +33,6 @@ async function main() {
 }
 
 main();
+
+
+

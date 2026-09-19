@@ -10,7 +10,7 @@ export default function ChatList() {
   const { data } = useQuery<{ rooms: ChatRoom[] }>({
     queryKey: ['chat-rooms'],
     queryFn: () => API.chat.rooms(),
-    refetchInterval: 8000,
+    refetchInterval: 10000,
   });
   const rooms = (data?.rooms ?? []).filter((r) => !r.isSupport);
 
@@ -72,3 +72,4 @@ function RoomRow({ room }: { room: ChatRoom }) {
     </Link>
   );
 }
+

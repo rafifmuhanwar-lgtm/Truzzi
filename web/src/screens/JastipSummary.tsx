@@ -67,16 +67,20 @@ export default function JastipSummary() {
   useEffect(() => {
     const p = consumeAddressPicked();
     if (p) {
-      setDeliveryAddress(p.address);
-      setSelectedAddressObj(p.data);
+      setTimeout(() => {
+        setDeliveryAddress(p.address);
+        setSelectedAddressObj(p.data);
+      }, 0);
       return;
     }
 
     if (!deliveryAddress && addrData?.length) {
       const primary = addrData.find((a: any) => a.isPrimary) || addrData[0];
       if (primary) {
-        setDeliveryAddress(primary.fullAddress);
-        setSelectedAddressObj(primary);
+        setTimeout(() => {
+          setDeliveryAddress(primary.fullAddress);
+          setSelectedAddressObj(primary);
+        }, 0);
       }
     }
   }, [addrData, deliveryAddress]);
@@ -119,7 +123,7 @@ export default function JastipSummary() {
   };
 
   useEffect(() => {
-    setCalc(false);
+    setTimeout(() => setCalc(false), 0);
   }, []);
 
   const pay = async () => {

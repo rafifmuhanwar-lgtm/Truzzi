@@ -36,3 +36,4 @@ export const adminAuth = async (req: Request, res: Response, next: NextFunction)
     return res.status(401).json({ error: 'Unauthorized: Invalid or expired token' });
   }
 };
+

@@ -25,7 +25,7 @@ function useFileInput() {
 export default function SuruhForm() {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-  const fileInput = useFileInput();
+  const { ref: fileInputRef, open: openFileInput } = useFileInput();
 
   const [task, setTask] = useState('');
   const [notes, setNotes] = useState('');
@@ -42,8 +42,10 @@ export default function SuruhForm() {
   useEffect(() => {
     const p = consumeAddressPicked();
     if (p) {
-      setDropoffAddress(p.address);
-      setDropoffData(p.data ?? null);
+      setTimeout(() => {
+        setDropoffAddress(p.address);
+        setDropoffData(p.data ?? null);
+      }, 0);
     }
   }, []);
 
@@ -105,7 +107,7 @@ export default function SuruhForm() {
             />
             <div className="h-px bg-divider" />
             <button
-              onClick={() => fileInput.open()}
+              onClick={() => openFileInput()}
               className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-dashed border-border text-primary text-sm"
             >
               {taskImage ? (
@@ -255,7 +257,7 @@ export default function SuruhForm() {
       </div>
 
       <input
-        ref={fileInput.ref}
+        ref={fileInputRef}
         type="file"
         accept="image/*"
         className="hidden"

@@ -26,7 +26,9 @@ export default function Carousel({
 
   const containerRef = useRef<HTMLDivElement>(null);
   const pausedRef = useRef(paused);
-  pausedRef.current = paused;
+  useEffect(() => {
+    pausedRef.current = paused;
+  }, [paused]);
 
   const dragStartRef = useRef<number | null>(null);
   const dragOffsetRef = useRef(0);
@@ -58,7 +60,7 @@ export default function Carousel({
     if (dragStartRef.current === null) return;
     const off = x - dragStartRef.current;
     dragOffsetRef.current = off;
-    setDragOffset(off);
+    setDragOffset((off / (containerRef.current?.offsetWidth || window.innerWidth)) * 100);
   };
 
   const endDrag = () => {
@@ -72,8 +74,7 @@ export default function Carousel({
     setPaused(false); // resume auto-slide dari slide terakhir, tetap berurutan
   };
 
-  const transformX =
-    -currentIndex * 100 + (dragOffset / (containerRef.current?.offsetWidth || 1)) * 100;
+  const transformX = -currentIndex * 100 + dragOffset;
 
   return (
     <div className={`relative overflow-hidden ${className}`} ref={containerRef}>

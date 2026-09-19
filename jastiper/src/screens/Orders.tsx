@@ -26,7 +26,7 @@ export default function Orders() {
   } = useQuery<{ orders: Order[] }>({
     queryKey: ['jastiper-mine'],
     queryFn: () => API.jastiper.myOrders(),
-    refetchInterval: 4000,
+    refetchInterval: 10000,
   });
 
   const mine = mineData?.orders ?? [];
@@ -232,3 +232,4 @@ function EmptyState({ tab }: { tab: Tab }) {
     </div>
   );
 }
+

@@ -4,7 +4,8 @@ import path from 'node:path';
 import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { config } from '../config.js';
-import { requireUser, readSessionToken, verifySession } from '../services/session.js';
+import { // eslint-disable-next-line @typescript-eslint/no-unused-vars
+requireUser, readSessionToken, verifySession } from '../services/session.js';
 
 function getCookieName(app?: string): string {
   if (app === 'driver') return config.session.cookieNameDriver;
@@ -80,7 +81,10 @@ const cloudStorage = new CloudinaryStorage({
 });
 
 // Pilih storage berdasarkan env
-const activeStorage = process.env.CLOUDINARY_URL ? cloudStorage : localStorage;
+const activeStorage = (process.env.CLOUDINARY_URL || process.env.VERCEL) ? cloudStorage : localStorage;
+if (process.env.VERCEL && !process.env.CLOUDINARY_URL) {
+  console.warn("CRITICAL: VERCEL is defined but CLOUDINARY_URL is missing. Uploads will fail or lose data!");
+}
 const activeUpload = multer({ storage: activeStorage, limits: { fileSize: 10 * 1024 * 1024 } });
 
 import { adminAuth } from '../middlewares/adminAuth.js';
@@ -118,3 +122,6 @@ router.post('/', authUpload, activeUpload.single('file'), async (req, res) => {
 });
 
 export default router;
+
+
+

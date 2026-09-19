@@ -25,18 +25,31 @@ import adminRouter from './routes/admin.js';
 import jastipersRouter from './routes/jastipers.js';
 import favoriteRouter from './routes/favorites.js';
 import jastipProductRouter from './routes/jastip-products.js';
+import cronRouter from './routes/cron.js';
 
 const app = express();
 
 app.use((helmet as any)());
 app.use(morgan('dev'));
 
+// Global rate limiter
 const limiter = (rateLimit as any)({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5000, // Limit each IP to 5000 requests per windowMs
-  message: 'Terlalu banyak request dari IP ini, coba lagi nanti.',
+  max: 500, // Limit each IP to 500 requests per windowMs
+  message: { error: 'Terlalu banyak request dari IP ini, coba lagi nanti.' },
+  standardHeaders: true,
+  legacyHeaders: false,
 });
+
+// Strict rate limiter for Auth (login/register) to prevent brute force
+const authLimiter = (rateLimit as any)({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 20, // Limit each IP to 20 auth requests per windowMs
+  message: { error: 'Terlalu banyak percobaan login/register, coba lagi setelah 15 menit.' },
+});
+
 app.use('/api/', limiter);
+app.use('/api/auth/', authLimiter);
 
 app.use(
   cors({
@@ -89,6 +102,7 @@ app.use('/api/admin', adminRouter);
 app.use('/api/jastipers', jastipersRouter);
 app.use('/api/favorites', favoriteRouter);
 app.use('/api/jastip-products', jastipProductRouter);
+app.use('/api/cron', cronRouter);
 
 // Serve file upload folder lokal (/uploads/...)
 const _dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -114,3 +128,4 @@ if (!process.env.VERCEL) {
 }
 
 export default app;
+

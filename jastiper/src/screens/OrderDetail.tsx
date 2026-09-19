@@ -19,7 +19,7 @@ export default function OrderDetail() {
     queryKey: ['order', orderId],
     queryFn: () => API.orders.get(orderId),
     enabled: !!orderId,
-    refetchInterval: 3000,
+    refetchInterval: 10000,
   });
   const order = data?.order;
   const [accepting, setAccepting] = useState(false);
@@ -43,6 +43,7 @@ export default function OrderDetail() {
       stop = true;
       navigator.geolocation.clearWatch(watchId);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order?.jastiperId, order?.status]);
 
   const isMine = !!order?.jastiperId && order.jastiperId === user?.id;
@@ -275,3 +276,4 @@ function Row({ label, value, bold }: { label: string; value: string; bold?: bool
     </div>
   );
 }
+

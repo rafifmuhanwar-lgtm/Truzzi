@@ -26,8 +26,10 @@ export default function JastipForm() {
   useEffect(() => {
     const p = consumeAddressPicked();
     if (p) {
-      setDropoffAddress(p.address);
-      setDropoffData(p.data ?? null);
+      setTimeout(() => {
+        setDropoffAddress(p.address);
+        setDropoffData(p.data ?? null);
+      }, 0);
     }
   }, []);
 

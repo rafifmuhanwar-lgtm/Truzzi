@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState , useMemo } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { useQueryClient } from '@tanstack/react-query';
@@ -81,11 +81,13 @@ export default function ChatRoom() {
   useEffect(() => {
     if (!room && roomIdFromUrl) {
       if (roomIdFromUrl === 'room_cs') {
-        setRoom(DEFAULT_CS_ROOM);
-        setLoadingRoom(false);
+        setTimeout(() => {
+          setRoom(DEFAULT_CS_ROOM);
+          setLoadingRoom(false);
+        }, 0);
         return;
       }
-      setLoadingRoom(true);
+      setTimeout(() => setLoadingRoom(true), 0);
       API.chat
         .rooms()
         .then(async (res) => {
@@ -165,7 +167,7 @@ export default function ChatRoom() {
         .catch(() => undefined)
         .finally(() => setLoadingRoom(false));
     }
-  }, [room, roomIdFromUrl]);
+  }, [room, roomIdFromUrl, targetUserId, user]);
 
   // Load Order detail for context card if room is an order
   useEffect(() => {
@@ -185,10 +187,12 @@ export default function ChatRoom() {
   }, [room, orderDetail]);
 
   const isCS = room?.id === 'room_cs' || room?.isSupport;
+  // eslint-disable-next-line react-hooks/purity
+  const now = useMemo(() => Date.now(), []);
   const expired =
     room?.orderStatus === 'completed' &&
     room?.orderUpdatedAt != null &&
-    Date.now() - Date.parse(room.orderUpdatedAt) >= 3 * 60 * 60 * 1000;
+    now - Date.parse(room.orderUpdatedAt) >= 3 * 60 * 60 * 1000;
 
   useEffect(() => {
     if (!room) return;
@@ -202,11 +206,12 @@ export default function ChatRoom() {
       }
     };
     void load();
-    const t = setInterval(load, 4000);
+    const t = setInterval(load, 10000);
     return () => {
       cancelled = true;
       clearInterval(t);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [room?.id]);
 
   useEffect(() => {
@@ -785,3 +790,5 @@ function PlayIcon() {
     </svg>
   );
 }
+
+

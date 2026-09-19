@@ -92,3 +92,4 @@ export const config = {
 export function canUseAppwrite(): boolean {
   return config.data.engine === 'appwrite' && !!config.appwrite.apiKey;
 }
+

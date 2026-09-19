@@ -271,7 +271,7 @@ router.post('/rooms/:roomId/read', requireUser, async (req: Request, res: Respon
 // GET /api/chat/rooms/:roomId/messages
 router.get('/rooms/:roomId/messages', requireUser, async (req: Request, res: Response) => {
   const user = getUser(req)!;
-  let roomId = req.params.roomId;
+  const roomId = req.params.roomId;
 
   // Room CS customer ('room_cs') & CS kurir ('cs_chat_{id}') — seeded greeting, tidak dipersist.
   if (roomId === 'room_cs' || roomId === `cs_chat_${user.id}`) {
@@ -303,7 +303,7 @@ router.get('/rooms/:roomId/messages', requireUser, async (req: Request, res: Res
         const unifiedMsgs = await db.listChatMessages(unifiedId);
         if (unifiedMsgs.length > 0) messages = unifiedMsgs;
       }
-    } catch (e) {}
+    } catch { /* ignore */ }
   }
 
   const normalized = messages.map((m) => ({
@@ -329,7 +329,7 @@ router.post('/rooms/:roomId/messages', requireUser, async (req: Request, res: Re
     const roomId = req.params.roomId;
     const isJastiper = user.role === 'jastiper';
     const defaultRole = isJastiper ? 'jastiper' : 'customer';
-    const { text, messageType = 'text', mediaUrl, senderRole = defaultRole } = req.body ?? {};
+    const { text, messageType = 'text', mediaUrl, senderRole = defaultRole } = req.body ?? { /* ignore */ };
 
     // Room CS (customer & kurir) tidak dipersist di Appwrite asli — balas dengan bot
     if (roomId === 'room_cs' || roomId === `cs_chat_${user.id}`) {
@@ -420,7 +420,7 @@ router.post('/rooms/:roomId/messages', requireUser, async (req: Request, res: Re
         body: String(text || 'Mengirim media').substring(0, 50),
         routeName: '/chat/room',
         routeExtra: roomId,
-      }).catch(() => {});
+      }).catch(() => { /* ignore */ });
     }
 
     const msg = {
@@ -437,7 +437,7 @@ router.post('/rooms/:roomId/messages', requireUser, async (req: Request, res: Re
       senderName: user.name,
     };
     res.status(201).json({ message: msg });
-  } catch (e) {
+  } catch {
     console.error(e);
     res.status(400).json({ message: 'Gagal mengirim pesan' });
   }
@@ -454,7 +454,7 @@ router.post('/cs/bot-reply', requireUser, async (req: Request, res: Response) =>
     const user = getUser(req)!;
     const isJastiper = user.role === 'jastiper';
     const csRoomId = isJastiper ? `cs_chat_${user.id}` : 'room_cs';
-    const { text } = req.body ?? {};
+    const { text } = req.body ?? { /* ignore */ };
     const replyText = autoReplyCS(String(text ?? ''));
     await createNotification({
       userId: user.id,
@@ -477,10 +477,13 @@ router.post('/cs/bot-reply', requireUser, async (req: Request, res: Response) =>
         mediaUrl: null,
       },
     });
-  } catch (e) {
+  } catch {
     console.error(e);
     res.status(400).json({ message: 'Gagal membalas' });
   }
 });
 
 export default router;
+
+
+

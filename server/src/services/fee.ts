@@ -38,7 +38,7 @@ export interface FeeBreakdown {
  * Calculates exact breakdown of customer payment, platform revenue, jastipper earnings, and cashback.
  */
 export function calculateFees(input: FeeInput): FeeBreakdown {
-  const cfg: FeeConfig = { ...DEFAULT_FEE_CONFIG, ...(input.config ?? {}) };
+  const cfg: FeeConfig = { ...DEFAULT_FEE_CONFIG, ...(input.config ?? { /* ignore */ }) };
   const danaBelanja = Math.max(0, Math.round(Number(input.danaBelanja) || 0));
   const ongkir = Math.max(0, Math.round(Number(input.ongkir) || 0));
   const voucherDiscount = Math.max(0, Math.round(Number(input.voucherDiscount) || 0));
@@ -76,3 +76,4 @@ export function calculateFees(input: FeeInput): FeeBreakdown {
     platformReceive,
   };
 }
+

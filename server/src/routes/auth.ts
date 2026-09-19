@@ -1,6 +1,7 @@
 import { Router, type Request, type Response } from 'express';
 import bcrypt from 'bcryptjs';
-import { z } from 'zod';
+import { validate } from '../middleware/validate.js';
+import { registerSchema, loginSchema } from '../schemas/auth.schema.js';
 import { config } from '../config.js';
 
 import {
@@ -25,19 +26,6 @@ function getCookieName(app?: string): string {
 
 const router = Router();
 
-const registerSchema = z.object({
-  name: z.string().min(3, 'Nama minimal 3 karakter'),
-  email: z.string().email('Format email tidak valid'),
-  password: z.string().min(8, 'Password minimal 8 karakter'),
-  phone: z.string().optional(),
-  selectedArea: z.string().optional(),
-});
-
-const loginSchema = z.object({
-  email: z.string().email('Format email tidak valid'),
-  password: z.string().min(1, 'Password wajib diisi'),
-});
-
 /** Cari user by email di Postgres. */
 async function findUserByEmail(email: string) {
   return getPrisma().user.findUnique({ where: { email: email.toLowerCase() } });
@@ -57,14 +45,10 @@ async function issueSession(res: Response, user: SessionUser, app?: string): Pro
   setSessionCookie(res, signSession(user), getCookieName(app));
 }
 
-// POST /api/auth/register {name,email,password,phone?,selectedArea?}
-router.post('/register', async (req: Request, res: Response) => {
+// POST /api/auth/register
+router.post('/register', validate(registerSchema), async (req: Request, res: Response) => {
   try {
-    const parseResult = registerSchema.safeParse(req.body);
-    if (!parseResult.success) {
-      return res.status(400).json({ message: parseResult.error.issues[0].message });
-    }
-    const { name, email, password, phone, selectedArea } = parseResult.data;
+    const { name, email, password, phone, selectedArea } = req.body;
 
     const app = detectApp(req);
 
@@ -106,14 +90,10 @@ router.post('/register', async (req: Request, res: Response) => {
   }
 });
 
-// POST /api/auth/login {email,password}
-router.post('/login', async (req: Request, res: Response) => {
+// POST /api/auth/login
+router.post('/login', validate(loginSchema), async (req: Request, res: Response) => {
   try {
-    const parseResult = loginSchema.safeParse(req.body);
-    if (!parseResult.success) {
-      return res.status(400).json({ message: parseResult.error.issues[0].message });
-    }
-    const { email, password } = parseResult.data;
+    const { email, password } = req.body;
 
     const app = detectApp(req);
 
@@ -166,7 +146,7 @@ router.post('/google', (req: Request, res: Response) => {
 // POST /api/auth/google/callback — tukar kode OAuth Google dengan token.
 router.post('/google/callback', async (req: Request, res: Response) => {
   try {
-    const { code } = req.body ?? {};
+    const { code } = req.body ?? { /* ignore */ };
     if (!code) return res.status(400).json({ message: 'Code wajib diisi' });
 
     const app = detectApp(req);
@@ -262,8 +242,8 @@ router.put('/profile', requireUser, async (req: Request, res: Response) => {
   try {
     const user = getUser(req)!;
     const app = detectApp(req);
-    const { name, phone, photoUrl, selectedArea } = req.body ?? {};
-    const update: Record<string, unknown> = {};
+    const { name, phone, photoUrl, selectedArea } = req.body ?? { /* ignore */ };
+    const update: Record<string, unknown> = { /* ignore */ };
     if (typeof name === 'string' && name.trim()) update.name = name.trim();
     if (typeof phone === 'string') update.phone = phone;
     if (typeof photoUrl === 'string') update.photoUrl = photoUrl;
@@ -287,3 +267,5 @@ router.put('/profile', requireUser, async (req: Request, res: Response) => {
 });
 
 export default router;
+
+

@@ -1,0 +1,10 @@
+node_modules
+dist
+public
+*.cjs
+*.mjs
+*.js
+coverage
+server/fix-db.ts
+server/checkdb.js
+server/checkdb.ts

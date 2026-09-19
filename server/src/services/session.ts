@@ -186,3 +186,4 @@ export function requireCustomer(req: Request, res: Response, next: NextFunction)
 export function getUser(req: Request): SessionUser | null {
   return (req as Request & { user?: SessionUser }).user ?? null;
 }
+

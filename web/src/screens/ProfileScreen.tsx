@@ -81,7 +81,8 @@ export default function ProfileScreen() {
     const cancelled = orders.filter((o) => o.status === 'cancelled').length;
     const successRate = total > 0 ? Math.round((completed / total) * 100) : 100;
     return { total, completed, active, cancelled, successRate };
-  }, [orders]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ordersData?.orders]);
 
   const handleLogout = async () => {
     await logout();
