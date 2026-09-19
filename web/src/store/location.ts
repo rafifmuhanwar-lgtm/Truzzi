@@ -1,7 +1,8 @@
 import { create } from 'zustand';
 import { API } from '../lib/api';
 
-export type LocationStatus = 'initial' | 'loading' | 'ready' | 'permissionDenied' | 'serviceDisabled' | 'error';
+export type LocationStatus =
+  'initial' | 'loading' | 'ready' | 'permissionDenied' | 'serviceDisabled' | 'error';
 
 interface LocationState {
   status: LocationStatus;
@@ -20,7 +21,10 @@ export const DEFAULT_LNG = 106.816666;
 const DEFAULT_ADDRESS = 'Jakarta (Titik Default - Klik atur)';
 
 const isDefault = (lat: number | null, lng: number | null) =>
-  lat !== null && lng !== null && Math.abs(lat - DEFAULT_LAT) < 0.0001 && Math.abs(lng - DEFAULT_LNG) < 0.0001;
+  lat !== null &&
+  lng !== null &&
+  Math.abs(lat - DEFAULT_LAT) < 0.0001 &&
+  Math.abs(lng - DEFAULT_LNG) < 0.0001;
 
 export const useLocationStore = create<LocationState>((set, get) => ({
   status: 'initial',
@@ -38,15 +42,30 @@ export const useLocationStore = create<LocationState>((set, get) => ({
     if (typeof navigator !== 'undefined' && 'geolocation' in navigator) {
       try {
         const pos = await new Promise<GeolocationPosition>((resolve, reject) =>
-          navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: false, timeout: 10000 }),
+          navigator.geolocation.getCurrentPosition(resolve, reject, {
+            enableHighAccuracy: false,
+            timeout: 10000,
+          }),
         );
         lat = pos.coords.latitude;
         lng = pos.coords.longitude;
       } catch {
-        set({ status: 'permissionDenied', latitude: DEFAULT_LAT, longitude: DEFAULT_LNG, address: DEFAULT_ADDRESS, errorMessage: null });
+        set({
+          status: 'permissionDenied',
+          latitude: DEFAULT_LAT,
+          longitude: DEFAULT_LNG,
+          address: DEFAULT_ADDRESS,
+          errorMessage: null,
+        });
       }
     } else {
-      set({ status: 'permissionDenied', latitude: DEFAULT_LAT, longitude: DEFAULT_LNG, address: DEFAULT_ADDRESS, errorMessage: null });
+      set({
+        status: 'permissionDenied',
+        latitude: DEFAULT_LAT,
+        longitude: DEFAULT_LNG,
+        address: DEFAULT_ADDRESS,
+        errorMessage: null,
+      });
     }
 
     const st = get().status;
@@ -57,9 +76,10 @@ export const useLocationStore = create<LocationState>((set, get) => ({
     try {
       const { result } = await API.location.reverseGeocode(lat, lng);
       if (result?.fullAddress) {
-        const short = result.street && result.locality
-          ? `${result.street}, ${result.locality}`
-          : result.fullAddress;
+        const short =
+          result.street && result.locality
+            ? `${result.street}, ${result.locality}`
+            : result.fullAddress;
         set({
           status: 'ready',
           latitude: lat,
@@ -88,5 +108,6 @@ export const useLocationStore = create<LocationState>((set, get) => ({
   updateLocation: ({ latitude, longitude, address }) =>
     set({ status: 'ready', latitude, longitude, address, errorMessage: null }),
 
-  reset: () => set({ status: 'initial', latitude: null, longitude: null, address: null, errorMessage: null }),
+  reset: () =>
+    set({ status: 'initial', latitude: null, longitude: null, address: null, errorMessage: null }),
 }));

@@ -66,10 +66,15 @@ export default function PickupProof() {
     <div className="min-h-screen bg-background">
       <div className="bg-primary px-4 pt-4 pb-5 sticky top-0 z-20">
         <div className="flex items-center gap-2">
-          <button onClick={() => navigate(-1)} className="p-2 -ml-2 text-white rounded-full hover:bg-white/10">
+          <button
+            onClick={() => navigate(-1)}
+            className="p-2 -ml-2 text-white rounded-full hover:bg-white/10"
+          >
             <ArrowLeft size={22} />
           </button>
-          <h1 className="text-white font-semibold">{isJastip ? 'Foto Barang Dibeli' : 'Bukti Pengambilan'}</h1>
+          <h1 className="text-white font-semibold">
+            {isJastip ? 'Foto Barang Dibeli' : 'Bukti Pengambilan'}
+          </h1>
         </div>
       </div>
 
@@ -97,7 +102,9 @@ export default function PickupProof() {
             type="button"
             onClick={() => fileRef.current?.click()}
             className={`mt-2 w-full aspect-[4/3] rounded-card border-2 border-dashed overflow-hidden flex items-center justify-center transition-colors ${
-              photoUrl ? 'border-success bg-success/5' : 'border-border bg-white hover:border-primary'
+              photoUrl
+                ? 'border-success bg-success/5'
+                : 'border-border bg-white hover:border-primary'
             }`}
           >
             {photoUrl ? (
@@ -111,7 +118,11 @@ export default function PickupProof() {
           </button>
         </div>
 
-        <button onClick={() => void handleSubmit()} disabled={uploading || !order} className="btn-primary">
+        <button
+          onClick={() => void handleSubmit()}
+          disabled={uploading || !order}
+          className="btn-primary"
+        >
           {uploading ? 'Memproses...' : 'Submit Bukti & Lanjutkan'}
         </button>
       </div>
@@ -124,7 +135,10 @@ export default function PickupProof() {
             <p className="text-body2 text-ink-secondary leading-relaxed">
               Bukti pengambilan barang telah diupload. Lanjut ke pengiriman ke tujuan.
             </p>
-            <button onClick={() => navigate(`/order/detail?id=${orderId}`, { replace: true })} className="btn-primary">
+            <button
+              onClick={() => navigate(`/order/detail?id=${orderId}`, { replace: true })}
+              className="btn-primary"
+            >
               Kembali ke Detail
             </button>
           </div>

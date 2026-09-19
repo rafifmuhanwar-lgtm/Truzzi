@@ -16,7 +16,8 @@ export function DriverGuard({ children }: { children: ReactNode }) {
   }, [status, checkAuth]);
 
   const path = location.pathname;
-  const isAuthRoute = PUBLIC_PATHS.includes(path) || path.startsWith('/login') || path.startsWith('/register');
+  const isAuthRoute =
+    PUBLIC_PATHS.includes(path) || path.startsWith('/login') || path.startsWith('/register');
 
   // Splash menangani redirect sendiri.
   if (path === '/') return <>{children}</>;
@@ -34,7 +35,10 @@ export function DriverGuard({ children }: { children: ReactNode }) {
       return <Navigate to={gate} replace />;
     }
     // Jika user sudah terverifikasi (gate === '/main') tapi masih di halaman kyc/splash/auth
-    if (gate === '/main' && (path === '/kyc' || path === '/kyc-pending' || isAuthRoute || path === '/')) {
+    if (
+      gate === '/main' &&
+      (path === '/kyc' || path === '/kyc-pending' || isAuthRoute || path === '/')
+    ) {
       return <Navigate to="/main" replace />;
     }
     return <>{children}</>;
@@ -45,7 +49,12 @@ export function DriverGuard({ children }: { children: ReactNode }) {
   return <>{children}</>;
 }
 
-function gatePath(user: { vehicleType?: string | null; selectedArea?: string | null; kycVerified: boolean; kycKtpUrl?: string | null }): string {
+function gatePath(user: {
+  vehicleType?: string | null;
+  selectedArea?: string | null;
+  kycVerified: boolean;
+  kycKtpUrl?: string | null;
+}): string {
   if (!user.kycVerified) {
     if (user.kycKtpUrl) return '/kyc-pending';
     return '/kyc';

@@ -56,17 +56,24 @@ export default function Topup() {
           setPolling(false);
           qc.invalidateQueries({ queryKey: ['wallet', user?.id] });
           qc.invalidateQueries({ queryKey: ['wallet-topups', user?.id] });
-          enqueueSnackbar(`Top up ${formatRupiah(res.topup?.amount)} berhasil! 🎉`, { variant: 'success' });
+          enqueueSnackbar(`Top up ${formatRupiah(res.topup?.amount)} berhasil! 🎉`, {
+            variant: 'success',
+          });
           setTimeout(() => navigate(-1), 1200);
         } else if (res.topup?.status === 'failed') {
           setPolling(false);
           setError('Pembayaran gagal, silakan coba lagi.');
         }
-      } catch { /* retry */ }
+      } catch {
+        /* retry */
+      }
     };
     void tick();
     const t = setInterval(tick, 3000);
-    return () => { cancelled = true; clearInterval(t); };
+    return () => {
+      cancelled = true;
+      clearInterval(t);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [polling, txn?.id]);
 
@@ -98,13 +105,17 @@ export default function Topup() {
     return (
       <div className="min-h-screen bg-background flex flex-col">
         <header className="bg-surface px-4 py-3 flex items-center gap-3 sticky top-0 z-10">
-          <button onClick={cancel} aria-label="Kembali"><ArrowLeft className="w-6 h-6 text-ink" /></button>
+          <button onClick={cancel} aria-label="Kembali">
+            <ArrowLeft className="w-6 h-6 text-ink" />
+          </button>
           <h1 className="font-semibold text-base">Pembayaran via QRIS</h1>
         </header>
 
         <div className="flex-1 max-w-md w-full mx-auto px-6 py-6 flex flex-col items-center">
           <p className="text-sm text-ink-secondary">Total Pembayaran:</p>
-          <p className="text-3xl font-bold mt-1 font-sans">{formatRupiah(payment.total_payment ?? effectiveAmount)}</p>
+          <p className="text-3xl font-bold mt-1 font-sans">
+            {formatRupiah(payment.total_payment ?? effectiveAmount)}
+          </p>
 
           {payment.is_test && (
             <span className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-warning/15 text-warning text-xs font-bold">
@@ -115,11 +126,23 @@ export default function Topup() {
             <p className="text-sm font-medium mb-3">Scan QRIS berikut</p>
             <div className="bg-white p-3 rounded-2xl border border-border">
               {payment.qr_url ? (
-                <img src={payment.qr_url} alt="QRIS" width={200} height={200} className="w-[200px] h-[200px] object-contain" />
+                <img
+                  src={payment.qr_url}
+                  alt="QRIS"
+                  width={200}
+                  height={200}
+                  className="w-[200px] h-[200px] object-contain"
+                />
               ) : payment.payment_number ? (
                 <QRCode value={payment.payment_number} size={200} fgColor="#1E1E1E" />
               ) : payment.qris_image ? (
-                <img src={payment.qris_image} alt="QRIS" width={200} height={200} className="w-[200px] h-[200px] object-contain" />
+                <img
+                  src={payment.qris_image}
+                  alt="QRIS"
+                  width={200}
+                  height={200}
+                  className="w-[200px] h-[200px] object-contain"
+                />
               ) : (
                 <div className="w-[200px] h-[200px] flex items-center justify-center">
                   <QrIcon className="w-16 h-16 text-ink-secondary/40" />
@@ -138,11 +161,14 @@ export default function Topup() {
             )}
             {payment.expired_at && (
               <p className="mt-3 text-xs text-ink-secondary flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5" /> Kadaluarsa: {formatDateTimeWib(payment.expired_at)}
+                <Clock className="w-3.5 h-3.5" /> Kadaluarsa:{' '}
+                {formatDateTimeWib(payment.expired_at)}
               </p>
             )}
             {payment.demo && (
-              <p className="mt-2 text-[11px] text-ink-secondary text-center">{payment.message ?? 'Mode demo — tanpa charge asli.'}</p>
+              <p className="mt-2 text-[11px] text-ink-secondary text-center">
+                {payment.message ?? 'Mode demo — tanpa charge asli.'}
+              </p>
             )}
             {polling && (
               <p className="mt-3 text-sm text-ink-secondary flex items-center gap-2">
@@ -152,7 +178,11 @@ export default function Topup() {
             )}
           </div>
 
-          <button onClick={simulate} disabled={processing} className="btn-primary mt-6 flex items-center justify-center gap-2">
+          <button
+            onClick={simulate}
+            disabled={processing}
+            className="btn-primary mt-6 flex items-center justify-center gap-2"
+          >
             <RefreshCw className="w-4 h-4" /> Saya Sudah Bayar
           </button>
           <button onClick={cancel} disabled={processing} className="btn-outline mt-3">
@@ -171,7 +201,9 @@ export default function Topup() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="bg-surface px-4 py-3 flex items-center gap-3 sticky top-0 z-10">
-        <button onClick={() => navigate(-1)} aria-label="Kembali"><ArrowLeft className="w-6 h-6 text-ink" /></button>
+        <button onClick={() => navigate(-1)} aria-label="Kembali">
+          <ArrowLeft className="w-6 h-6 text-ink" />
+        </button>
         <h1 className="font-semibold text-base">Top Up Saldo</h1>
       </header>
 
@@ -181,9 +213,14 @@ export default function Topup() {
           {PRESETS.map((p) => (
             <button
               key={p}
-              onClick={() => { setAmount(p); setCustom(''); }}
+              onClick={() => {
+                setAmount(p);
+                setCustom('');
+              }}
               className={`px-4 py-2.5 rounded-full border text-sm font-semibold transition-colors ${
-                !custom && amount === p ? 'bg-primary text-white border-primary' : 'bg-surface border-border text-ink'
+                !custom && amount === p
+                  ? 'bg-primary text-white border-primary'
+                  : 'bg-surface border-border text-ink'
               }`}
             >
               {formatRupiah(p)}
@@ -191,10 +228,14 @@ export default function Topup() {
           ))}
         </div>
         <div className="relative mt-4">
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold text-ink-secondary">Rp</span>
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold text-ink-secondary">
+            Rp
+          </span>
           <input
             value={custom}
-            onChange={(e) => setCustom(e.target.value.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.'))}
+            onChange={(e) =>
+              setCustom(e.target.value.replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.'))
+            }
             inputMode="numeric"
             placeholder="Nominal Lainnya"
             className="input-base pl-12"
@@ -203,7 +244,9 @@ export default function Topup() {
 
         <h2 className="font-bold mt-8">Metode Pembayaran</h2>
         <button className="card-pad w-full mt-3 flex items-center gap-3 border border-primary/30">
-          <span className="p-2.5 rounded-xl bg-primary/10"><QrIcon className="w-6 h-6 text-primary" /></span>
+          <span className="p-2.5 rounded-xl bg-primary/10">
+            <QrIcon className="w-6 h-6 text-primary" />
+          </span>
           <div className="flex-1 text-left">
             <p className="font-semibold">QRIS</p>
             <p className="text-xs text-ink-secondary">Semua E-Wallet &amp; Mobile Banking</p>

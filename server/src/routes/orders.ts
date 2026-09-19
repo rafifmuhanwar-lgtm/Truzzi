@@ -48,9 +48,19 @@ async function computePricing(data: Record<string, unknown>) {
 
   let jarakKm = 3.0;
   let estimasiMenit = 30;
-  if (Number.isFinite(pickupLat) && Number.isFinite(pickupLng) && Number.isFinite(dropoffLat) && Number.isFinite(dropoffLng)) {
+  if (
+    Number.isFinite(pickupLat) &&
+    Number.isFinite(pickupLng) &&
+    Number.isFinite(dropoffLat) &&
+    Number.isFinite(dropoffLng)
+  ) {
     try {
-      const dist = await hitungJarak({ fromLat: pickupLat, fromLng: pickupLng, toLat: dropoffLat, toLng: dropoffLng });
+      const dist = await hitungJarak({
+        fromLat: pickupLat,
+        fromLng: pickupLng,
+        toLat: dropoffLat,
+        toLng: dropoffLng,
+      });
       jarakKm = dist.jarakKm;
       estimasiMenit = dist.estimasiMenit;
     } catch {
@@ -69,16 +79,26 @@ router.post('/', requireUser, async (req: Request, res: Response) => {
     const body = req.body ?? {};
     const orderType: string = body.orderType === 'suruh' ? 'suruh' : 'jastip';
     const serviceName: string = orderType === 'suruh' ? 'Truzzi Suruh' : 'Jastip Truzzi';
-    const title: string = (body.title || body.item || (orderType === 'suruh' ? 'Tugas Suruh' : 'Barang Jastip')) as string;
+    const title: string = (body.title ||
+      body.item ||
+      (orderType === 'suruh' ? 'Tugas Suruh' : 'Barang Jastip')) as string;
     const description: string = (body.description || body.notes || '') as string;
 
     const danaBelanja = Math.max(0, Number(body.danaBelanja ?? body.budget ?? 0) || 0);
 
     const { jarakKm, estimasiMenit, ongkir, biayaLayanan } = await computePricing(body);
     // Boleh override ongkir/biayaLayanan dari request (jika frontend sudah menghitung identik atau direct invoice)
-    const finalOngkir = Number.isFinite(Number(body.ongkir)) && Number(body.ongkir) >= 0 ? Number(body.ongkir) : ongkir;
-    const finalFee = Number.isFinite(Number(body.biayaLayanan)) && Number(body.biayaLayanan) >= 0 ? Number(body.biayaLayanan) : biayaLayanan;
-    const total = body.totalAmount ? Number(body.totalAmount) : hitungTotal(danaBelanja, finalOngkir, finalFee);
+    const finalOngkir =
+      Number.isFinite(Number(body.ongkir)) && Number(body.ongkir) >= 0
+        ? Number(body.ongkir)
+        : ongkir;
+    const finalFee =
+      Number.isFinite(Number(body.biayaLayanan)) && Number(body.biayaLayanan) >= 0
+        ? Number(body.biayaLayanan)
+        : biayaLayanan;
+    const total = body.totalAmount
+      ? Number(body.totalAmount)
+      : hitungTotal(danaBelanja, finalOngkir, finalFee);
 
     const nowIso = new Date().toISOString();
     // Jika pesanan langsung dari deal Jastiper (direct chat invoice)
@@ -90,7 +110,9 @@ router.post('/', requireUser, async (req: Request, res: Response) => {
     if (assignedJastiperId) {
       // Cari data jastiper / jastiper
       const jastiper = await db.getJastiper(assignedJastiperId);
-      const jastiperDoc = await db.getJastiper(assignedJastiperId) || (jastiper?.jastiperId ? await db.getJastiper(jastiper.jastiperId) : null);
+      const jastiperDoc =
+        (await db.getJastiper(assignedJastiperId)) ||
+        (jastiper?.jastiperId ? await db.getJastiper(jastiper.jastiperId) : null);
       if (jastiperDoc) {
         assignedJastiperId = jastiperDoc.id;
         jastiperName = jastiperDoc.name || jastiper?.name || 'Jastiper Truzzi';
@@ -112,7 +134,9 @@ router.post('/', requireUser, async (req: Request, res: Response) => {
       description,
       notes: description,
       status: 'ongoing',
-      statusText: assignedJastiperId ? 'Jastiper Menuju Lokasi Belanja' : 'Dana Diamankan — Mencari Kurir',
+      statusText: assignedJastiperId
+        ? 'Jastiper Menuju Lokasi Belanja'
+        : 'Dana Diamankan — Mencari Kurir',
       totalAmount: total,
       totalPrice: total,
       createdAt: nowIso,
@@ -121,10 +145,14 @@ router.post('/', requireUser, async (req: Request, res: Response) => {
       jastiperName: jastiperName || '',
       jastiperPhone: jastiperPhone || '',
       jastiperAvatar: jastiperAvatar || '',
-      pickupAddress: (body.pickupAddress || body.pickup || (orderType === 'suruh' ? 'Lokasi Penjemputan' : 'Lokasi Penjual')) as string,
+      pickupAddress: (body.pickupAddress ||
+        body.pickup ||
+        (orderType === 'suruh' ? 'Lokasi Penjemputan' : 'Lokasi Penjual')) as string,
       // legacy alias kolom (Appwrite asli menyimpan 'pickupLocation' & 'dropoffLocation')
       pickupLocation: (body.pickupAddress || body.pickup || '') as string,
-      deliveryAddress: (body.deliveryAddress || body.dropoff || (orderType === 'suruh' ? 'Lokasi Tujuan' : 'Alamat Tujuan')) as string,
+      deliveryAddress: (body.deliveryAddress ||
+        body.dropoff ||
+        (orderType === 'suruh' ? 'Lokasi Tujuan' : 'Alamat Tujuan')) as string,
       dropoffLocation: (body.deliveryAddress || body.dropoff || '') as string,
       danaBelanja,
       ongkir: finalOngkir,
@@ -188,32 +216,32 @@ router.post('/', requireUser, async (req: Request, res: Response) => {
     if (orderData.voucherCode && orderData.voucherDiscount) {
       try {
         const promo = await getPrisma().promo.findUnique({
-          where: { code: orderData.voucherCode as string }
+          where: { code: orderData.voucherCode as string },
         });
         if (promo) {
           await getPrisma().promo.update({
             where: { id: promo.id },
             data: {
               usedCount: promo.usedCount + 1,
-              budgetUsed: promo.budgetUsed + (orderData.voucherDiscount as number)
-            }
+              budgetUsed: promo.budgetUsed + (orderData.voucherDiscount as number),
+            },
           });
           // Update existing claim or create new if not claimed previously
           const existingClaim = await getPrisma().userPromo.findFirst({
-            where: { userId: user.id, promoId: promo.id, orderId: null }
+            where: { userId: user.id, promoId: promo.id, orderId: null },
           });
           if (existingClaim) {
             await getPrisma().userPromo.update({
               where: { id: existingClaim.id },
-              data: { orderId: order.$id ?? order.id }
+              data: { orderId: order.$id ?? order.id },
             });
           } else {
             await getPrisma().userPromo.create({
-               data: {
-                 userId: user.id,
-                 promoId: promo.id,
-                 orderId: order.$id ?? order.id,
-               }
+              data: {
+                userId: user.id,
+                promoId: promo.id,
+                orderId: order.$id ?? order.id,
+              },
             });
           }
         }
@@ -222,7 +250,8 @@ router.post('/', requireUser, async (req: Request, res: Response) => {
       }
     }
 
-    const notifTitle = orderType === 'suruh' ? 'Pesanan Suruh Kurir Dibuat 📦' : 'Pesanan Jastip Dibuat 📦';
+    const notifTitle =
+      orderType === 'suruh' ? 'Pesanan Suruh Kurir Dibuat 📦' : 'Pesanan Jastip Dibuat 📦';
     const notifBody =
       orderType === 'suruh'
         ? 'Pesanan Suruh Kurir Anda telah berhasil dibuat. Kurir akan segera menuju lokasi.'
@@ -258,7 +287,7 @@ router.post('/', requireUser, async (req: Request, res: Response) => {
 router.get('/', requireUser, async (req: Request, res: Response) => {
   const user = getUser(req)!;
   const orders = await db.listOrders(user.id);
-  
+
   // Attach ulasan customer ke masing-masing order bila ada
   const enrichedOrders = await Promise.all(
     orders.map(async (o: any) => {
@@ -266,11 +295,16 @@ router.get('/', requireUser, async (req: Request, res: Response) => {
         const reviews = await db.getOrderReviews(o.$id || o.id);
         const myRev = reviews.find((r: any) => r.userId === user.id) || reviews[0];
         if (myRev) {
-          return { ...o, myRating: myRev.rating, jastiperRating: myRev.rating, reviewComment: myRev.comment };
+          return {
+            ...o,
+            myRating: myRev.rating,
+            jastiperRating: myRev.rating,
+            reviewComment: myRev.comment,
+          };
         }
       } catch {}
       return o;
-    })
+    }),
   );
 
   res.json({ orders: enrichedOrders });
@@ -322,10 +356,17 @@ router.patch('/:id', requireUser, async (req: Request, res: Response) => {
       const totalStruk = Number(body.totalBelanjaStruk) || 0;
       const kebijakan = (order.kebijakanLebih ?? 'jangan_lebih') as 'jangan_lebih' | 'boleh_lebih';
 
-      const settlement = hitungSettlement({ danaBelanja, totalBelanjaStruk: totalStruk, ongkir, biayaLayanan, kebijakanLebih: kebijakan });
+      const settlement = hitungSettlement({
+        danaBelanja,
+        totalBelanjaStruk: totalStruk,
+        ongkir,
+        biayaLayanan,
+        kebijakanLebih: kebijakan,
+      });
       if (settlement.invalid) {
         return res.status(400).json({
-          message: 'Total belanja melebihi dana dan kebijakan "jangan lebih" — pesanan tidak dapat diselesaikan dengan struk ini.',
+          message:
+            'Total belanja melebihi dana dan kebijakan "jangan lebih" — pesanan tidak dapat diselesaikan dengan struk ini.',
         });
       }
       patch.totalBelanjaStruk = totalStruk;
@@ -352,10 +393,12 @@ router.get('/:id/jastiper', requireUser, async (req: Request, res: Response) => 
   if (!order) return res.status(404).json({ message: 'Pesanan tidak ditemukan' });
   if (!order.jastiperId) return res.json({ jastiper: null });
   const jastiper = await db.getJastiper(order.jastiperId);
-  const safeJastiper = jastiper ? (() => {
-    const { kycKtpUrl, kycSelfieUrl, ...safe } = jastiper;
-    return safe;
-  })() : null;
+  const safeJastiper = jastiper
+    ? (() => {
+        const { kycKtpUrl, kycSelfieUrl, ...safe } = jastiper;
+        return safe;
+      })()
+    : null;
   res.json({ jastiper: safeJastiper });
 });
 
@@ -434,9 +477,10 @@ router.post('/:id/review', requireUser, async (req: Request, res: Response) => {
           const currentTotal = Number(jastiper.totalOrders || 0);
           const currentRating = Number(jastiper.rating || 0);
           // Rata-rata baru jika sebelumnya 0
-          const newRating = currentTotal === 0 || currentRating === 0
-            ? rating
-            : Number(((currentRating * currentTotal + rating) / (currentTotal + 1)).toFixed(1));
+          const newRating =
+            currentTotal === 0 || currentRating === 0
+              ? rating
+              : Number(((currentRating * currentTotal + rating) / (currentTotal + 1)).toFixed(1));
 
           await db.upsertJastiper(jastiperId, {
             rating: newRating,
@@ -461,7 +505,10 @@ router.post('/:id/generate-resi', requireUser, async (req: Request, res: Respons
     const order = await db.getOrder(req.params.id);
     if (!order) return res.status(404).json({ message: 'Pesanan tidak ditemukan' });
     const resi = `SGO-${Date.now().toString(36).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`;
-    const updated = await db.updateOrder(req.params.id, { resi, statusText: `Pengiriman dengan no resi ${resi}` });
+    const updated = await db.updateOrder(req.params.id, {
+      resi,
+      statusText: `Pengiriman dengan no resi ${resi}`,
+    });
     res.json({ order: updated, resi });
   } catch (e) {
     console.error(e);

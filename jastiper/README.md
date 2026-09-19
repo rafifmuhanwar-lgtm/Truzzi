@@ -17,8 +17,8 @@ cd driver && npm install && npm run dev   # http://localhost:5174
 
 ## Akun demo
 
-| Akun | Email | Password |
-|---|---|---|
+| Akun       | Email             | Password     |
+| ---------- | ----------------- | ------------ |
 | Kurir demo | `kurir@Truzzi.id` | `kurir12345` |
 
 Sudah KYC-verified; tinggal login → toggle **Online** → buka tab **Pesanan**.
@@ -37,4 +37,3 @@ Sudah KYC-verified; tinggal login → toggle **Online** → buka tab **Pesanan**
 - **URL foto KYC** disimpan di profil kurir (`kycKtpUrl`, `kycSelfieUrl`) — aslinya dibuang setelah upload.
 - **Live location** memakai browser geolocation API — aslinya Geolocator dengan distanceFilter 10m.
 - **Push notification FCM** belum di-port (web); notifikasi in-app polling saja.
-

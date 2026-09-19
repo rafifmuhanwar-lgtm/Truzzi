@@ -25,12 +25,18 @@ function JastiperCard({ jastiper, onRemove }: { jastiper: Jastiper; onRemove?: (
       </button>
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-2">
-          <button onClick={() => navigate(`/jastipers/${jastiper.id}`)} className="text-left min-w-0 flex-1">
+          <button
+            onClick={() => navigate(`/jastipers/${jastiper.id}`)}
+            className="text-left min-w-0 flex-1"
+          >
             <p className="font-bold text-sm truncate">{jastiper.name}</p>
           </button>
           {onRemove && (
             <button
-              onClick={(e) => { e.stopPropagation(); onRemove(); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onRemove();
+              }}
               className="p-1.5 -mr-1.5 rounded-full hover:bg-error/10 flex items-center justify-center transition-colors shrink-0"
               aria-label="Hapus favorite"
             >
@@ -52,10 +58,17 @@ function JastiperCard({ jastiper, onRemove }: { jastiper: Jastiper; onRemove?: (
         {jastiper.services && jastiper.services.length > 0 && (
           <div className="flex gap-1 mt-1 flex-wrap">
             {jastiper.services.slice(0, 2).map((s) => (
-              <span key={s} className="px-1.5 py-0.5 rounded bg-primary/10 text-[9px] text-primary font-medium">{s}</span>
+              <span
+                key={s}
+                className="px-1.5 py-0.5 rounded bg-primary/10 text-[9px] text-primary font-medium"
+              >
+                {s}
+              </span>
             ))}
             {jastiper.services.length > 2 && (
-              <span className="px-1.5 py-0.5 rounded bg-surface text-[9px] text-ink-secondary">+{jastiper.services.length - 2}</span>
+              <span className="px-1.5 py-0.5 rounded bg-surface text-[9px] text-ink-secondary">
+                +{jastiper.services.length - 2}
+              </span>
             )}
           </div>
         )}
@@ -69,11 +82,10 @@ function EmptyState() {
     <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
       <Heart className="w-20 h-20 text-ink-secondary/30" />
       <h3 className="mt-4 font-bold text-ink">Belum Ada Favorite</h3>
-      <p className="mt-1 text-sm text-ink-secondary max-w-xs">Tambahkan jastiper favoritmu di halaman Beranda</p>
-      <button
-        onClick={() => window.history.back()}
-        className="btn-primary mt-5 !h-[42px] text-sm"
-      >
+      <p className="mt-1 text-sm text-ink-secondary max-w-xs">
+        Tambahkan jastiper favoritmu di halaman Beranda
+      </p>
+      <button onClick={() => window.history.back()} className="btn-primary mt-5 !h-[42px] text-sm">
         Cari Jastiper
       </button>
     </div>
@@ -110,7 +122,10 @@ export default function FavoriteScreen() {
 
   return (
     <div className="min-h-0 bg-background">
-      <div className="bg-primary rounded-b-[28px] px-5 pt-6 pb-4" style={{ boxShadow: '0 5px 15px rgba(127,29,58,0.25)' }}>
+      <div
+        className="bg-primary rounded-b-[28px] px-5 pt-6 pb-4"
+        style={{ boxShadow: '0 5px 15px rgba(127,29,58,0.25)' }}
+      >
         <div className="max-w-lg mx-auto">
           <h1 className="text-xl font-bold text-white font-sans">Favorite</h1>
           <p className="text-sm text-white/85 mt-0.5">Jastiper yang kamu simpan</p>

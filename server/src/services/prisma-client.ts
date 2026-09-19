@@ -1,15 +1,15 @@
-import "dotenv/config";
-import pg from "pg";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "@prisma/client";
+import 'dotenv/config';
+import pg from 'pg';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { PrismaClient } from '@prisma/client';
 
 let prisma: PrismaClient | null = null;
 
 export function getPrisma(): PrismaClient {
   if (!prisma) {
-    const url = process.env.DATABASE_URL ?? "";
+    const url = process.env.DATABASE_URL ?? '';
     const pool = new pg.Pool({
-      connectionString: url.split("?")[0],
+      connectionString: url.split('?')[0],
       ssl: { rejectUnauthorized: false },
     });
     const adapter = new PrismaPg(pool);

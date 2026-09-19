@@ -46,7 +46,6 @@ export default function JastipExploreScreen() {
   const [selectedCategory, setSelectedCategory] = useState('Semua');
   const [searchQuery, setSearchQuery] = useState('');
 
-
   // Fetch jastipers & favorites
   const { data: jastipersData, isLoading } = useQuery({
     queryKey: ['jastipers'],
@@ -76,7 +75,7 @@ export default function JastipExploreScreen() {
         const catStr = (j.category || '').toLowerCase();
         if (!catStr.includes(selectedCategory.toLowerCase())) {
           const hasProductCat = j.products?.some((p) =>
-            (p.category || '').toLowerCase().includes(selectedCategory.toLowerCase())
+            (p.category || '').toLowerCase().includes(selectedCategory.toLowerCase()),
           );
           if (!hasProductCat) return false;
         }
@@ -89,7 +88,7 @@ export default function JastipExploreScreen() {
         const matchTrip = (j.openTripTitle || '').toLowerCase().includes(q);
         const matchDest = (j.openTripDestination || '').toLowerCase().includes(q);
         const matchProd = j.products?.some(
-          (p) => p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q)
+          (p) => p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q),
         );
         if (!matchName && !matchArea && !matchTrip && !matchDest && !matchProd) return false;
       }
@@ -131,7 +130,9 @@ export default function JastipExploreScreen() {
             </button>
             <div className="min-w-0">
               <h1 className="font-bold text-base leading-tight truncate font-sans">Jasa Titip</h1>
-              <p className="text-xs text-white/80 leading-snug">Jastipers Terpercaya di Jabodetabek</p>
+              <p className="text-xs text-white/80 leading-snug">
+                Jastipers Terpercaya di Jabodetabek
+              </p>
             </div>
           </div>
         </div>
@@ -166,7 +167,8 @@ export default function JastipExploreScreen() {
             <div className="space-y-1 min-w-0">
               <h2 className="text-sm font-bold leading-tight">Mau Jadi Jastiper di Truzzi?</h2>
               <p className="text-xs text-white/80 leading-snug">
-                Kelola trip & katalog produk lewat Driver App Truzzi. Pembayaran aman terjamin escrow.
+                Kelola trip & katalog produk lewat Driver App Truzzi. Pembayaran aman terjamin
+                escrow.
               </p>
             </div>
             <a
@@ -245,7 +247,8 @@ export default function JastipExploreScreen() {
                 : 'text-ink-secondary hover:text-ink hover:bg-surface'
             }`}
           >
-            <Flame className="w-3.5 h-3.5 text-amber-400" /> Open Jastip Aktif ({filteredJastipers.length})
+            <Flame className="w-3.5 h-3.5 text-amber-400" /> Open Jastip Aktif (
+            {filteredJastipers.length})
           </button>
           <button
             onClick={() => setActiveTab('jastipers')}
@@ -270,7 +273,8 @@ export default function JastipExploreScreen() {
             <span className="text-4xl">🛍️</span>
             <p className="font-bold text-sm text-ink">Belum ada trip aktif di filter ini</p>
             <p className="text-xs text-ink-secondary max-w-xs mx-auto">
-              Coba ganti pilihan wilayah atau gunakan tombol di bawah untuk memesan jastip custom ke toko manapun.
+              Coba ganti pilihan wilayah atau gunakan tombol di bawah untuk memesan jastip custom ke
+              toko manapun.
             </p>
             <button
               onClick={() => navigate('/jastip/form')}
@@ -292,11 +296,7 @@ export default function JastipExploreScreen() {
                   {/* Cover Banner */}
                   <div className="relative h-36 bg-gradient-to-r from-primary-dark via-primary to-[#8A2B4C] overflow-hidden">
                     {j.coverUrl && (
-                      <img
-                        src={j.coverUrl}
-                        alt=""
-                        className="w-full h-full object-cover"
-                      />
+                      <img src={j.coverUrl} alt="" className="w-full h-full object-cover" />
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
 
@@ -314,7 +314,9 @@ export default function JastipExploreScreen() {
                         className="w-8 h-8 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-white active:scale-90 transition-transform"
                         aria-label="Simpan Favorit"
                       >
-                        <Heart className={`w-4 h-4 ${isFav ? 'text-error fill-error' : 'text-white'}`} />
+                        <Heart
+                          className={`w-4 h-4 ${isFav ? 'text-error fill-error' : 'text-white'}`}
+                        />
                       </button>
                     </div>
 
@@ -349,11 +351,14 @@ export default function JastipExploreScreen() {
                         <div className="min-w-0">
                           <div className="flex items-center gap-1">
                             <p className="font-bold text-xs text-ink truncate">{j.name}</p>
-                            {j.verified && <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0" />}
+                            {j.verified && (
+                              <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0" />
+                            )}
                           </div>
                           <div className="flex items-center gap-1.5 text-[11px] text-ink-secondary">
                             <span className="flex items-center gap-0.5 text-amber-500 font-bold">
-                              <Star className="w-3 h-3 fill-amber-400" /> {Math.min(5.0, Number(j.rating ?? 5.0)).toFixed(1)}
+                              <Star className="w-3 h-3 fill-amber-400" />{' '}
+                              {Math.min(5.0, Number(j.rating ?? 5.0)).toFixed(1)}
                             </span>
                             <span>•</span>
                             <span>{j.totalOrders ?? 0} trip sukses</span>
@@ -367,12 +372,16 @@ export default function JastipExploreScreen() {
                       <div className="flex items-center gap-1.5 text-ink-secondary min-w-0 flex-1">
                         <Clock className="w-3.5 h-3.5 text-error shrink-0" />
                         <span className="truncate">
-                          Tutup: <strong className="text-ink">{j.openTripClosing || 'Hari ini'}</strong>
+                          Tutup:{' '}
+                          <strong className="text-ink">{j.openTripClosing || 'Hari ini'}</strong>
                         </span>
                       </div>
                       <div className="w-px h-3.5 bg-border shrink-0" />
                       <div className="text-ink-secondary truncate flex-1">
-                        Kirim: <strong className="text-emerald-700">{j.openTripSchedule || 'Besok'}</strong>
+                        Kirim:{' '}
+                        <strong className="text-emerald-700">
+                          {j.openTripSchedule || 'Besok'}
+                        </strong>
                       </div>
                     </div>
 
@@ -388,7 +397,10 @@ export default function JastipExploreScreen() {
                               key={p.id}
                               className="px-2.5 py-1 rounded-lg bg-[#F3F4F6] border border-border/50 text-[11px] text-ink font-medium truncate max-w-[220px]"
                             >
-                              {p.title} · <strong className="text-primary font-bold">{formatRupiah(p.price)}</strong>
+                              {p.title} ·{' '}
+                              <strong className="text-primary font-bold">
+                                {formatRupiah(p.price)}
+                              </strong>
                             </span>
                           ))}
                           {j.products.length > 3 && (
@@ -440,10 +452,13 @@ export default function JastipExploreScreen() {
                       <p className="font-bold text-xs text-ink truncate">{j.name}</p>
                       {j.verified && <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0" />}
                     </div>
-                    <p className="text-[11px] text-ink-secondary mt-0.5 line-clamp-1">{j.bio || j.area}</p>
+                    <p className="text-[11px] text-ink-secondary mt-0.5 line-clamp-1">
+                      {j.bio || j.area}
+                    </p>
                     <div className="flex items-center gap-2 mt-1 text-[10px] text-ink-secondary">
                       <span className="flex items-center gap-0.5 text-amber-500 font-bold">
-                        <Star className="w-3 h-3 fill-amber-400" /> {Math.min(5.0, Number(j.rating ?? 5.0)).toFixed(1)}
+                        <Star className="w-3 h-3 fill-amber-400" />{' '}
+                        {Math.min(5.0, Number(j.rating ?? 5.0)).toFixed(1)}
                       </span>
                       <span>•</span>
                       <span>{j.totalOrders ?? 0} pesanan</span>
@@ -457,11 +472,7 @@ export default function JastipExploreScreen() {
             ))}
           </div>
         )}
-
       </main>
-
     </div>
   );
 }
-
-

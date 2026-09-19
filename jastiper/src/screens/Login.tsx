@@ -94,7 +94,11 @@ export default function Login() {
                 className="absolute right-3 top-1/2 -translate-y-1/2"
                 aria-label="Tampilkan password"
               >
-                {showPass ? <EyeOff className="w-5 h-5 text-ink-secondary" /> : <Eye className="w-5 h-5 text-ink-secondary" />}
+                {showPass ? (
+                  <EyeOff className="w-5 h-5 text-ink-secondary" />
+                ) : (
+                  <Eye className="w-5 h-5 text-ink-secondary" />
+                )}
               </button>
             </div>
           </div>

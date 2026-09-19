@@ -43,7 +43,9 @@ export default function DeliveryProof() {
   async function handleComplete() {
     if (!order) return;
     if (!photoUrl) {
-      enqueueSnackbar('Harap ambil foto bukti barang diterima terlebih dahulu', { variant: 'warning' });
+      enqueueSnackbar('Harap ambil foto bukti barang diterima terlebih dahulu', {
+        variant: 'warning',
+      });
       return;
     }
     setUploading(true);
@@ -61,7 +63,10 @@ export default function DeliveryProof() {
     <div className="min-h-screen bg-background">
       <div className="bg-primary px-4 pt-4 pb-5 sticky top-0 z-20">
         <div className="flex items-center gap-2">
-          <button onClick={() => navigate(-1)} className="p-2 -ml-2 text-white rounded-full hover:bg-white/10">
+          <button
+            onClick={() => navigate(-1)}
+            className="p-2 -ml-2 text-white rounded-full hover:bg-white/10"
+          >
             <ArrowLeft size={22} />
           </button>
           <h1 className="text-white font-semibold">Bukti Pengiriman</h1>
@@ -72,7 +77,8 @@ export default function DeliveryProof() {
         <div className="flex gap-2 rounded-btn bg-primary/5 border border-primary/20 px-4 py-3">
           <Info size={16} className="text-primary shrink-0 mt-0.5" />
           <p className="text-small text-ink leading-relaxed">
-            Pastikan foto menampilkan barang yang diterima dengan jelas oleh customer atau di lokasi tujuan.
+            Pastikan foto menampilkan barang yang diterima dengan jelas oleh customer atau di lokasi
+            tujuan.
           </p>
         </div>
 
@@ -90,7 +96,9 @@ export default function DeliveryProof() {
             type="button"
             onClick={() => fileRef.current?.click()}
             className={`mt-2 w-full aspect-[4/3] rounded-card border-2 border-dashed overflow-hidden flex items-center justify-center transition-colors ${
-              photoUrl ? 'border-success bg-success/5' : 'border-border bg-white hover:border-primary'
+              photoUrl
+                ? 'border-success bg-success/5'
+                : 'border-border bg-white hover:border-primary'
             }`}
           >
             {photoUrl ? (
@@ -104,7 +112,11 @@ export default function DeliveryProof() {
           </button>
         </div>
 
-        <button onClick={() => void handleComplete()} disabled={uploading || !order} className="btn-primary">
+        <button
+          onClick={() => void handleComplete()}
+          disabled={uploading || !order}
+          className="btn-primary"
+        >
           {uploading ? 'Memproses...' : 'Selesaikan Pesanan'}
         </button>
       </div>
@@ -115,9 +127,13 @@ export default function DeliveryProof() {
           <div className="w-full max-w-sm bg-white rounded-card p-6 text-center space-y-3">
             <h2 className="text-headline font-bold">Pesanan Selesai</h2>
             <p className="text-body2 text-ink-secondary leading-relaxed">
-              Bukti penerimaan barang telah diupload dan pesanan ini dinyatakan selesai. Terima kasih!
+              Bukti penerimaan barang telah diupload dan pesanan ini dinyatakan selesai. Terima
+              kasih!
             </p>
-            <button onClick={() => navigate('/main?tab=orders', { replace: true })} className="btn-primary">
+            <button
+              onClick={() => navigate('/main?tab=orders', { replace: true })}
+              className="btn-primary"
+            >
               Tutup
             </button>
           </div>
@@ -126,4 +142,3 @@ export default function DeliveryProof() {
     </div>
   );
 }
-

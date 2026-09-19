@@ -19,7 +19,11 @@ export default function Orders() {
   const [jenis, setJenis] = useState<JenisFilter>('Semua');
   const [sort, setSort] = useState<SortOption>('Terbaru');
 
-  const { data: mineData, refetch: refetchMine, isFetching: fetchingMine } = useQuery<{ orders: Order[] }>({
+  const {
+    data: mineData,
+    refetch: refetchMine,
+    isFetching: fetchingMine,
+  } = useQuery<{ orders: Order[] }>({
     queryKey: ['jastiper-mine'],
     queryFn: () => API.jastiper.myOrders(),
     refetchInterval: 4000,
@@ -71,25 +75,52 @@ export default function Orders() {
 
       {/* Tabs + counts */}
       <div className="flex gap-2 mt-4">
-        <TabBtn label={`Aktif (${aktif.length})`} active={tab === 'aktif'} onClick={() => setTab('aktif')} />
-        <TabBtn label={`Riwayat (${riwayat.length})`} active={tab === 'riwayat'} onClick={() => setTab('riwayat')} />
+        <TabBtn
+          label={`Aktif (${aktif.length})`}
+          active={tab === 'aktif'}
+          onClick={() => setTab('aktif')}
+        />
+        <TabBtn
+          label={`Riwayat (${riwayat.length})`}
+          active={tab === 'riwayat'}
+          onClick={() => setTab('riwayat')}
+        />
       </div>
 
       {/* Filter row */}
       <div className="flex gap-2 mt-3">
-        <select value={jenis} onChange={(e) => setJenis(e.target.value as JenisFilter)} className="input-base !py-2 text-small flex-1">
+        <select
+          value={jenis}
+          onChange={(e) => setJenis(e.target.value as JenisFilter)}
+          className="input-base !py-2 text-small flex-1"
+        >
           <option disabled>Jenis Pesanan</option>
           {JENIS_OPTIONS.map((j) => (
-            <option key={j} value={j}>{j}</option>
+            <option key={j} value={j}>
+              {j}
+            </option>
           ))}
         </select>
-        <select value={sort} onChange={(e) => setSort(e.target.value as SortOption)} className="input-base !py-2 text-small flex-1">
+        <select
+          value={sort}
+          onChange={(e) => setSort(e.target.value as SortOption)}
+          className="input-base !py-2 text-small flex-1"
+        >
           {SORT_OPTIONS.map((s) => (
-            <option key={s} value={s}>Urut: {s}</option>
+            <option key={s} value={s}>
+              Urut: {s}
+            </option>
           ))}
         </select>
-        <button onClick={refresh} className="card w-10 flex items-center justify-center" aria-label="Refresh">
-          <RefreshCw size={16} className={fetchingMine ? 'animate-spin text-primary' : 'text-ink-secondary'} />
+        <button
+          onClick={refresh}
+          className="card w-10 flex items-center justify-center"
+          aria-label="Refresh"
+        >
+          <RefreshCw
+            size={16}
+            className={fetchingMine ? 'animate-spin text-primary' : 'text-ink-secondary'}
+          />
         </button>
       </div>
 
@@ -97,19 +128,22 @@ export default function Orders() {
         {filtered.length === 0 ? (
           <EmptyState tab={tab} />
         ) : (
-          filtered.map((o) => (
-            <OrderCard
-              key={o.$id ?? o.id}
-              order={o}
-            />
-          ))
+          filtered.map((o) => <OrderCard key={o.$id ?? o.id} order={o} />)
         )}
       </div>
     </div>
   );
 }
 
-function TabBtn({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
+function TabBtn({
+  label,
+  active,
+  onClick,
+}: {
+  label: string;
+  active: boolean;
+  onClick: () => void;
+}) {
   return (
     <button
       onClick={onClick}
@@ -139,7 +173,9 @@ function OrderCard({ order }: { order: Order }) {
       {order.status === 'waiting_confirmation' && (
         <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-amber-50 border border-amber-200">
           <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-          <span className="text-[11px] font-semibold text-amber-700">Menunggu Konfirmasi Customer</span>
+          <span className="text-[11px] font-semibold text-amber-700">
+            Menunggu Konfirmasi Customer
+          </span>
         </div>
       )}
 
@@ -165,15 +201,18 @@ function OrderCard({ order }: { order: Order }) {
 
       <div className="space-y-1 text-small text-ink-secondary">
         {type !== 'jastip' && (
-          <p className="flex gap-1.5"><MapPin size={14} className="shrink-0 mt-0.5 text-primary" /> Pickup: {order.pickupAddress}</p>
+          <p className="flex gap-1.5">
+            <MapPin size={14} className="shrink-0 mt-0.5 text-primary" /> Pickup:{' '}
+            {order.pickupAddress}
+          </p>
         )}
-        <p className="flex gap-1.5"><Navigation size={14} className="shrink-0 mt-0.5 text-success" /> Antar ke: {order.deliveryAddress}</p>
+        <p className="flex gap-1.5">
+          <Navigation size={14} className="shrink-0 mt-0.5 text-success" /> Antar ke:{' '}
+          {order.deliveryAddress}
+        </p>
       </div>
 
-      <button
-        onClick={() => navigate(`/order/detail?id=${id}`)}
-        className="btn-outline !h-11 mt-1"
-      >
+      <button onClick={() => navigate(`/order/detail?id=${id}`)} className="btn-outline !h-11 mt-1">
         Lihat Detail
       </button>
     </div>
@@ -193,4 +232,3 @@ function EmptyState({ tab }: { tab: Tab }) {
     </div>
   );
 }
-

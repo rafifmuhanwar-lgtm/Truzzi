@@ -8,7 +8,10 @@ export default function OrderSuccess() {
   const { state } = useLocation() as { state: { order?: Order } };
   const navigate = useNavigate();
   const order = state?.order;
-  const isCustomRequest = order?.serviceName?.toLowerCase().includes('jastip') && (!order?.jastiperId && !order?.danaBelanja);
+  const isCustomRequest =
+    order?.serviceName?.toLowerCase().includes('jastip') &&
+    !order?.jastiperId &&
+    !order?.danaBelanja;
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -77,7 +80,12 @@ export default function OrderSuccess() {
 
       <div className="sticky bottom-0 bg-white px-6 pt-4 pb-6 border-t border-divider">
         <div className="max-w-lg mx-auto space-y-2">
-          <button className="btn-primary" onClick={() => order ? navigate('/tracking', { state: { order } }) : navigate('/main')}>
+          <button
+            className="btn-primary"
+            onClick={() =>
+              order ? navigate('/tracking', { state: { order } }) : navigate('/main')
+            }
+          >
             Lihat Status
           </button>
           <button className="btn-outline" onClick={() => navigate('/main')}>

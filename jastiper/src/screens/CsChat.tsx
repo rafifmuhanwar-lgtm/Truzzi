@@ -64,7 +64,10 @@ export default function CsChat() {
       {/* AppBar */}
       <div className="bg-primary px-4 pt-4 pb-4 sticky top-0 z-20">
         <div className="flex items-center gap-3">
-          <button onClick={() => navigate(-1)} className="p-2 -ml-2 text-white rounded-full hover:bg-white/10">
+          <button
+            onClick={() => navigate(-1)}
+            className="p-2 -ml-2 text-white rounded-full hover:bg-white/10"
+          >
             <ArrowLeft size={22} />
           </button>
           <span className="w-10 h-10 rounded-full bg-white/15 flex items-center justify-center">
@@ -97,7 +100,9 @@ export default function CsChat() {
             <div key={m.id} className={`flex ${isSupport ? 'justify-start' : 'justify-end'}`}>
               <div
                 className={`max-w-[78%] rounded-card px-3.5 py-2 ${
-                  isSupport ? 'bg-white border border-border rounded-bl-sm' : 'bg-primary text-white rounded-br-sm'
+                  isSupport
+                    ? 'bg-white border border-border rounded-bl-sm'
+                    : 'bg-primary text-white rounded-br-sm'
                 }`}
               >
                 {isSupport && (
@@ -105,8 +110,12 @@ export default function CsChat() {
                     <Headset size={12} /> Customer Service
                   </p>
                 )}
-                <p className={`text-body2 whitespace-pre-wrap break-words ${isSupport ? '' : ''}`}>{m.text}</p>
-                <p className={`text-right text-[10px] mt-1 ${isSupport ? 'text-ink-secondary' : 'text-white/70'}`}>
+                <p className={`text-body2 whitespace-pre-wrap break-words ${isSupport ? '' : ''}`}>
+                  {m.text}
+                </p>
+                <p
+                  className={`text-right text-[10px] mt-1 ${isSupport ? 'text-ink-secondary' : 'text-white/70'}`}
+                >
                   {formatTime(m.timestamp)}
                 </p>
               </div>
@@ -137,12 +146,21 @@ export default function CsChat() {
         }}
         className="px-4 pb-6 pt-2 bg-white border-t border-divider flex items-center gap-2 max-w-lg w-full mx-auto"
       >
-        <input value={text} onChange={(e) => setText(e.target.value)} placeholder="Tulis pesan..." className="input-base !py-2.5 flex-1" />
-        <button type="submit" disabled={!text.trim()} className="p-2.5 text-primary disabled:text-ink-secondary/40" aria-label="Kirim">
+        <input
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="Tulis pesan..."
+          className="input-base !py-2.5 flex-1"
+        />
+        <button
+          type="submit"
+          disabled={!text.trim()}
+          className="p-2.5 text-primary disabled:text-ink-secondary/40"
+          aria-label="Kirim"
+        >
           <Send size={22} />
         </button>
       </form>
     </div>
   );
 }
-

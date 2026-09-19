@@ -6,7 +6,6 @@ import { fileURLToPath } from 'node:url';
 import { config } from '../config.js';
 import { requireUser, readSessionToken, verifySession } from '../services/session.js';
 
-
 function getCookieName(app?: string): string {
   if (app === 'driver') return config.session.cookieNameDriver;
   if (app === 'customer') return config.session.cookieNameCustomer;
@@ -38,8 +37,8 @@ router.use((req: Request, _res: Response, next: NextFunction) => {
 });
 
 const _dirname = path.dirname(fileURLToPath(import.meta.url));
-const uploadDir = process.env.VERCEL 
-  ? path.join('/tmp', config.storage.uploadDir) 
+const uploadDir = process.env.VERCEL
+  ? path.join('/tmp', config.storage.uploadDir)
   : path.resolve(_dirname, '../../', config.storage.uploadDir);
 
 try {
@@ -53,7 +52,10 @@ const localStorage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, uploadDir),
   filename: (_req, file, cb) => {
     const ext = path.extname(file.originalname || '');
-    const name = path.basename(file.originalname || 'file', ext).replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 40);
+    const name = path
+      .basename(file.originalname || 'file', ext)
+      .replace(/[^a-zA-Z0-9_-]/g, '_')
+      .slice(0, 40);
     cb(null, `${Date.now()}-${name}${ext}`);
   },
 });
@@ -63,7 +65,7 @@ import { CloudinaryStorage } from 'multer-storage-cloudinary';
 // Configure cloudinary
 if (process.env.CLOUDINARY_URL) {
   cloudinary.config({
-    secure: true
+    secure: true,
   });
 }
 
@@ -73,7 +75,7 @@ const cloudStorage = new CloudinaryStorage({
   params: {
     folder: 'truzzi_uploads',
     allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
-    transformation: [{ width: 1200, crop: "limit" }, { quality: "auto" }, { fetch_format: "auto" }]
+    transformation: [{ width: 1200, crop: 'limit' }, { quality: 'auto' }, { fetch_format: 'auto' }],
   } as any,
 });
 
@@ -97,7 +99,9 @@ router.post('/', authUpload, activeUpload.single('file'), async (req, res) => {
 
     // Jika menggunakan Cloudinary, req.file.path berisi URL public dari Cloudinary
     if (process.env.CLOUDINARY_URL) {
-      return res.status(201).json({ url: req.file.path, fileId: req.file.filename, demo: config.demo.enabled });
+      return res
+        .status(201)
+        .json({ url: req.file.path, fileId: req.file.filename, demo: config.demo.enabled });
     }
 
     if (config.storage.engine === 'local') {
@@ -105,7 +109,7 @@ router.post('/', authUpload, activeUpload.single('file'), async (req, res) => {
       const url = `/uploads/${filename}`;
       return res.status(201).json({ url, fileId: filename, demo: config.demo.enabled });
     }
-    
+
     return res.status(500).json({ message: 'Storage engine not supported' });
   } catch (e) {
     console.error(e);

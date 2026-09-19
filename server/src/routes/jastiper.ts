@@ -6,7 +6,14 @@
 import { Router, type Request, type Response, type NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
 import { config } from '../config.js';
-import { getUser, requireJastiper, signSession, setSessionCookie, readSessionToken, verifySession } from '../services/session.js';
+import {
+  getUser,
+  requireJastiper,
+  signSession,
+  setSessionCookie,
+  readSessionToken,
+  verifySession,
+} from '../services/session.js';
 import * as db from '../services/data.js';
 import { hitungSettlement } from '../services/escrow.js';
 import { getPrisma } from '../services/prisma-client.js';
@@ -48,15 +55,23 @@ export const VEHICLE_TYPES_ONBOARDING = ['Motor', 'Mobil'];
 export const VEHICLE_TYPES_PROFILE = ['Motor', 'Mobil', 'Sepeda'];
 export const AREAS_ONBOARDING = ['Kota Bekasi', 'Kabupaten Bekasi'];
 export const AREAS_PROFILE = [
-  'Jakarta Pusat', 'Jakarta Utara', 'Jakarta Barat', 'Jakarta Selatan', 'Jakarta Timur',
-  'Tangerang', 'Kota Bekasi', 'Kabupaten Bekasi', 'Depok', 'Bogor',
+  'Jakarta Pusat',
+  'Jakarta Utara',
+  'Jakarta Barat',
+  'Jakarta Selatan',
+  'Jakarta Timur',
+  'Tangerang',
+  'Kota Bekasi',
+  'Kabupaten Bekasi',
+  'Depok',
+  'Bogor',
 ];
 
 /** Tahapan status persis `_statusOptions` di order_detail_screen.dart. */
 const STATUS_STAGES = [
   'Menuju Lokasi',
   'Sampai di Lokasi',
-  'Barang Dibeli',           // Jastip: setelah upload struk
+  'Barang Dibeli', // Jastip: setelah upload struk
   'Barang Dibeli / Tugas Selesai', // Suruh: langsung selesai tanpa struk
   'Dalam Perjalanan ke Tujuan',
   'Pesanan Selesai',
@@ -107,15 +122,20 @@ router.post('/register', async (req: Request, res: Response) => {
   try {
     const body = req.body ?? {};
     const name = String(body.name ?? '').trim();
-    const email = String(body.email ?? '').trim().toLowerCase();
+    const email = String(body.email ?? '')
+      .trim()
+      .toLowerCase();
     const password = String(body.password ?? '');
     const phone = String(body.phone ?? '').trim();
 
     // Validasi persis register_screen.dart
     if (name.length < 3) return res.status(400).json({ message: 'Nama minimal 3 karakter' });
-    if (!email.includes('@') || !email.includes('.')) return res.status(400).json({ message: 'Format email tidak valid' });
-    if (phone.length < 10 || !phone.startsWith('08')) return res.status(400).json({ message: 'Nomor telepon tidak valid (08xxxxxxxxxx)' });
-    if (password.length < 8) return res.status(400).json({ message: 'Password minimal 8 karakter' });
+    if (!email.includes('@') || !email.includes('.'))
+      return res.status(400).json({ message: 'Format email tidak valid' });
+    if (phone.length < 10 || !phone.startsWith('08'))
+      return res.status(400).json({ message: 'Nomor telepon tidak valid (08xxxxxxxxxx)' });
+    if (password.length < 8)
+      return res.status(400).json({ message: 'Password minimal 8 karakter' });
 
     if (config.data.engine === 'postgres') {
       const exists = await getPrisma().user.findUnique({ where: { email } });
@@ -190,7 +210,11 @@ router.post('/kyc', requireJastiper, async (req: Request, res: Response) => {
     if (!ktpUrl || !selfieUrl) {
       return res.status(400).json({ message: 'Harap foto KTP dan Selfie terlebih dahulu' });
     }
-    await db.updateJastiper(user.id, { kycKtpUrl: ktpUrl, kycSelfieUrl: selfieUrl, kycVerified: false });
+    await db.updateJastiper(user.id, {
+      kycKtpUrl: ktpUrl,
+      kycSelfieUrl: selfieUrl,
+      kycVerified: false,
+    });
     const me = await jastiperMe(user.id);
     res.json({ user: me });
   } catch (e) {
@@ -235,7 +259,8 @@ router.post('/orders/:id/accept', requireJastiper, async (req: Request, res: Res
     const jastiper = await db.getJastiper(user.id);
     const order = await db.getOrder(req.params.id);
     if (!order) return res.status(404).json({ message: 'Pesanan tidak ditemukan' });
-    if (order.status !== 'ongoing') return res.status(400).json({ message: 'Pesanan tidak lagi tersedia' });
+    if (order.status !== 'ongoing')
+      return res.status(400).json({ message: 'Pesanan tidak lagi tersedia' });
 
     const updated = await db.acceptOrder(req.params.id, {
       jastiperId: user.id,
@@ -268,8 +293,10 @@ router.patch('/orders/:id/status', requireJastiper, async (req: Request, res: Re
     const user = getUser(req)!;
     const order = await db.getOrder(req.params.id);
     if (!order) return res.status(404).json({ message: 'Pesanan tidak ditemukan' });
-    if (order.jastiperId !== user.id) return res.status(403).json({ message: 'Bukan pesanan Anda' });
-    if (order.status !== 'ongoing') return res.status(400).json({ message: 'Pesanan sudah selesai/dibatalkan' });
+    if (order.jastiperId !== user.id)
+      return res.status(403).json({ message: 'Bukan pesanan Anda' });
+    if (order.status !== 'ongoing')
+      return res.status(400).json({ message: 'Pesanan sudah selesai/dibatalkan' });
 
     const statusText = String(req.body?.statusText ?? '');
     if (!STATUS_STAGES.includes(statusText)) {
@@ -293,7 +320,8 @@ router.post('/orders/:id/location', requireJastiper, async (req: Request, res: R
     const user = getUser(req)!;
     const order = await db.getOrder(req.params.id);
     if (!order) return res.status(404).json({ message: 'Pesanan tidak ditemukan' });
-    if (order.jastiperId !== user.id) return res.status(403).json({ message: 'Bukan pesanan Anda' });
+    if (order.jastiperId !== user.id)
+      return res.status(403).json({ message: 'Bukan pesanan Anda' });
 
     const lat = Number(req.body?.lat);
     const lng = Number(req.body?.lng);
@@ -314,24 +342,35 @@ router.post('/orders/:id/receipt', requireJastiper, async (req: Request, res: Re
     const user = getUser(req)!;
     const order = await db.getOrder(req.params.id);
     if (!order) return res.status(404).json({ message: 'Pesanan tidak ditemukan' });
-    if (order.jastiperId !== user.id) return res.status(403).json({ message: 'Bukan pesanan Anda' });
-    if (order.status !== 'ongoing') return res.status(400).json({ message: 'Pesanan sudah selesai/dibatalkan' });
+    if (order.jastiperId !== user.id)
+      return res.status(403).json({ message: 'Bukan pesanan Anda' });
+    if (order.status !== 'ongoing')
+      return res.status(400).json({ message: 'Pesanan sudah selesai/dibatalkan' });
 
     const strukImageUrl = req.body?.strukImageUrl;
     const totalStruk = Number(req.body?.totalBelanjaStruk);
-    if (!strukImageUrl) return res.status(400).json({ message: 'Harap foto struk belanja terlebih dahulu' });
-    if (!Number.isFinite(totalStruk) || totalStruk <= 0) return res.status(400).json({ message: 'Masukkan nominal yang valid' });
+    if (!strukImageUrl)
+      return res.status(400).json({ message: 'Harap foto struk belanja terlebih dahulu' });
+    if (!Number.isFinite(totalStruk) || totalStruk <= 0)
+      return res.status(400).json({ message: 'Masukkan nominal yang valid' });
 
     const danaBelanja = Number(order.danaBelanja ?? 0) || 0;
     const ongkir = Number(order.ongkir ?? 0) || 0;
     const biayaLayanan = Number(order.biayaLayanan ?? 0) || 0;
     const kebijakan = (order.kebijakanLebih ?? 'jangan_lebih') as 'jangan_lebih' | 'boleh_lebih';
 
-    const settlement = hitungSettlement({ danaBelanja, totalBelanjaStruk: totalStruk, ongkir, biayaLayanan, kebijakanLebih: kebijakan });
+    const settlement = hitungSettlement({
+      danaBelanja,
+      totalBelanjaStruk: totalStruk,
+      ongkir,
+      biayaLayanan,
+      kebijakanLebih: kebijakan,
+    });
     if (settlement.invalid) {
       return res.status(400).json({
         code: 'OVER_BUDGET_INVALID',
-        message: 'Total belanja melebihi dana dan kebijakan "jangan lebih" — pesanan tidak dapat diselesaikan dengan struk ini.',
+        message:
+          'Total belanja melebihi dana dan kebijakan "jangan lebih" — pesanan tidak dapat diselesaikan dengan struk ini.',
       });
     }
 
@@ -356,11 +395,16 @@ router.post('/orders/:id/complete', requireJastiper, async (req: Request, res: R
     const user = getUser(req)!;
     const order = await db.getOrder(req.params.id);
     if (!order) return res.status(404).json({ message: 'Pesanan tidak ditemukan' });
-    if (order.jastiperId !== user.id) return res.status(403).json({ message: 'Bukan pesanan Anda' });
-    if (order.status !== 'ongoing') return res.status(400).json({ message: 'Pesanan sudah selesai/dibatalkan' });
+    if (order.jastiperId !== user.id)
+      return res.status(403).json({ message: 'Bukan pesanan Anda' });
+    if (order.status !== 'ongoing')
+      return res.status(400).json({ message: 'Pesanan sudah selesai/dibatalkan' });
 
     const deliveryProofUrl = req.body?.deliveryProofUrl;
-    if (!deliveryProofUrl) return res.status(400).json({ message: 'Harap ambil foto bukti barang diterima terlebih dahulu' });
+    if (!deliveryProofUrl)
+      return res
+        .status(400)
+        .json({ message: 'Harap ambil foto bukti barang diterima terlebih dahulu' });
 
     const needsAdminReview = (order.totalAmount ?? 0) >= 1000000;
 
@@ -398,16 +442,23 @@ router.post('/orders/:id/complete', requireJastiper, async (req: Request, res: R
     }
 
     // Auto-confirm setelah 6 jam
-    setTimeout(async () => {
-      try {
-        const latestOrder = await db.getOrder(req.params.id);
-        if (latestOrder && latestOrder.status === 'waiting_confirmation' && !latestOrder.customerConfirmed) {
-          await finalizeOrder(req.params.id, latestOrder);
+    setTimeout(
+      async () => {
+        try {
+          const latestOrder = await db.getOrder(req.params.id);
+          if (
+            latestOrder &&
+            latestOrder.status === 'waiting_confirmation' &&
+            !latestOrder.customerConfirmed
+          ) {
+            await finalizeOrder(req.params.id, latestOrder);
+          }
+        } catch (e) {
+          console.error('Auto-confirm error:', e);
         }
-      } catch (e) {
-        console.error('Auto-confirm error:', e);
-      }
-    }, 6 * 60 * 60 * 1000); // 6 jam
+      },
+      6 * 60 * 60 * 1000,
+    ); // 6 jam
 
     res.json({ order: updated });
   } catch (e) {
@@ -476,12 +527,19 @@ router.post('/orders/:id/confirm-received', async (req: Request, res: Response) 
 
     const order = await db.getOrder(req.params.id);
     if (!order) return res.status(404).json({ message: 'Pesanan tidak ditemukan' });
-    console.log('[DEBUG] confirm-received: order.userId =', order.userId, 'session.userId =', userId);
+    console.log(
+      '[DEBUG] confirm-received: order.userId =',
+      order.userId,
+      'session.userId =',
+      userId,
+    );
     if (order.userId !== userId) return res.status(403).json({ message: 'Bukan pesanan Anda' });
-    if (order.status !== 'waiting_confirmation') return res.status(400).json({ message: 'Pesanan tidak dalam status menunggu konfirmasi' });
+    if (order.status !== 'waiting_confirmation')
+      return res.status(400).json({ message: 'Pesanan tidak dalam status menunggu konfirmasi' });
 
     const { rating, reviewText } = req.body || {};
-    if (!rating || rating < 1 || rating > 5) return res.status(400).json({ message: 'Rating harus 1-5' });
+    if (!rating || rating < 1 || rating > 5)
+      return res.status(400).json({ message: 'Rating harus 1-5' });
 
     // Save review
     await db.updateOrder(req.params.id, {
@@ -497,9 +555,12 @@ router.post('/orders/:id/confirm-received', async (req: Request, res: Response) 
         if (jastiper) {
           const currentTotal = Number(jastiper.totalOrders || 0);
           const currentRating = Number(jastiper.rating || 0);
-          const newRating = currentTotal === 0 || currentRating === 0
-            ? Number(rating)
-            : Number(((currentRating * currentTotal + Number(rating)) / (currentTotal + 1)).toFixed(1));
+          const newRating =
+            currentTotal === 0 || currentRating === 0
+              ? Number(rating)
+              : Number(
+                  ((currentRating * currentTotal + Number(rating)) / (currentTotal + 1)).toFixed(1),
+                );
 
           await db.upsertJastiper(jastiperId, {
             rating: newRating,
@@ -539,13 +600,15 @@ async function hitungPendapatan(jastiperId: string) {
     let earn = Number(o.ongkir ?? 0) || 0;
     const type = o.orderType ?? o.type;
     if (type === 'jastip') {
-      const belanja = o.totalBelanjaStruk != null ? Number(o.totalBelanjaStruk) : Number(o.danaBelanja ?? 0);
+      const belanja =
+        o.totalBelanjaStruk != null ? Number(o.totalBelanjaStruk) : Number(o.danaBelanja ?? 0);
       earn += belanja || 0;
     }
     total += earn;
     const created = new Date(o.createdAt);
     if (created.toDateString() === now.toDateString()) hariIni += earn;
-    if (created.getMonth() === now.getMonth() && created.getFullYear() === now.getFullYear()) bulanIni += earn;
+    if (created.getMonth() === now.getMonth() && created.getFullYear() === now.getFullYear())
+      bulanIni += earn;
   }
   const withdrawals = await db.listWithdrawalsByUser(jastiperId);
   const withdrawn = withdrawals
@@ -576,8 +639,10 @@ router.post('/withdrawals', requireJastiper, async (req: Request, res: Response)
     const bankName = String(req.body?.bankName ?? '').trim();
     const accountNumber = String(req.body?.accountNumber ?? '').trim();
 
-    if (!Number.isFinite(amount) || amount <= 0) return res.status(400).json({ message: 'Nominal tidak valid' });
-    if (amount < 10000) return res.status(400).json({ message: 'Minimal penarikan adalah Rp 10.000' });
+    if (!Number.isFinite(amount) || amount <= 0)
+      return res.status(400).json({ message: 'Nominal tidak valid' });
+    if (amount < 10000)
+      return res.status(400).json({ message: 'Minimal penarikan adalah Rp 10.000' });
     if (!bankName) return res.status(400).json({ message: 'Pilih bank / e-wallet tujuan' });
     if (!accountNumber) return res.status(400).json({ message: 'Masukkan nomor rekening' });
 
@@ -599,4 +664,3 @@ router.post('/withdrawals', requireJastiper, async (req: Request, res: Response)
 });
 
 export default router;
-

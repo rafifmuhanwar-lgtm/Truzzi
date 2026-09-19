@@ -34,7 +34,11 @@ export const TITIP_IDEAS: InspirationDef[] = [
       'Kamu tentukan daftar belanja & budget maksimal',
       'Struk & kembalian diantar bersama barang',
     ],
-    contoh: ['Sembako, lauk, bumbu dapur', 'Galon minum & kebutuhan harian', 'Warung terdekat dari lokasimu'],
+    contoh: [
+      'Sembako, lauk, bumbu dapur',
+      'Galon minum & kebutuhan harian',
+      'Warung terdekat dari lokasimu',
+    ],
   },
   {
     title: 'Titip Kopi & Bakery',
@@ -47,7 +51,11 @@ export const TITIP_IDEAS: InspirationDef[] = [
       'Pilih outlet favorit atau terdekat',
       'Diantar cepat biar tetap hangat/dingin',
     ],
-    contoh: ['Kopi susu, teh, jus kekinian', 'Roti bakar, pastry, dessert', 'Sekalian untuk teman atau keluarga'],
+    contoh: [
+      'Kopi susu, teh, jus kekinian',
+      'Roti bakar, pastry, dessert',
+      'Sekalian untuk teman atau keluarga',
+    ],
   },
   {
     title: 'Titip Obat Apotek',
@@ -60,7 +68,11 @@ export const TITIP_IDEAS: InspirationDef[] = [
       'Kirim daftar atau foto resep ke jastiper',
       'Obat diantar cepat & dibungkus rapi',
     ],
-    contoh: ['Obat bebas (OTC) & vitamin', 'Obat sesuai resep dokter', 'P3K, masker, kebutuhan kesehatan'],
+    contoh: [
+      'Obat bebas (OTC) & vitamin',
+      'Obat sesuai resep dokter',
+      'P3K, masker, kebutuhan kesehatan',
+    ],
   },
   {
     title: 'Titip Kado & Hampers',
@@ -103,7 +115,11 @@ export const SURUH_IDEAS: InspirationDef[] = [
       'Cocok untuk barang tertinggal',
       'Barang diantar ke alamat tujuan',
     ],
-    contoh: ['Kunci, tas, dompet tertinggal', 'Barang belanjaan di toko', 'Titipan dari teman atau keluarga'],
+    contoh: [
+      'Kunci, tas, dompet tertinggal',
+      'Barang belanjaan di toko',
+      'Titipan dari teman atau keluarga',
+    ],
   },
   {
     title: 'Bayar & Ambil Pesanan',
@@ -116,7 +132,11 @@ export const SURUH_IDEAS: InspirationDef[] = [
       'Jastiper bayar di tempat & foto struknya',
       'Kembalian dikembalikan ke saldonya',
     ],
-    contoh: ['Bayar pesanan makanan & minuman', 'Tebus obat atau barang di toko', 'DP / pelunasan di tempat'],
+    contoh: [
+      'Bayar pesanan makanan & minuman',
+      'Tebus obat atau barang di toko',
+      'DP / pelunasan di tempat',
+    ],
   },
   {
     title: 'Antri & Ambilkan Tiket',
@@ -129,7 +149,10 @@ export const SURUH_IDEAS: InspirationDef[] = [
       'Hemat waktu, kamu tinggal menunggu',
       'Perkembangan diinfokan lewat chat',
     ],
-    contoh: ['Antrian bank, kantor pajak', 'Ambil tiket event / kereta', 'Antri loket & ambilkan dokumen'],
+    contoh: [
+      'Antrian bank, kantor pajak',
+      'Ambil tiket event / kereta',
+      'Antri loket & ambilkan dokumen',
+    ],
   },
 ];
-

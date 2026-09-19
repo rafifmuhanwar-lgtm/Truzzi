@@ -1,6 +1,14 @@
 // Tipe data — menjiplak model Flutter (order_model, chat, wallet, etc).
 
-export type OrderStatus = 'pending' | 'processing' | 'bought' | 'shipping' | 'completed' | 'cancelled' | 'waiting_confirmation' | 'ongoing';
+export type OrderStatus =
+  | 'pending'
+  | 'processing'
+  | 'bought'
+  | 'shipping'
+  | 'completed'
+  | 'cancelled'
+  | 'waiting_confirmation'
+  | 'ongoing';
 export type OrderType = 'jastip' | 'suruh';
 export type KebijakanLebih = 'jangan_lebih' | 'boleh_lebih';
 export type JastiperStatus = 'online' | 'offline' | 'busy';
@@ -60,8 +68,6 @@ export interface Order {
   orderType: OrderType;
   reviewRating?: number | null;
 }
-
-
 
 export interface Address {
   id: string;
@@ -177,7 +183,6 @@ export interface AppNotification {
   routeExtra?: string;
 }
 
-
 export interface JastipProduct {
   id: string;
   jastiperId: string;
@@ -216,8 +221,6 @@ export interface Jastiper {
   products?: JastipProduct[];
 }
 
-
-
 export interface FeeConfig {
   platformFeeFlat: number;
   platformFeePercent: number;
@@ -226,11 +229,6 @@ export interface FeeConfig {
   maxCashback: number;
 }
 
-
-
-
-
-
 export interface PickupLocation {
   lat: number;
   lng: number;
@@ -238,7 +236,6 @@ export interface PickupLocation {
 }
 
 /** Data yang dibawa dari form ke summary (sama dengan `extra` di router Flutter). */
-
 
 export type GigStatus = 'open' | 'in_progress' | 'submitted' | 'completed' | 'cancelled';
 export type GigCategory = 'digital' | 'fisik';

@@ -11,7 +11,10 @@ export default function Settings() {
     <div className="min-h-screen bg-background">
       <div className="bg-primary px-4 pt-4 pb-5 sticky top-0 z-20">
         <div className="flex items-center gap-2">
-          <button onClick={() => navigate(-1)} className="p-2 -ml-2 text-white rounded-full hover:bg-white/10">
+          <button
+            onClick={() => navigate(-1)}
+            className="p-2 -ml-2 text-white rounded-full hover:bg-white/10"
+          >
             <ArrowLeft size={22} />
           </button>
           <h1 className="text-white font-semibold">Pengaturan</h1>
@@ -20,7 +23,9 @@ export default function Settings() {
 
       <div className="px-5 py-5 space-y-5 max-w-lg mx-auto pb-8">
         <section>
-          <h2 className="text-small font-bold text-ink-secondary uppercase tracking-wide mb-2">Notifikasi</h2>
+          <h2 className="text-small font-bold text-ink-secondary uppercase tracking-wide mb-2">
+            Notifikasi
+          </h2>
           <div className="card divide-y divide-divider overflow-hidden">
             <ToggleRow label="Pesanan Baru" settingKey="notifyNewOrder" />
             <ToggleRow label="Pesan Chat" settingKey="notifyChat" />
@@ -30,7 +35,9 @@ export default function Settings() {
         </section>
 
         <section>
-          <h2 className="text-small font-bold text-ink-secondary uppercase tracking-wide mb-2">Privasi &amp; Keamanan</h2>
+          <h2 className="text-small font-bold text-ink-secondary uppercase tracking-wide mb-2">
+            Privasi &amp; Keamanan
+          </h2>
           <div className="card divide-y divide-divider overflow-hidden">
             <ToggleRow label="Tampilkan Status Online" settingKey="showOnlineStatus" />
             <button
@@ -44,12 +51,18 @@ export default function Settings() {
         </section>
 
         <section>
-          <h2 className="text-small font-bold text-ink-secondary uppercase tracking-wide mb-2">Lainnya</h2>
+          <h2 className="text-small font-bold text-ink-secondary uppercase tracking-wide mb-2">
+            Lainnya
+          </h2>
           <div className="card divide-y divide-divider overflow-hidden">
             <ToggleRow
               label="Mode Hemat Baterai"
               settingKey="saveBatteryMode"
-              sub={settings.saveBatteryMode ? 'Update lokasi dikurangi untuk hemat baterai' : 'Kurangi frekuensi update lokasi untuk hemat baterai'}
+              sub={
+                settings.saveBatteryMode
+                  ? 'Update lokasi dikurangi untuk hemat baterai'
+                  : 'Kurangi frekuensi update lokasi untuk hemat baterai'
+              }
             />
             <div className="flex items-center justify-between px-4 py-3.5">
               <span className="text-body2 font-medium">Versi Aplikasi</span>
@@ -62,7 +75,15 @@ export default function Settings() {
   );
 }
 
-function ToggleRow({ label, settingKey, sub }: { label: string; settingKey: SettingsKey; sub?: string }) {
+function ToggleRow({
+  label,
+  settingKey,
+  sub,
+}: {
+  label: string;
+  settingKey: SettingsKey;
+  sub?: string;
+}) {
   const value = useSettingsStore((s) => s[settingKey]);
   const toggle = useSettingsStore((s) => s.toggle);
   return (

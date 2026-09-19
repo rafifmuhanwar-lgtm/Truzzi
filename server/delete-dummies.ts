@@ -6,13 +6,13 @@ async function main() {
     'budi-pg@truzzi.id',
     'bq@truzzi.id',
     'gig.poster.test@truzzi.id',
-    'gig.worker.test@truzzi.id'
+    'gig.worker.test@truzzi.id',
   ];
 
   const users = await prisma.user.findMany({
     where: {
       email: { in: dummyEmails },
-    }
+    },
   });
 
   console.log(`Found ${users.length} users to delete.`);
@@ -21,7 +21,9 @@ async function main() {
     try {
       console.log(`Deleting user: ${u.name} (${u.email})`);
       // Delete GigReview linked to the poster's/worker's gigs
-      const gigs = await prisma.gig.findMany({ where: { OR: [{ posterId: u.id }, { workerId: u.id }] } });
+      const gigs = await prisma.gig.findMany({
+        where: { OR: [{ posterId: u.id }, { workerId: u.id }] },
+      });
       for (const g of gigs) {
         await prisma.gigReview.deleteMany({ where: { gigId: g.id } });
         // delete EscrowTransaction for this gig
@@ -37,13 +39,13 @@ async function main() {
       await prisma.gig.deleteMany({ where: { posterId: u.id } });
       await prisma.gig.deleteMany({ where: { workerId: u.id } });
       await prisma.gigReview.deleteMany({ where: { reviewerId: u.id } });
-      
+
       const orders = await prisma.order.findMany({ where: { userId: u.id } });
       for (const o of orders) {
         await prisma.escrowTransaction.deleteMany({ where: { orderId: o.id } });
       }
       await prisma.order.deleteMany({ where: { userId: u.id } });
-      
+
       // Finally delete the user
       await prisma.user.delete({ where: { id: u.id } });
       console.log(`Successfully deleted ${u.name}`);
@@ -55,4 +57,6 @@ async function main() {
   console.log('Cleanup finished!');
 }
 
-main().catch(console.error).finally(() => process.exit(0));
+main()
+  .catch(console.error)
+  .finally(() => process.exit(0));

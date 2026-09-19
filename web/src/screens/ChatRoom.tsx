@@ -52,11 +52,14 @@ export default function ChatRoom() {
   const { state } = useLocation() as { state?: { room?: ChatRoomT } };
   const [params] = useSearchParams();
   const user = useAuthStore((s) => s.user);
-  
+
   let roomIdFromUrl = params.get('roomId') || params.get('id') || '';
   const targetUserId = params.get('targetUserId');
   if (targetUserId && user) {
-    roomIdFromUrl = user.id < targetUserId ? `room_${user.id}_${targetUserId}` : `room_${targetUserId}_${user.id}`;
+    roomIdFromUrl =
+      user.id < targetUserId
+        ? `room_${user.id}_${targetUserId}`
+        : `room_${targetUserId}_${user.id}`;
   }
 
   const navigate = useNavigate();
@@ -83,7 +86,8 @@ export default function ChatRoom() {
         return;
       }
       setLoadingRoom(true);
-      API.chat.rooms()
+      API.chat
+        .rooms()
         .then(async (res) => {
           const found = (res.rooms as ChatRoomT[])?.find((r) => r.id === roomIdFromUrl);
           if (found) {
@@ -95,7 +99,7 @@ export default function ChatRoom() {
               let lastSeenText = 'Aktif';
               let lastMessage = 'Mulai obrolan';
               let orderTitle = '';
-              
+
               try {
                 // Try fetching as jastiper
                 const jRes = await API.jastipers.get(targetUserId);
@@ -166,9 +170,12 @@ export default function ChatRoom() {
   // Load Order detail for context card if room is an order
   useEffect(() => {
     if (room && !room.isSupport && !room.id.startsWith('cs_')) {
-      const orderId = (room as any).activeOrderId || (room.id.startsWith('room_') || room.id.startsWith('gig_') ? '' : room.id);
+      const orderId =
+        (room as any).activeOrderId ||
+        (room.id.startsWith('room_') || room.id.startsWith('gig_') ? '' : room.id);
       if (orderId && !orderDetail) {
-        API.orders.get(orderId)
+        API.orders
+          .get(orderId)
           .then((res) => {
             if (res.order) setOrderDetail(res.order);
           })
@@ -190,11 +197,16 @@ export default function ChatRoom() {
       try {
         const { messages: msgs } = await API.chat.messages(room.id);
         if (!cancelled) setMessages(msgs ?? []);
-      } catch { /* ignore */ }
+      } catch {
+        /* ignore */
+      }
     };
     void load();
     const t = setInterval(load, 4000);
-    return () => { cancelled = true; clearInterval(t); };
+    return () => {
+      cancelled = true;
+      clearInterval(t);
+    };
   }, [room?.id]);
 
   useEffect(() => {
@@ -236,7 +248,9 @@ export default function ChatRoom() {
         mediaUrl: mediaUrl ?? null,
         senderRole: 'customer',
       });
-      setMessages((m) => m.map((x) => (x.id === optimistic.id ? { ...x, ...saved, isMine: true } : x)));
+      setMessages((m) =>
+        m.map((x) => (x.id === optimistic.id ? { ...x, ...saved, isMine: true } : x)),
+      );
 
       // Auto-reply CS
       if (isCS) {
@@ -245,7 +259,9 @@ export default function ChatRoom() {
             const { message: botMsg } = await API.chat.csBot(msg.trim());
             setMessages((m) => (m.some((x) => x.id === botMsg.id) ? m : [...m, botMsg]));
             qc.invalidateQueries({ queryKey: ['chat-rooms'] });
-          } catch { /* ignore */ }
+          } catch {
+            /* ignore */
+          }
         }, 1500);
       }
       qc.invalidateQueries({ queryKey: ['chat-rooms'] });
@@ -321,7 +337,11 @@ export default function ChatRoom() {
 
   const handlePayInvoice = (inv: any) => {
     if (!inv) return;
-    const jastiperIdentifier = inv?.jastiperId || (room?.id?.startsWith('room_') ? room?.recipientId : room?.id) || roomIdFromUrl || '';
+    const jastiperIdentifier =
+      inv?.jastiperId ||
+      (room?.id?.startsWith('room_') ? room?.recipientId : room?.id) ||
+      roomIdFromUrl ||
+      '';
     navigate('/jastip/summary', {
       state: {
         item: inv.items,
@@ -341,26 +361,41 @@ export default function ChatRoom() {
     });
   };
 
-  if (loadingRoom) return <p className="p-6 text-center text-sm text-ink-secondary">Memuat obrolan...</p>;
-  if (!room) return <p className="p-6 text-center text-sm text-ink-secondary">Obrolan tidak ditemukan</p>;
+  if (loadingRoom)
+    return <p className="p-6 text-center text-sm text-ink-secondary">Memuat obrolan...</p>;
+  if (!room)
+    return <p className="p-6 text-center text-sm text-ink-secondary">Obrolan tidak ditemukan</p>;
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <header className="bg-primary px-4 py-3 flex items-center gap-3 sticky top-0 z-10 text-white shadow-nav">
-        <button onClick={() => navigate(getBackUrl(room))} aria-label="Kembali"><ArrowLeft className="w-6 h-6 text-white" /></button>
+        <button onClick={() => navigate(getBackUrl(room))} aria-label="Kembali">
+          <ArrowLeft className="w-6 h-6 text-white" />
+        </button>
         {room.avatarUrl ? (
-          <img src={room.avatarUrl} alt="" className="w-10 h-10 rounded-full object-cover border border-white/30" />
+          <img
+            src={room.avatarUrl}
+            alt=""
+            className="w-10 h-10 rounded-full object-cover border border-white/30"
+          />
         ) : (
-          <span className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">👤</span>
+          <span className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+            👤
+          </span>
         )}
         <div className="flex-1 min-w-0">
           <p className="font-bold text-[15px] truncate">{room.senderName}</p>
           <div className="flex items-center gap-1.5">
-            <span className="px-1.5 py-0.5 rounded-md bg-white/20 text-white/80 text-[9.5px] font-medium">{room.serviceType || 'Jastiper'}</span>
+            <span className="px-1.5 py-0.5 rounded-md bg-white/20 text-white/80 text-[9.5px] font-medium">
+              {room.serviceType || 'Jastiper'}
+            </span>
           </div>
         </div>
-        <button onClick={() => enqueueSnackbar(`Memanggil ${room.senderName}...`, { variant: 'info' })} aria-label="Telepon">
+        <button
+          onClick={() => enqueueSnackbar(`Memanggil ${room.senderName}...`, { variant: 'info' })}
+          aria-label="Telepon"
+        >
           <Phone className="w-5 h-5" />
         </button>
       </header>
@@ -374,9 +409,14 @@ export default function ChatRoom() {
                 <ReceiptText className="w-4 h-4 text-primary" />
               </span>
               <div className="min-w-0">
-                <p className="text-xs font-bold text-ink truncate">{orderDetail.title || orderDetail.serviceName}</p>
+                <p className="text-xs font-bold text-ink truncate">
+                  {orderDetail.title || orderDetail.serviceName}
+                </p>
                 <p className="text-[10px] text-ink-secondary truncate">
-                  Status: <span className="font-semibold text-primary">{orderDetail.statusText || orderDetail.status}</span>
+                  Status:{' '}
+                  <span className="font-semibold text-primary">
+                    {orderDetail.statusText || orderDetail.status}
+                  </span>
                 </p>
               </div>
             </div>
@@ -429,8 +469,12 @@ export default function ChatRoom() {
             <div className="flex items-center gap-2 min-w-0">
               <span className="text-2xl">📦</span>
               <div className="min-w-0">
-                <p className="text-xs font-bold text-amber-900">Jastiper telah menyelesaikan pesanan</p>
-                <p className="text-[10px] text-amber-700">Konfirmasi penerimaan barang & berikan ulasan</p>
+                <p className="text-xs font-bold text-amber-900">
+                  Jastiper telah menyelesaikan pesanan
+                </p>
+                <p className="text-[10px] text-amber-700">
+                  Konfirmasi penerimaan barang & berikan ulasan
+                </p>
               </div>
             </div>
             <button
@@ -445,7 +489,9 @@ export default function ChatRoom() {
 
       {/* Date header */}
       <div className="flex justify-center py-2.5">
-        <span className="px-3 py-1 rounded-full bg-black/5 text-[11px] text-ink-secondary">Hari ini</span>
+        <span className="px-3 py-1 rounded-full bg-black/5 text-[11px] text-ink-secondary">
+          Hari ini
+        </span>
       </div>
 
       {expired ? (
@@ -467,7 +513,11 @@ export default function ChatRoom() {
           {!isCS && (
             <div className="px-4 pb-2 flex gap-2 overflow-x-auto no-scrollbar max-w-lg w-full mx-auto">
               {QUICK_REPLIES.map((q) => (
-                <button key={q} onClick={() => send(q)} className="shrink-0 px-3 py-1.5 rounded-full bg-surface border border-border text-xs text-ink active:scale-95 transition-transform">
+                <button
+                  key={q}
+                  onClick={() => send(q)}
+                  className="shrink-0 px-3 py-1.5 rounded-full bg-surface border border-border text-xs text-ink active:scale-95 transition-transform"
+                >
                   {q}
                 </button>
               ))}
@@ -487,7 +537,12 @@ export default function ChatRoom() {
               <input
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); void send(); } }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    void send();
+                  }
+                }}
                 placeholder="Tulis pesan..."
                 className="flex-1 rounded-3xl border border-border bg-white px-4 py-2.5 text-sm focus:outline-none focus:border-primary"
               />
@@ -506,29 +561,84 @@ export default function ChatRoom() {
 
       {/* Attach sheet */}
       {attachOpen && (
-        <div className="fixed inset-0 z-[1500] bg-black/40 flex items-end justify-center" onClick={() => setAttachOpen(false)}>
-          <div className="bg-white w-full sm:max-w-lg rounded-t-3xl p-6" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="fixed inset-0 z-[1500] bg-black/40 flex items-end justify-center"
+          onClick={() => setAttachOpen(false)}
+        >
+          <div
+            className="bg-white w-full sm:max-w-lg rounded-t-3xl p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
             <h3 className="text-lg font-bold">Lampirkan Media &amp; Bukti</h3>
-            <p className="text-[13px] text-ink-secondary mt-1">Kirim foto atau video ke jastiper/CS</p>
+            <p className="text-[13px] text-ink-secondary mt-1">
+              Kirim foto atau video ke jastiper/CS
+            </p>
             <div className="flex justify-around mt-5">
-              <AttachBtn label="Kamera" color="#7C3AED" icon={<Camera className="w-7 h-7" />} onClick={() => { fileRef.current?.click(); setAttachKind('image'); }} />
-              <AttachBtn label="Galeri Foto" color="#2563EB" icon={<ImageIcon className="w-7 h-7" />} onClick={() => { fileRef.current?.click(); setAttachKind('image'); }} />
-              <AttachBtn label="Video" color="#EA580C" icon={<Video className="w-7 h-7" />} onClick={() => { fileRef.current?.click(); setAttachKind('video'); }} />
+              <AttachBtn
+                label="Kamera"
+                color="#7C3AED"
+                icon={<Camera className="w-7 h-7" />}
+                onClick={() => {
+                  fileRef.current?.click();
+                  setAttachKind('image');
+                }}
+              />
+              <AttachBtn
+                label="Galeri Foto"
+                color="#2563EB"
+                icon={<ImageIcon className="w-7 h-7" />}
+                onClick={() => {
+                  fileRef.current?.click();
+                  setAttachKind('image');
+                }}
+              />
+              <AttachBtn
+                label="Video"
+                color="#EA580C"
+                icon={<Video className="w-7 h-7" />}
+                onClick={() => {
+                  fileRef.current?.click();
+                  setAttachKind('video');
+                }}
+              />
             </div>
           </div>
         </div>
       )}
 
-      <input ref={fileRef} type="file" accept={attachKind === 'video' ? 'video/*' : 'image/*'} className="hidden"
-        onChange={(e) => { const f = e.target.files?.[0]; if (f) void sendMedia(attachKind); }} />
+      <input
+        ref={fileRef}
+        type="file"
+        accept={attachKind === 'video' ? 'video/*' : 'image/*'}
+        className="hidden"
+        onChange={(e) => {
+          const f = e.target.files?.[0];
+          if (f) void sendMedia(attachKind);
+        }}
+      />
     </div>
   );
 }
 
-function AttachBtn({ label, color, icon, onClick }: { label: string; color: string; icon: React.ReactNode; onClick: () => void }) {
+function AttachBtn({
+  label,
+  color,
+  icon,
+  onClick,
+}: {
+  label: string;
+  color: string;
+  icon: React.ReactNode;
+  onClick: () => void;
+}) {
   return (
     <button onClick={onClick} className="flex flex-col items-center gap-2">
-      <span className="rounded-full flex items-center justify-center" style={{ backgroundColor: `${color}1A`, width: 60, height: 60, color }}>{icon}</span>
+      <span
+        className="rounded-full flex items-center justify-center"
+        style={{ backgroundColor: `${color}1A`, width: 60, height: 60, color }}
+      >
+        {icon}
+      </span>
       <span className="text-xs font-medium">{label}</span>
     </button>
   );
@@ -554,7 +664,9 @@ function Bubble({ msg, onPayInvoice }: { msg: ChatMessage; onPayInvoice: (inv: a
     try {
       const paidList = JSON.parse(localStorage.getItem('truzzi_paid_invoices') || '[]');
       if (paidList.includes(invId)) isPaid = true;
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
 
     return (
       <div className={`flex ${mine ? 'justify-end' : 'justify-start'} my-2`}>
@@ -562,13 +674,13 @@ function Bubble({ msg, onPayInvoice }: { msg: ChatMessage; onPayInvoice: (inv: a
           {/* Header */}
           <div className="flex items-center justify-between pb-2.5 border-b border-gray-100">
             <div className="flex items-center gap-1.5">
-              <span className="text-xs font-semibold text-gray-900 tracking-tight">Tagihan Pesanan</span>
+              <span className="text-xs font-semibold text-gray-900 tracking-tight">
+                Tagihan Pesanan
+              </span>
             </div>
             <span
               className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
-                isPaid
-                  ? 'bg-emerald-50 text-emerald-700'
-                  : 'bg-amber-50 text-amber-700'
+                isPaid ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'
               }`}
             >
               {isPaid ? 'Sudah Dibayar' : 'Menunggu Bayar'}
@@ -595,7 +707,9 @@ function Bubble({ msg, onPayInvoice }: { msg: ChatMessage; onPayInvoice: (inv: a
             </div>
             <div className="flex justify-between pt-1.5 border-t border-dashed border-gray-200 text-xs font-semibold">
               <span className="text-gray-900">Total Tagihan</span>
-              <span className="text-primary font-bold text-sm">{formatRupiah(invoiceData.total)}</span>
+              <span className="text-primary font-bold text-sm">
+                {formatRupiah(invoiceData.total)}
+              </span>
             </div>
           </div>
 
@@ -614,9 +728,7 @@ function Bubble({ msg, onPayInvoice }: { msg: ChatMessage; onPayInvoice: (inv: a
                 Bayar Sekarang
               </button>
             ) : (
-              <p className="text-[11px] text-gray-400 text-center">
-                Menunggu pembayaran customer
-              </p>
+              <p className="text-[11px] text-gray-400 text-center">Menunggu pembayaran customer</p>
             )}
             <div className="flex justify-end pt-1.5">
               <span className="text-[10px] text-gray-400">{formatTime(msg.timestamp)}</span>
@@ -649,12 +761,17 @@ function Bubble({ msg, onPayInvoice }: { msg: ChatMessage; onPayInvoice: (inv: a
         )}
         {msg.text && <p className="text-[14px] leading-relaxed">{msg.text}</p>}
         <div className={`flex items-center justify-end gap-1 mt-1`}>
-          <span className={`text-[10.5px] ${mine ? 'text-white/70' : 'text-ink-secondary'}`}>{formatTime(msg.timestamp)}</span>
-          {mine && (
-            msg.status === 'sent'
-              ? <Check className="w-3 h-3 text-white/70" />
-              : <CheckCheck className={`w-3 h-3 ${msg.status === 'read' ? 'text-sky-300' : 'text-white/70'}`} />
-          )}
+          <span className={`text-[10.5px] ${mine ? 'text-white/70' : 'text-ink-secondary'}`}>
+            {formatTime(msg.timestamp)}
+          </span>
+          {mine &&
+            (msg.status === 'sent' ? (
+              <Check className="w-3 h-3 text-white/70" />
+            ) : (
+              <CheckCheck
+                className={`w-3 h-3 ${msg.status === 'read' ? 'text-sky-300' : 'text-white/70'}`}
+              />
+            ))}
         </div>
       </div>
     </div>
@@ -663,7 +780,8 @@ function Bubble({ msg, onPayInvoice }: { msg: ChatMessage; onPayInvoice: (inv: a
 
 function PlayIcon() {
   return (
-    <svg width="48" height="48" viewBox="0 0 24 24" fill="#ffffff"><path d="M8 5v14l11-7z" /></svg>
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="#ffffff">
+      <path d="M8 5v14l11-7z" />
+    </svg>
   );
 }
-

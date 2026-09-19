@@ -55,7 +55,9 @@ export function useReverseGeocode(lat: number, lng: number) {
         if (!cancelled) {
           if (result?.fullAddress) {
             const short =
-              result.street && result.locality ? `${result.street}, ${result.locality}` : result.fullAddress;
+              result.street && result.locality
+                ? `${result.street}, ${result.locality}`
+                : result.fullAddress;
             setAddress(short);
           } else {
             setAddress(`${lat.toFixed(6)}, ${lng.toFixed(6)}`);
@@ -76,4 +78,3 @@ export function useReverseGeocode(lat: number, lng: number) {
 
   return { address, error };
 }
-

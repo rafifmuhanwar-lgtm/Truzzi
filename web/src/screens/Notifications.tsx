@@ -31,9 +31,14 @@ export default function Notifications() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="bg-surface px-4 py-3 flex items-center gap-3 sticky top-0 z-10">
-        <button onClick={() => navigate(-1)} aria-label="Kembali"><ArrowLeft className="w-6 h-6 text-ink" /></button>
+        <button onClick={() => navigate(-1)} aria-label="Kembali">
+          <ArrowLeft className="w-6 h-6 text-ink" />
+        </button>
         <h1 className="font-semibold text-base flex-1">Notifikasi</h1>
-        <button onClick={() => void markAllRead()} className="text-xs text-primary font-semibold inline-flex items-center gap-1">
+        <button
+          onClick={() => void markAllRead()}
+          className="text-xs text-primary font-semibold inline-flex items-center gap-1"
+        >
           <CheckCheck className="w-4 h-4" /> Tandai semua
         </button>
       </header>
@@ -47,7 +52,9 @@ export default function Notifications() {
               <Bell className="w-10 h-10 text-ink-secondary/40" />
             </span>
             <h3 className="mt-4 font-bold">Belum ada notifikasi</h3>
-            <p className="mt-1 text-sm text-ink-secondary">Notifikasi pesanan dan promo akan muncul di sini.</p>
+            <p className="mt-1 text-sm text-ink-secondary">
+              Notifikasi pesanan dan promo akan muncul di sini.
+            </p>
           </div>
         ) : (
           <div className="space-y-2.5">
@@ -58,14 +65,22 @@ export default function Notifications() {
                 className={`w-full card p-4 text-left ${!n.isRead ? 'border-primary/30' : ''}`}
               >
                 <div className="flex items-start gap-3">
-                  <span className={`mt-0.5 w-2 h-2 rounded-full shrink-0 ${n.isRead ? 'bg-transparent' : 'bg-primary'}`} />
+                  <span
+                    className={`mt-0.5 w-2 h-2 rounded-full shrink-0 ${n.isRead ? 'bg-transparent' : 'bg-primary'}`}
+                  />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-[10px] font-bold uppercase tracking-wide text-ink-secondary">{n.category}</span>
-                      <span className="text-xs text-ink-secondary shrink-0">{formatTimeAgo(n.createdAt)}</span>
+                      <span className="text-[10px] font-bold uppercase tracking-wide text-ink-secondary">
+                        {n.category}
+                      </span>
+                      <span className="text-xs text-ink-secondary shrink-0">
+                        {formatTimeAgo(n.createdAt)}
+                      </span>
                     </div>
                     <p className="font-semibold text-sm mt-1">{n.title}</p>
-                    <p className="text-[13px] text-ink-secondary mt-0.5 leading-relaxed">{n.body}</p>
+                    <p className="text-[13px] text-ink-secondary mt-0.5 leading-relaxed">
+                      {n.body}
+                    </p>
                   </div>
                 </div>
               </button>

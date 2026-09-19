@@ -72,7 +72,8 @@ export default function Carousel({
     setPaused(false); // resume auto-slide dari slide terakhir, tetap berurutan
   };
 
-  const transformX = -currentIndex * 100 + (dragOffset / (containerRef.current?.offsetWidth || 1)) * 100;
+  const transformX =
+    -currentIndex * 100 + (dragOffset / (containerRef.current?.offsetWidth || 1)) * 100;
 
   return (
     <div className={`relative overflow-hidden ${className}`} ref={containerRef}>
@@ -107,7 +108,9 @@ export default function Carousel({
               key={index}
               onClick={() => goToSlide(index)}
               className={`h-2 rounded-full transition-all duration-300 ${
-                index === currentIndex ? 'w-6 bg-primary' : 'w-2 bg-border hover:bg-ink-secondary/30'
+                index === currentIndex
+                  ? 'w-6 bg-primary'
+                  : 'w-2 bg-border hover:bg-ink-secondary/30'
               }`}
               aria-label={`Go to slide ${index + 1}`}
             />

@@ -7,8 +7,16 @@ import { useAuthStore } from '../store/auth';
 
 const VEHICLE_TYPES = ['Motor', 'Mobil', 'Sepeda'];
 const AREAS = [
-  'Jakarta Pusat', 'Jakarta Utara', 'Jakarta Barat', 'Jakarta Selatan', 'Jakarta Timur',
-  'Tangerang', 'Kota Bekasi', 'Kabupaten Bekasi', 'Depok', 'Bogor',
+  'Jakarta Pusat',
+  'Jakarta Utara',
+  'Jakarta Barat',
+  'Jakarta Selatan',
+  'Jakarta Timur',
+  'Tangerang',
+  'Kota Bekasi',
+  'Kabupaten Bekasi',
+  'Depok',
+  'Bogor',
 ];
 
 /** Edit profil — persis edit_profile_screen.dart: dropdown kendaraan/area lebih luas dari onboarding. */
@@ -73,7 +81,10 @@ export default function EditProfile() {
     <div className="min-h-screen bg-background">
       <div className="bg-primary px-4 pt-4 pb-5 sticky top-0 z-20">
         <div className="flex items-center gap-2">
-          <button onClick={() => navigate(-1)} className="p-2 -ml-2 text-white rounded-full hover:bg-white/10">
+          <button
+            onClick={() => navigate(-1)}
+            className="p-2 -ml-2 text-white rounded-full hover:bg-white/10"
+          >
             <ArrowLeft size={22} />
           </button>
           <h1 className="text-white font-semibold">Edit Profil</h1>
@@ -82,7 +93,13 @@ export default function EditProfile() {
 
       <div className="px-5 py-6 space-y-5 max-w-lg mx-auto pb-8">
         {/* Foto */}
-        <input ref={photoRef} type="file" accept="image/*" className="hidden" onChange={(e) => void pickPhoto(e.target.files?.[0])} />
+        <input
+          ref={photoRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => void pickPhoto(e.target.files?.[0])}
+        />
         <div className="flex justify-center">
           <button type="button" onClick={() => photoRef.current?.click()} className="relative">
             <span className="w-20 h-20 rounded-full bg-primary/10 overflow-hidden flex items-center justify-center border-2 border-primary/30">
@@ -101,7 +118,11 @@ export default function EditProfile() {
         {/* Nama */}
         <div>
           <label className="text-sm font-semibold text-ink">Nama Lengkap</label>
-          <input value={name} onChange={(e) => setName(e.target.value)} className="input-base mt-1.5" />
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="input-base mt-1.5"
+          />
         </div>
 
         {/* Email read-only */}
@@ -126,26 +147,43 @@ export default function EditProfile() {
         {/* Kendaraan */}
         <div>
           <label className="text-sm font-semibold text-ink">Tipe Kendaraan</label>
-          <select value={vehicleType} onChange={(e) => setVehicleType(e.target.value)} className="input-base mt-1.5">
+          <select
+            value={vehicleType}
+            onChange={(e) => setVehicleType(e.target.value)}
+            className="input-base mt-1.5"
+          >
             <option value="">Pilih...</option>
             {VEHICLE_TYPES.map((t) => (
-              <option key={t} value={t}>{t}</option>
+              <option key={t} value={t}>
+                {t}
+              </option>
             ))}
           </select>
         </div>
 
         <div>
           <label className="text-sm font-semibold text-ink">Plat Nomor</label>
-          <input value={plate} onChange={(e) => setPlate(e.target.value.toUpperCase())} placeholder="Contoh: B 1234 XYZ" className="input-base mt-1.5 uppercase" />
+          <input
+            value={plate}
+            onChange={(e) => setPlate(e.target.value.toUpperCase())}
+            placeholder="Contoh: B 1234 XYZ"
+            className="input-base mt-1.5 uppercase"
+          />
         </div>
 
         {/* Area */}
         <div>
           <label className="text-sm font-semibold text-ink">Area Tugas</label>
-          <select value={area} onChange={(e) => setArea(e.target.value)} className="input-base mt-1.5">
+          <select
+            value={area}
+            onChange={(e) => setArea(e.target.value)}
+            className="input-base mt-1.5"
+          >
             <option value="">Pilih area...</option>
             {AREAS.map((a) => (
-              <option key={a} value={a}>{a}</option>
+              <option key={a} value={a}>
+                {a}
+              </option>
             ))}
           </select>
         </div>
@@ -157,4 +195,3 @@ export default function EditProfile() {
     </div>
   );
 }
-

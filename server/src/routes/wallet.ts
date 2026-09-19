@@ -94,7 +94,22 @@ router.post('/withdraw', requireUser, async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'Nomor e-wallet / rekening penarikan wajib diisi' });
     }
 
-    const isBank = body.type === 'bank' || ['bca', 'mandiri', 'bri', 'bni', 'bsi', 'cimb', 'permata', 'danamon', 'jago', 'seabank', 'blu', 'bank'].some((b) => method.toLowerCase().includes(b));
+    const isBank =
+      body.type === 'bank' ||
+      [
+        'bca',
+        'mandiri',
+        'bri',
+        'bni',
+        'bsi',
+        'cimb',
+        'permata',
+        'danamon',
+        'jago',
+        'seabank',
+        'blu',
+        'bank',
+      ].some((b) => method.toLowerCase().includes(b));
     // Khusus Transfer Bank = GRATIS admin (Rp 0). E-Wallet = Rp 2.500 admin dipotong dari nominal penarikan.
     const adminFee = isBank ? 0 : 2500;
     const netAmount = Math.max(0, amount - adminFee);
@@ -115,7 +130,7 @@ router.post('/withdraw', requireUser, async (req: Request, res: Response) => {
     });
 
     const nowIso = new Date().toISOString();
-    
+
     // Simpan ke riwayat transaksi penarikan
     try {
       await db.createWithdrawal({

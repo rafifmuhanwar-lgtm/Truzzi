@@ -69,10 +69,12 @@ async function main() {
         gradient: promo.gradient,
         accent: promo.accent,
         active: true,
-      }
+      },
     });
   }
   console.log('Done seeding promos!');
 }
 
-main().catch(console.error).finally(() => process.exit(0));
+main()
+  .catch(console.error)
+  .finally(() => process.exit(0));

@@ -45,7 +45,9 @@ export default function VoucherScreen() {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 
-  const [activeTab, setActiveTab] = useState<'all' | 'jastip' | 'suruh' | 'cashback' | 'expired'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'jastip' | 'suruh' | 'cashback' | 'expired'>(
+    'all',
+  );
   const [searchQuery, setSearchQuery] = useState('');
   const [claimInput, setClaimInput] = useState('');
   const [selectedVoucher, setSelectedVoucher] = useState<VoucherItem | null>(null);
@@ -63,9 +65,13 @@ export default function VoucherScreen() {
     e.preventDefault();
     if (!claimInput.trim()) return;
 
-    const matched = VOUCHER_LIST.find((v) => v.code.toLowerCase() === claimInput.trim().toLowerCase());
+    const matched = VOUCHER_LIST.find(
+      (v) => v.code.toLowerCase() === claimInput.trim().toLowerCase(),
+    );
     if (matched) {
-      enqueueSnackbar(`Voucher ${matched.code} berhasil diklaim & ditambahkan ke akun Anda!`, { variant: 'success' });
+      enqueueSnackbar(`Voucher ${matched.code} berhasil diklaim & ditambahkan ke akun Anda!`, {
+        variant: 'success',
+      });
       setClaimInput('');
       setActiveTab('all');
     } else {
@@ -147,7 +153,9 @@ export default function VoucherScreen() {
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <h1 className="text-base font-bold text-ink leading-tight tracking-tight">Voucher & Promo</h1>
+          <h1 className="text-base font-bold text-ink leading-tight tracking-tight">
+            Voucher & Promo
+          </h1>
         </div>
 
         {/* Claim Box Container */}
@@ -246,7 +254,9 @@ export default function VoucherScreen() {
               className="group cursor-pointer relative rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-primary/40"
             >
               {/* Top Banner Header with Real Ticket Styling */}
-              <div className={`p-4 bg-gradient-to-r ${voucher.gradient} text-white relative overflow-hidden`}>
+              <div
+                className={`p-4 bg-gradient-to-r ${voucher.gradient} text-white relative overflow-hidden`}
+              >
                 {/* Background Watermark Decorative Pattern */}
                 <div className="absolute -right-4 -bottom-4 opacity-15 pointer-events-none transform rotate-12">
                   <Ticket className="w-32 h-32 text-white" />
@@ -288,13 +298,16 @@ export default function VoucherScreen() {
 
               {/* Card Body */}
               <div className="px-4 pb-4 pt-1">
-                <p className="text-xs text-ink-secondary leading-relaxed line-clamp-2">{voucher.subtitle}</p>
+                <p className="text-xs text-ink-secondary leading-relaxed line-clamp-2">
+                  {voucher.subtitle}
+                </p>
 
                 {/* Minimal order & validity info */}
                 <div className="mt-3.5 flex items-center justify-between text-[11px] text-ink-secondary bg-slate-50 rounded-xl px-3 py-2 border border-slate-100">
                   <span className="flex items-center gap-1">
                     <ShieldCheck className="w-3.5 h-3.5 text-primary/70" />
-                    Min. Order: <strong className="text-ink font-bold">{voucher.minTransaction}</strong>
+                    Min. Order:{' '}
+                    <strong className="text-ink font-bold">{voucher.minTransaction}</strong>
                   </span>
                   <span className="flex items-center gap-1">
                     <Clock className="w-3.5 h-3.5 text-amber-600" />
@@ -305,7 +318,9 @@ export default function VoucherScreen() {
                 {/* Voucher Code & Action Buttons */}
                 <div className="mt-3.5 flex items-center justify-between gap-2">
                   <div className="flex-1 flex items-center justify-between px-3 py-2 rounded-xl border-2 border-dashed border-primary/30 bg-primary/5">
-                    <span className="font-mono font-black text-xs text-primary tracking-widest">{voucher.code}</span>
+                    <span className="font-mono font-black text-xs text-primary tracking-widest">
+                      {voucher.code}
+                    </span>
                     <button
                       type="button"
                       onClick={(e) => handleCopyCode(voucher.code, e)}
@@ -358,8 +373,8 @@ export default function VoucherScreen() {
               {activeTab === 'expired'
                 ? 'Tidak ada voucher yang kadaluarsa atau habis saat ini. Semua voucher promo siap Anda gunakan!'
                 : searchQuery
-                ? `Tidak ditemukan voucher yang sesuai dengan pencarian "${searchQuery}".`
-                : 'Saat ini belum ada promo baru untuk kategori ini. Nantikan penawaran menarik berikutnya dari Truzzi!'}
+                  ? `Tidak ditemukan voucher yang sesuai dengan pencarian "${searchQuery}".`
+                  : 'Saat ini belum ada promo baru untuk kategori ini. Nantikan penawaran menarik berikutnya dari Truzzi!'}
             </p>
 
             {(searchQuery || activeTab !== 'all') && (
@@ -453,7 +468,9 @@ export default function VoucherScreen() {
             {/* Modal Bottom Action Footer */}
             <div className="p-4 bg-slate-50 border-t border-slate-200 flex items-center gap-3">
               <div className="flex-1 flex items-center justify-between px-3 py-2 rounded-xl border-2 border-dashed border-primary/40 bg-white shadow-2xs">
-                <span className="font-mono font-black text-xs text-primary tracking-widest">{selectedVoucher.code}</span>
+                <span className="font-mono font-black text-xs text-primary tracking-widest">
+                  {selectedVoucher.code}
+                </span>
                 <button
                   type="button"
                   onClick={() => handleCopyCode(selectedVoucher.code)}

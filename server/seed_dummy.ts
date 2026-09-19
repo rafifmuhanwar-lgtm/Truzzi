@@ -3,9 +3,9 @@ import bcrypt from 'bcryptjs';
 
 async function main() {
   const prisma = getPrisma();
-  
+
   const hash = await bcrypt.hash('password123', 10);
-  
+
   // Create dummy Customer
   const customer = await prisma.user.upsert({
     where: { email: 'customer@truzzi.id' },
@@ -42,8 +42,8 @@ async function main() {
           selectedArea: 'Jakarta',
           rating: 4.8,
           totalOrders: 15,
-        }
-      }
+        },
+      },
     },
   });
 

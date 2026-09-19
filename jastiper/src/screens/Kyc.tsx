@@ -46,7 +46,12 @@ export default function Kyc() {
   // Fetch Regencies
   useEffect(() => {
     if (!selectedProv) {
-      setRegencies([]); setSelectedReg(''); setDistricts([]); setSelectedDist(''); setVillages([]); setSelectedVill('');
+      setRegencies([]);
+      setSelectedReg('');
+      setDistricts([]);
+      setSelectedDist('');
+      setVillages([]);
+      setSelectedVill('');
       return;
     }
     fetch(`/wilayah/api/regencies/${selectedProv}.json`)
@@ -58,7 +63,10 @@ export default function Kyc() {
   // Fetch Districts
   useEffect(() => {
     if (!selectedReg) {
-      setDistricts([]); setSelectedDist(''); setVillages([]); setSelectedVill('');
+      setDistricts([]);
+      setSelectedDist('');
+      setVillages([]);
+      setSelectedVill('');
       return;
     }
     fetch(`/wilayah/api/districts/${selectedReg}.json`)
@@ -70,7 +78,8 @@ export default function Kyc() {
   // Fetch Villages
   useEffect(() => {
     if (!selectedDist) {
-      setVillages([]); setSelectedVill('');
+      setVillages([]);
+      setSelectedVill('');
       return;
     }
     fetch(`/wilayah/api/villages/${selectedDist}.json`)
@@ -111,15 +120,17 @@ export default function Kyc() {
       return;
     }
     if (!selectedVill) {
-      enqueueSnackbar('Pilih alamat domisili hingga tingkat Desa/Kelurahan', { variant: 'warning' });
+      enqueueSnackbar('Pilih alamat domisili hingga tingkat Desa/Kelurahan', {
+        variant: 'warning',
+      });
       return;
     }
-    
+
     // Construct full address string
-    const provName = provinces.find(p => p.code === selectedProv)?.name || '';
-    const regName = regencies.find(p => p.code === selectedReg)?.name || '';
-    const distName = districts.find(p => p.code === selectedDist)?.name || '';
-    const villName = villages.find(p => p.code === selectedVill)?.name || '';
+    const provName = provinces.find((p) => p.code === selectedProv)?.name || '';
+    const regName = regencies.find((p) => p.code === selectedReg)?.name || '';
+    const distName = districts.find((p) => p.code === selectedDist)?.name || '';
+    const villName = villages.find((p) => p.code === selectedVill)?.name || '';
     const fullArea = `${villName}, ${distName}, ${regName}, ${provName}`;
 
     // Validate KYC
@@ -197,7 +208,10 @@ export default function Kyc() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <div className="bg-primary px-4 pt-4 pb-6">
-        <button onClick={() => navigate(-1)} className="p-2 -ml-2 text-white rounded-full hover:bg-white/10">
+        <button
+          onClick={() => navigate(-1)}
+          className="p-2 -ml-2 text-white rounded-full hover:bg-white/10"
+        >
           <ArrowLeft size={22} />
         </button>
         <h1 className="text-white text-display font-bold mt-2">Lengkapi Data & Verifikasi</h1>
@@ -215,9 +229,14 @@ export default function Kyc() {
               <button
                 key={t.value}
                 type="button"
-                onClick={() => { setVehicleType(t.value); if (t.value === 'Ojol') setPlate(''); }}
+                onClick={() => {
+                  setVehicleType(t.value);
+                  if (t.value === 'Ojol') setPlate('');
+                }}
                 className={`flex-1 h-12 rounded-btn border-2 font-semibold text-sm transition-colors ${
-                  vehicleType === t.value ? 'border-primary bg-primary/5 text-primary' : 'border-border bg-white text-ink-secondary'
+                  vehicleType === t.value
+                    ? 'border-primary bg-primary/5 text-primary'
+                    : 'border-border bg-white text-ink-secondary'
                 }`}
               >
                 {t.label}
@@ -226,7 +245,8 @@ export default function Kyc() {
           </div>
           {vehicleType === 'bebas' && (
             <p className="text-xs text-ink-secondary mt-2 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
-               Kamu bisa pakai ojek online, nebeng, naik sepeda, atau cara lain untuk mengantarkan pesanan.
+              Kamu bisa pakai ojek online, nebeng, naik sepeda, atau cara lain untuk mengantarkan
+              pesanan.
             </p>
           )}
         </div>
@@ -246,36 +266,65 @@ export default function Kyc() {
         <div>
           <label className="text-sm font-semibold text-ink">Alamat Domisili</label>
           <div className="space-y-3 mt-2">
-            <select value={selectedProv} onChange={(e) => setSelectedProv(e.target.value)} className="input-base">
+            <select
+              value={selectedProv}
+              onChange={(e) => setSelectedProv(e.target.value)}
+              className="input-base"
+            >
               <option value="">Pilih Provinsi...</option>
               {provinces.map((p) => (
-                <option key={p.code} value={p.code}>{p.name}</option>
+                <option key={p.code} value={p.code}>
+                  {p.name}
+                </option>
               ))}
             </select>
-            
-            <select value={selectedReg} onChange={(e) => setSelectedReg(e.target.value)} disabled={!selectedProv} className="input-base">
+
+            <select
+              value={selectedReg}
+              onChange={(e) => setSelectedReg(e.target.value)}
+              disabled={!selectedProv}
+              className="input-base"
+            >
               <option value="">Pilih Kota/Kabupaten...</option>
               {regencies.map((p) => (
-                <option key={p.code} value={p.code}>{p.name}</option>
+                <option key={p.code} value={p.code}>
+                  {p.name}
+                </option>
               ))}
             </select>
 
-            <select value={selectedDist} onChange={(e) => setSelectedDist(e.target.value)} disabled={!selectedReg} className="input-base">
+            <select
+              value={selectedDist}
+              onChange={(e) => setSelectedDist(e.target.value)}
+              disabled={!selectedReg}
+              className="input-base"
+            >
               <option value="">Pilih Kecamatan...</option>
               {districts.map((p) => (
-                <option key={p.code} value={p.code}>{p.name}</option>
+                <option key={p.code} value={p.code}>
+                  {p.name}
+                </option>
               ))}
             </select>
 
-            <select value={selectedVill} onChange={(e) => setSelectedVill(e.target.value)} disabled={!selectedDist} className="input-base">
+            <select
+              value={selectedVill}
+              onChange={(e) => setSelectedVill(e.target.value)}
+              disabled={!selectedDist}
+              className="input-base"
+            >
               <option value="">Pilih Desa/Kelurahan...</option>
               {villages.map((p) => (
-                <option key={p.code} value={p.code}>{p.name}</option>
+                <option key={p.code} value={p.code}>
+                  {p.name}
+                </option>
               ))}
             </select>
-            
+
             {area && !selectedProv && (
-              <p className="text-xs text-ink-secondary mt-1">Domisili saat ini: <strong>{area}</strong>. Silakan pilih ulang jika ingin mengubah.</p>
+              <p className="text-xs text-ink-secondary mt-1">
+                Domisili saat ini: <strong>{area}</strong>. Silakan pilih ulang jika ingin mengubah.
+              </p>
             )}
           </div>
         </div>

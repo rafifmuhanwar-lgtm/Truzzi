@@ -57,7 +57,7 @@ export function verifySession(token: string): SessionUser | null {
 const isProd = process.env.NODE_ENV === 'production';
 const COOKIE_OPTS = {
   httpOnly: true,
-  sameSite: isProd ? 'none' as const : 'lax' as const,
+  sameSite: isProd ? ('none' as const) : ('lax' as const),
   maxAge: 30 * 24 * 60 * 60 * 1000,
   secure: isProd,
   path: '/',
@@ -102,9 +102,10 @@ export function attachUser(req: Request, _res: Response, next: NextFunction): vo
     token = readSessionToken(req, config.session.cookieNameCustomer) || readSessionToken(req);
   } else {
     // Fallback if no specific app detected
-    token = readSessionToken(req) || 
-            readSessionToken(req, config.session.cookieNameCustomer) || 
-            readSessionToken(req, config.session.cookieNameDriver);
+    token =
+      readSessionToken(req) ||
+      readSessionToken(req, config.session.cookieNameCustomer) ||
+      readSessionToken(req, config.session.cookieNameDriver);
   }
 
   const user = token ? verifySession(token) : null;
@@ -137,7 +138,12 @@ export function attachUserCustomer(req: Request, _res: Response, next: NextFunct
 export function requireUser(req: Request, res: Response, next: NextFunction): void {
   const user = (req as Request & { user?: SessionUser }).user;
   if (!user) {
-    res.status(401).json({ message: 'Anda belum masuk. Silakan login terlebih dahulu.', code: 'UNAUTHENTICATED' });
+    res
+      .status(401)
+      .json({
+        message: 'Anda belum masuk. Silakan login terlebih dahulu.',
+        code: 'UNAUTHENTICATED',
+      });
     return;
   }
   next();
@@ -147,7 +153,12 @@ export function requireUser(req: Request, res: Response, next: NextFunction): vo
 export function requireJastiper(req: Request, res: Response, next: NextFunction): void {
   const user = (req as Request & { user?: SessionUser }).user;
   if (!user) {
-    res.status(401).json({ message: 'Anda belum masuk. Silakan login terlebih dahulu.', code: 'UNAUTHENTICATED' });
+    res
+      .status(401)
+      .json({
+        message: 'Anda belum masuk. Silakan login terlebih dahulu.',
+        code: 'UNAUTHENTICATED',
+      });
     return;
   }
   if (user.role !== 'jastiper') {
@@ -161,7 +172,12 @@ export function requireJastiper(req: Request, res: Response, next: NextFunction)
 export function requireCustomer(req: Request, res: Response, next: NextFunction): void {
   const user = (req as Request & { user?: SessionUser }).user;
   if (!user) {
-    res.status(401).json({ message: 'Anda belum masuk. Silakan login terlebih dahulu.', code: 'UNAUTHENTICATED' });
+    res
+      .status(401)
+      .json({
+        message: 'Anda belum masuk. Silakan login terlebih dahulu.',
+        code: 'UNAUTHENTICATED',
+      });
     return;
   }
   next();

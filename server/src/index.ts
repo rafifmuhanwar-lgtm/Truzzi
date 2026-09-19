@@ -34,7 +34,7 @@ app.use(morgan('dev'));
 const limiter = (rateLimit as any)({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 5000, // Limit each IP to 5000 requests per windowMs
-  message: 'Terlalu banyak request dari IP ini, coba lagi nanti.'
+  message: 'Terlalu banyak request dari IP ini, coba lagi nanti.',
 });
 app.use('/api/', limiter);
 
@@ -64,7 +64,13 @@ app.use((req, res, next) => {
 });
 
 app.get(['/', '/health', '/api/health'], (req, res) => {
-  res.json({ ok: true, url: req.url, originalUrl: req.originalUrl, demo: config.demo.enabled, time: new Date().toISOString() });
+  res.json({
+    ok: true,
+    url: req.url,
+    originalUrl: req.originalUrl,
+    demo: config.demo.enabled,
+    time: new Date().toISOString(),
+  });
 });
 
 app.use('/api/auth', authRouter);

@@ -68,7 +68,7 @@ export default function SuruhSummary() {
       const res = await API.promos.validate({
         code: code,
         cartAmount: totalSebelumDiskon,
-        category: 'suruh'
+        category: 'suruh',
       });
       if (res.valid) {
         setAppliedPromo(res);
@@ -77,7 +77,9 @@ export default function SuruhSummary() {
     } catch (e: any) {
       setAppliedPromo(null);
       setPromoCode('');
-      enqueueSnackbar(e.response?.data?.message || errMsg(e, 'Gagal memvalidasi promo'), { variant: 'error' });
+      enqueueSnackbar(e.response?.data?.message || errMsg(e, 'Gagal memvalidasi promo'), {
+        variant: 'error',
+      });
     } finally {
       setValidatingPromo(false);
     }
@@ -92,12 +94,27 @@ export default function SuruhSummary() {
       if (state?.dropoff) {
         try {
           const { result } = await API.location.geocode(state.dropoff);
-          if (result) { dropoffLat = result.lat; dropoffLng = result.lng; }
-        } catch { /* ignore */ }
+          if (result) {
+            dropoffLat = result.lat;
+            dropoffLng = result.lng;
+          }
+        } catch {
+          /* ignore */
+        }
       }
-      if (Number.isFinite(pickupLat) && Number.isFinite(pickupLng) && Number.isFinite(dropoffLat) && Number.isFinite(dropoffLng)) {
+      if (
+        Number.isFinite(pickupLat) &&
+        Number.isFinite(pickupLng) &&
+        Number.isFinite(dropoffLat) &&
+        Number.isFinite(dropoffLng)
+      ) {
         try {
-          const dist = await API.location.distance({ fromLat: pickupLat, fromLng: pickupLng, toLat: dropoffLat, toLng: dropoffLng });
+          const dist = await API.location.distance({
+            fromLat: pickupLat,
+            fromLng: pickupLng,
+            toLat: dropoffLat,
+            toLng: dropoffLng,
+          });
           setJarakKm(dist.jarakKm);
           setEstimasiMenit(dist.estimasiMenit);
         } catch {
@@ -135,9 +152,21 @@ export default function SuruhSummary() {
     } catch (e) {
       const msg = errMsg(e);
       if ((e as { code?: string }).code === 'INSUFFICIENT_BALANCE') {
-        enqueueSnackbar(msg, { variant: 'error', autoHideDuration: 6000, action: (key) => (
-          <button onClick={() => { closeSnackbar(key); navigate('/wallet/topup'); }} className="text-white font-semibold text-xs underline">Top Up</button>
-        ) });
+        enqueueSnackbar(msg, {
+          variant: 'error',
+          autoHideDuration: 6000,
+          action: (key) => (
+            <button
+              onClick={() => {
+                closeSnackbar(key);
+                navigate('/wallet/topup');
+              }}
+              className="text-white font-semibold text-xs underline"
+            >
+              Top Up
+            </button>
+          ),
+        });
       } else {
         enqueueSnackbar(`Gagal: ${msg}`, { variant: 'error', autoHideDuration: 6000 });
       }
@@ -149,7 +178,9 @@ export default function SuruhSummary() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="bg-surface px-4 py-3 flex items-center gap-3 sticky top-0 z-10">
-        <button onClick={() => navigate(-1)} aria-label="Kembali"><ArrowLeft className="w-6 h-6 text-ink" /></button>
+        <button onClick={() => navigate(-1)} aria-label="Kembali">
+          <ArrowLeft className="w-6 h-6 text-ink" />
+        </button>
         <h1 className="font-semibold text-base">Ringkasan Pesanan</h1>
       </header>
 
@@ -162,70 +193,111 @@ export default function SuruhSummary() {
         <div className="flex-1 max-w-lg w-full mx-auto px-6 py-5 space-y-4 pb-32">
           <div className="card-pad">
             <h3 className="font-bold text-sm mb-2">Tugas</h3>
-            <div className="flex justify-between py-1"><span className="text-sm text-ink-secondary">Tugas</span><span className="text-sm font-medium max-w-[60%] text-right">{state.task || '-'}</span></div>
-            <div className="flex justify-between py-1"><span className="text-sm text-ink-secondary">Catatan</span><span className="text-sm font-medium max-w-[55%] text-right">{state.notes || '-'}</span></div>
+            <div className="flex justify-between py-1">
+              <span className="text-sm text-ink-secondary">Tugas</span>
+              <span className="text-sm font-medium max-w-[60%] text-right">
+                {state.task || '-'}
+              </span>
+            </div>
+            <div className="flex justify-between py-1">
+              <span className="text-sm text-ink-secondary">Catatan</span>
+              <span className="text-sm font-medium max-w-[55%] text-right">
+                {state.notes || '-'}
+              </span>
+            </div>
           </div>
 
           <div className="card-pad">
             <div className="flex items-center gap-2">
-              <span className="p-2 rounded-lg bg-primary/10"><Store className="w-4 h-4 text-primary" /></span>
+              <span className="p-2 rounded-lg bg-primary/10">
+                <Store className="w-4 h-4 text-primary" />
+              </span>
               <div className="min-w-0 flex-1">
                 <p className="text-xs text-ink-secondary">Lokasi Penjemputan</p>
-                <p className="text-sm font-medium line-clamp-1">{state.pickup || 'Lokasi Penjemputan'}</p>
+                <p className="text-sm font-medium line-clamp-1">
+                  {state.pickup || 'Lokasi Penjemputan'}
+                </p>
               </div>
             </div>
             <div className="w-0.5 h-6 bg-border mx-[19px]" />
             <div className="flex items-center gap-2">
-              <span className="p-2 rounded-lg bg-error/10"><Flag className="w-4 h-4 text-error" /></span>
+              <span className="p-2 rounded-lg bg-error/10">
+                <Flag className="w-4 h-4 text-error" />
+              </span>
               <div className="min-w-0 flex-1">
                 <p className="text-xs text-ink-secondary">Lokasi Tujuan</p>
-                <p className="text-sm font-medium line-clamp-1">{state.dropoff || 'Lokasi Tujuan'}</p>
+                <p className="text-sm font-medium line-clamp-1">
+                  {state.dropoff || 'Lokasi Tujuan'}
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-4 mt-3 pt-2.5 border-t border-divider">
-              <span className="inline-flex items-center gap-1.5 text-sm"><Ruler className="w-4 h-4 text-primary" /><span className="font-bold">{jarakKm.toFixed(1)} km</span></span>
-              <span className="inline-flex items-center gap-1.5 text-sm"><Clock className="w-4 h-4 text-primary" /><span className="font-bold">~{estimasiMenit} menit</span></span>
+              <span className="inline-flex items-center gap-1.5 text-sm">
+                <Ruler className="w-4 h-4 text-primary" />
+                <span className="font-bold">{jarakKm.toFixed(1)} km</span>
+              </span>
+              <span className="inline-flex items-center gap-1.5 text-sm">
+                <Clock className="w-4 h-4 text-primary" />
+                <span className="font-bold">~{estimasiMenit} menit</span>
+              </span>
             </div>
           </div>
 
           {/* Promo Code Section */}
           <div className="card-pad border border-slate-200">
-             <h3 className="font-bold text-sm mb-2">Makin Hemat Pakai Promo!</h3>
-             <button 
-                onClick={() => setIsVoucherOpen(true)}
-                disabled={validatingPromo}
-                className="w-full flex items-center justify-between p-3 rounded-xl border border-border bg-[#F9FAFB] active:scale-[0.99] transition-transform"
-             >
-                <div className="flex items-center gap-3">
-                  <span className="p-2 bg-primary/10 rounded-lg text-primary">
-                    <Ticket className="w-5 h-5" />
-                  </span>
-                  <div className="text-left">
-                    {appliedPromo ? (
-                      <>
-                        <p className="text-sm font-bold text-ink leading-none">{appliedPromo.promoDetails?.title || appliedPromo.message}</p>
-                        <p className="text-xs text-success font-semibold mt-1">Diskon: -{formatRupiah(diskonPromo)}</p>
-                      </>
-                    ) : (
-                      <>
-                        <p className="text-sm font-bold text-ink leading-none">Pilih Promo / Voucher</p>
-                        <p className="text-[11px] text-ink-secondary mt-1">Kamu punya {myClaims.length} voucher tersimpan</p>
-                      </>
-                    )}
-                  </div>
-                </div>
-                <span className="text-xs font-bold text-primary">
-                  {validatingPromo ? 'Mengecek...' : (appliedPromo ? 'Ganti' : 'Pilih')}
+            <h3 className="font-bold text-sm mb-2">Makin Hemat Pakai Promo!</h3>
+            <button
+              onClick={() => setIsVoucherOpen(true)}
+              disabled={validatingPromo}
+              className="w-full flex items-center justify-between p-3 rounded-xl border border-border bg-[#F9FAFB] active:scale-[0.99] transition-transform"
+            >
+              <div className="flex items-center gap-3">
+                <span className="p-2 bg-primary/10 rounded-lg text-primary">
+                  <Ticket className="w-5 h-5" />
                 </span>
-             </button>
+                <div className="text-left">
+                  {appliedPromo ? (
+                    <>
+                      <p className="text-sm font-bold text-ink leading-none">
+                        {appliedPromo.promoDetails?.title || appliedPromo.message}
+                      </p>
+                      <p className="text-xs text-success font-semibold mt-1">
+                        Diskon: -{formatRupiah(diskonPromo)}
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-sm font-bold text-ink leading-none">
+                        Pilih Promo / Voucher
+                      </p>
+                      <p className="text-[11px] text-ink-secondary mt-1">
+                        Kamu punya {myClaims.length} voucher tersimpan
+                      </p>
+                    </>
+                  )}
+                </div>
+              </div>
+              <span className="text-xs font-bold text-primary">
+                {validatingPromo ? 'Mengecek...' : appliedPromo ? 'Ganti' : 'Pilih'}
+              </span>
+            </button>
           </div>
 
           <div className="card-pad border border-primary/20">
             <h3 className="font-bold text-sm mb-2">Rincian Biaya</h3>
             <div className="space-y-2">
-              <div className="flex justify-between text-sm"><span className="text-ink-secondary">Biaya Tugas</span><span className="font-semibold">{formatRupiah(danaBelanja)}</span></div>
-              <div className="flex justify-between text-sm"><span className="text-ink-secondary">Ongkir</span><span className="font-semibold">{formatRupiah(ongkir)}</span></div>
-              <div className="flex justify-between text-sm"><span className="text-ink-secondary">Biaya Layanan</span><span className="font-semibold">{formatRupiah(biayaLayanan)}</span></div>
+              <div className="flex justify-between text-sm">
+                <span className="text-ink-secondary">Biaya Tugas</span>
+                <span className="font-semibold">{formatRupiah(danaBelanja)}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-ink-secondary">Ongkir</span>
+                <span className="font-semibold">{formatRupiah(ongkir)}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-ink-secondary">Biaya Layanan</span>
+                <span className="font-semibold">{formatRupiah(biayaLayanan)}</span>
+              </div>
               {appliedPromo && diskonPromo > 0 && (
                 <div className="flex justify-between text-sm text-success font-bold">
                   <span>Diskon Promo ({promoCode})</span>
@@ -247,19 +319,25 @@ export default function SuruhSummary() {
 
       <div className="sticky bottom-0 bg-white px-6 pt-4 pb-6 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-20">
         <div className="max-w-lg mx-auto">
-          <button className="btn-primary flex items-center justify-center gap-2" onClick={pay} disabled={paying || calc}>
-            {paying && <span className="w-4 h-4 border-2 border-white/40 border-t-transparent rounded-full animate-spin" />}
+          <button
+            className="btn-primary flex items-center justify-center gap-2"
+            onClick={pay}
+            disabled={paying || calc}
+          >
+            {paying && (
+              <span className="w-4 h-4 border-2 border-white/40 border-t-transparent rounded-full animate-spin" />
+            )}
             {paying ? 'Memproses...' : `Bayar Sekarang - ${formatRupiah(total)}`}
           </button>
         </div>
       </div>
 
       {/* Voucher Sheet */}
-      <VoucherPickerSheet 
-        isOpen={isVoucherOpen} 
-        onClose={() => setIsVoucherOpen(false)} 
-        claims={myClaims} 
-        onSelect={handleApplyPromo} 
+      <VoucherPickerSheet
+        isOpen={isVoucherOpen}
+        onClose={() => setIsVoucherOpen(false)}
+        claims={myClaims}
+        onSelect={handleApplyPromo}
         selectedCode={promoCode}
       />
     </div>

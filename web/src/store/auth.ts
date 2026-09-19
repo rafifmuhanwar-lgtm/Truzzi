@@ -10,7 +10,13 @@ interface AuthState {
   errorMessage: string | null;
   checkAuth: () => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string, phone?: string, selectedArea?: string) => Promise<void>;
+  register: (
+    name: string,
+    email: string,
+    password: string,
+    phone?: string,
+    selectedArea?: string,
+  ) => Promise<void>;
   googleLogin: () => Promise<void>;
   logout: () => Promise<void>;
   setUser: (user: User) => void;
@@ -42,7 +48,10 @@ export const useAuthStore = create<AuthState>((set) => ({
       const data = await API.auth.login({ email, password });
       set({ status: 'authenticated', user: data.user, errorMessage: null });
     } catch (e) {
-      set({ status: 'error', errorMessage: `Login Gagal: ${(e as { message?: string })?.message ?? 'Terjadi kesalahan'}` });
+      set({
+        status: 'error',
+        errorMessage: `Login Gagal: ${(e as { message?: string })?.message ?? 'Terjadi kesalahan'}`,
+      });
     }
   },
 
@@ -52,7 +61,10 @@ export const useAuthStore = create<AuthState>((set) => ({
       const data = await API.auth.register({ name, email, password, phone, selectedArea });
       set({ status: 'authenticated', user: data.user, errorMessage: null });
     } catch (e) {
-      set({ status: 'error', errorMessage: `Register Gagal: ${(e as { message?: string })?.message ?? 'Terjadi kesalahan'}` });
+      set({
+        status: 'error',
+        errorMessage: `Register Gagal: ${(e as { message?: string })?.message ?? 'Terjadi kesalahan'}`,
+      });
     }
   },
 
@@ -62,7 +74,10 @@ export const useAuthStore = create<AuthState>((set) => ({
       const data = await API.auth.google();
       window.location.href = data.url;
     } catch (e) {
-      set({ status: 'error', errorMessage: `Login Google gagal: ${(e as { message?: string })?.message ?? 'Terjadi kesalahan'}` });
+      set({
+        status: 'error',
+        errorMessage: `Login Google gagal: ${(e as { message?: string })?.message ?? 'Terjadi kesalahan'}`,
+      });
     }
   },
 

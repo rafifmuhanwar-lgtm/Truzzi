@@ -63,7 +63,7 @@ export default function ChatRoomScreen() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
     // Invalidate chat-rooms to refresh activeOrderId if a new message (like payment) arrives
     void queryClient.invalidateQueries({ queryKey: ['chat-rooms'] });
-    
+
     if (roomId) {
       API.chat.read(roomId).catch(() => {});
     }
@@ -175,7 +175,11 @@ export default function ChatRoomScreen() {
             <ArrowLeft size={22} />
           </button>
           {roomObj?.avatarUrl ? (
-            <img src={roomObj.avatarUrl} alt="" className="w-10 h-10 rounded-full object-cover border border-white/30" />
+            <img
+              src={roomObj.avatarUrl}
+              alt=""
+              className="w-10 h-10 rounded-full object-cover border border-white/30"
+            />
           ) : (
             <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center font-bold text-base shadow-inner">
               👤
@@ -184,7 +188,9 @@ export default function ChatRoomScreen() {
           <div>
             <p className="text-white font-bold text-sm leading-tight">{customerName}</p>
             <div className="flex items-center gap-1.5 mt-0.5">
-              <span className="px-1.5 py-0.5 rounded-md bg-white/20 text-white/80 text-[9.5px] font-medium">Customer</span>
+              <span className="px-1.5 py-0.5 rounded-md bg-white/20 text-white/80 text-[9.5px] font-medium">
+                Customer
+              </span>
             </div>
           </div>
         </div>
@@ -210,19 +216,21 @@ export default function ChatRoomScreen() {
           }
 
           if (isInvoice && invData) {
-            const hasPaymentAfter = messages.slice(index + 1).some(msg => msg.text?.includes('[PEMBAYARAN DITERIMA] Tagihan'));
+            const hasPaymentAfter = messages
+              .slice(index + 1)
+              .some((msg) => msg.text?.includes('[PEMBAYARAN DITERIMA] Tagihan'));
             const isPaid = invData.status === 'paid' || hasPaymentAfter;
             return (
               <div key={m.id} className={`flex ${m.isMine ? 'justify-end' : 'justify-start'} my-2`}>
                 <div className="w-[280px] rounded-2xl bg-white border border-gray-200 shadow-sm p-4 text-gray-800">
                   {/* Header */}
                   <div className="flex items-center justify-between pb-2.5 border-b border-gray-100">
-                    <span className="text-xs font-semibold text-gray-900 tracking-tight">Tagihan Dikirim</span>
+                    <span className="text-xs font-semibold text-gray-900 tracking-tight">
+                      Tagihan Dikirim
+                    </span>
                     <span
                       className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
-                        isPaid
-                          ? 'bg-emerald-50 text-emerald-700'
-                          : 'bg-amber-50 text-amber-700'
+                        isPaid ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'
                       }`}
                     >
                       {isPaid ? 'Sudah Dibayar' : 'Menunggu Bayar'}
@@ -241,15 +249,21 @@ export default function ChatRoomScreen() {
                   <div className="space-y-1.5 py-2.5 border-t border-b border-gray-100 text-xs">
                     <div className="flex justify-between text-gray-500">
                       <span>Belanja</span>
-                      <span className="font-medium text-gray-900">{formatRupiah(invData.belanja)}</span>
+                      <span className="font-medium text-gray-900">
+                        {formatRupiah(invData.belanja)}
+                      </span>
                     </div>
                     <div className="flex justify-between text-gray-500">
                       <span>Ongkir</span>
-                      <span className="font-medium text-gray-900">{formatRupiah(invData.ongkir)}</span>
+                      <span className="font-medium text-gray-900">
+                        {formatRupiah(invData.ongkir)}
+                      </span>
                     </div>
                     <div className="flex justify-between pt-1.5 border-t border-dashed border-gray-200 text-xs font-semibold">
                       <span className="text-gray-900">Total Tagihan</span>
-                      <span className="text-primary font-bold text-sm">{formatRupiah(invData.total)}</span>
+                      <span className="text-primary font-bold text-sm">
+                        {formatRupiah(invData.total)}
+                      </span>
                     </div>
                   </div>
 
@@ -283,13 +297,21 @@ export default function ChatRoomScreen() {
                 }`}
               >
                 {m.messageType === 'image' && m.mediaUrl ? (
-                  <img src={m.mediaUrl} alt="media" className="rounded-xl max-h-56 object-cover mb-1" />
+                  <img
+                    src={m.mediaUrl}
+                    alt="media"
+                    className="rounded-xl max-h-56 object-cover mb-1"
+                  />
                 ) : m.messageType === 'video' && m.mediaUrl ? (
                   <video src={m.mediaUrl} controls className="rounded-xl max-h-56 mb-1" />
                 ) : (
-                  <p className="text-xs leading-relaxed whitespace-pre-wrap break-words">{m.text}</p>
+                  <p className="text-xs leading-relaxed whitespace-pre-wrap break-words">
+                    {m.text}
+                  </p>
                 )}
-                <p className={`text-right text-[9.5px] mt-1 ${m.isMine ? 'text-white/70' : 'text-ink-secondary'}`}>
+                <p
+                  className={`text-right text-[9.5px] mt-1 ${m.isMine ? 'text-white/70' : 'text-ink-secondary'}`}
+                >
                   {formatTime(m.timestamp)}
                   {m.isMine && ' ✓✓'}
                 </p>
@@ -330,7 +352,9 @@ export default function ChatRoomScreen() {
               <span className="text-base">🛍️</span>
               <div>
                 <p className="text-xs font-bold text-ink leading-tight">Buat Tagihan Titipan</p>
-                <p className="text-[10px] text-ink-secondary">Kirim rincian harga hasil negosiasi</p>
+                <p className="text-[10px] text-ink-secondary">
+                  Kirim rincian harga hasil negosiasi
+                </p>
               </div>
             </div>
             <button
@@ -349,7 +373,13 @@ export default function ChatRoomScreen() {
             }}
             className="flex items-center gap-2"
           >
-            <input ref={fileRef} type="file" accept="image/*,video/*" className="hidden" onChange={(e) => void sendImage(e.target.files?.[0])} />
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*,video/*"
+              className="hidden"
+              onChange={(e) => void sendImage(e.target.files?.[0])}
+            />
             <button
               type="button"
               onClick={() => fileRef.current?.click()}
@@ -384,7 +414,9 @@ export default function ChatRoomScreen() {
             <div className="flex items-center justify-between border-b border-border/80 pb-3">
               <div>
                 <h3 className="font-bold text-base text-ink">Buat Tagihan Titipan (Invoice)</h3>
-                <p className="text-xs text-ink-secondary mt-0.5">Kirim rincian belanja hasil negosiasi ke customer</p>
+                <p className="text-xs text-ink-secondary mt-0.5">
+                  Kirim rincian belanja hasil negosiasi ke customer
+                </p>
               </div>
               <button
                 type="button"
@@ -414,13 +446,22 @@ export default function ChatRoomScreen() {
               {/* Rincian Biaya (2 Kolom: Estimasi Belanja & Ongkir) */}
               <div className="grid grid-cols-2 gap-3">
                 <div className="flex flex-col">
-                  <label className="text-[11px] font-bold text-ink truncate mb-1" title="Estimasi Belanja">
+                  <label
+                    className="text-[11px] font-bold text-ink truncate mb-1"
+                    title="Estimasi Belanja"
+                  >
                     Total Belanja (IDR) <span className="text-primary">*</span>
                   </label>
                   <div className="relative">
-                    <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] font-bold text-ink-secondary">Rp</span>
+                    <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] font-bold text-ink-secondary">
+                      Rp
+                    </span>
                     <input
-                      value={invoiceForm.belanja ? Number(invoiceForm.belanja.replace(/\D/g, '')).toLocaleString('id-ID') : ''}
+                      value={
+                        invoiceForm.belanja
+                          ? Number(invoiceForm.belanja.replace(/\D/g, '')).toLocaleString('id-ID')
+                          : ''
+                      }
                       onChange={(e) => {
                         const raw = e.target.value.replace(/\D/g, '');
                         setInvoiceForm({ ...invoiceForm, belanja: raw });
@@ -433,13 +474,22 @@ export default function ChatRoomScreen() {
                 </div>
 
                 <div className="flex flex-col">
-                  <label className="text-[11px] font-bold text-ink truncate mb-1" title="Ongkir Pengantaran">
+                  <label
+                    className="text-[11px] font-bold text-ink truncate mb-1"
+                    title="Ongkir Pengantaran"
+                  >
                     Ongkir Flat (IDR)
                   </label>
                   <div className="relative">
-                    <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] font-bold text-ink-secondary">Rp</span>
+                    <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] font-bold text-ink-secondary">
+                      Rp
+                    </span>
                     <input
-                      value={invoiceForm.ongkir ? Number(invoiceForm.ongkir.replace(/\D/g, '')).toLocaleString('id-ID') : ''}
+                      value={
+                        invoiceForm.ongkir
+                          ? Number(invoiceForm.ongkir.replace(/\D/g, '')).toLocaleString('id-ID')
+                          : ''
+                      }
                       onChange={(e) => {
                         const raw = e.target.value.replace(/\D/g, '');
                         setInvoiceForm({ ...invoiceForm, ongkir: raw });
@@ -458,7 +508,9 @@ export default function ChatRoomScreen() {
                   <span className="text-xs text-ink-secondary font-medium">Total Ditagihkan:</span>
                 </div>
                 <strong className="text-primary font-extrabold text-base">
-                  {formatRupiahSpaced((Number(invoiceForm.belanja) || 0) + (Number(invoiceForm.ongkir) || 0))}
+                  {formatRupiahSpaced(
+                    (Number(invoiceForm.belanja) || 0) + (Number(invoiceForm.ongkir) || 0),
+                  )}
                 </strong>
               </div>
             </div>
@@ -478,4 +530,3 @@ export default function ChatRoomScreen() {
     </div>
   );
 }
-

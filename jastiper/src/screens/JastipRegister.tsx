@@ -3,8 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { API, errMsg } from '../lib/api';
 import { useAuthStore } from '../store/auth';
-import { ArrowLeft, Save, MapPin, Clock, ShoppingBag, User, Info, Camera, Image as ImageIcon, Trash2 } from 'lucide-react';
-
+import {
+  ArrowLeft,
+  Save,
+  MapPin,
+  Clock,
+  ShoppingBag,
+  User,
+  Info,
+  Camera,
+  Image as ImageIcon,
+  Trash2,
+} from 'lucide-react';
 
 export default function JastipRegister() {
   const navigate = useNavigate();
@@ -96,9 +106,11 @@ export default function JastipRegister() {
     <div className="min-h-screen bg-background">
       {/* Toast */}
       {toast && (
-        <div className={`fixed top-4 left-1/2 -translate-x-1/2 z-[99] px-4 py-2.5 rounded-2xl text-white text-xs font-semibold shadow-xl max-w-[320px] text-center ${
-          toast.type === 'error' ? 'bg-red-500' : 'bg-emerald-600'
-        }`}>
+        <div
+          className={`fixed top-4 left-1/2 -translate-x-1/2 z-[99] px-4 py-2.5 rounded-2xl text-white text-xs font-semibold shadow-xl max-w-[320px] text-center ${
+            toast.type === 'error' ? 'bg-red-500' : 'bg-emerald-600'
+          }`}
+        >
           {toast.msg}
         </div>
       )}
@@ -131,7 +143,8 @@ export default function JastipRegister() {
             <div className="bg-primary/10 border border-primary/20 rounded-2xl p-3.5 flex gap-3 items-start">
               <Info size={16} className="text-primary shrink-0 mt-0.5" />
               <p className="text-xs text-primary leading-relaxed">
-                Isi data ini untuk membuka mode Jastiper. Setelah terdaftar, profilmu akan tampil di halaman explore customer Truzzi.
+                Isi data ini untuk membuka mode Jastiper. Setelah terdaftar, profilmu akan tampil di
+                halaman explore customer Truzzi.
               </p>
             </div>
           )}
@@ -142,7 +155,9 @@ export default function JastipRegister() {
               <User size={14} className="text-primary" /> Profil Jastiper
             </h2>
             <div>
-              <label className="text-[11px] font-semibold text-ink-secondary">Nama Jastiper / Brand *</label>
+              <label className="text-[11px] font-semibold text-ink-secondary">
+                Nama Jastiper / Brand *
+              </label>
               <input
                 value={form.name}
                 onChange={(e) => update('name', e.target.value)}
@@ -151,7 +166,9 @@ export default function JastipRegister() {
               />
             </div>
             <div>
-              <label className="text-[11px] font-semibold text-ink-secondary">Bio / Deskripsi Singkat</label>
+              <label className="text-[11px] font-semibold text-ink-secondary">
+                Bio / Deskripsi Singkat
+              </label>
               <textarea
                 value={form.bio}
                 onChange={(e) => update('bio', e.target.value)}
@@ -161,18 +178,25 @@ export default function JastipRegister() {
               />
             </div>
 
-
             <div>
               <div className="flex items-center justify-between">
-                <label className="text-[11px] font-semibold text-ink-secondary">Tarif Ongkir Antar (Flat per Trip)</label>
+                <label className="text-[11px] font-semibold text-ink-secondary">
+                  Tarif Ongkir Antar (Flat per Trip)
+                </label>
                 <span className="text-[10px] font-bold text-primary">Maks. Rp 25.000</span>
               </div>
               <div className="relative mt-1">
-                <span className="absolute left-3 top-2.5 text-xs font-bold text-ink-secondary">Rp</span>
+                <span className="absolute left-3 top-2.5 text-xs font-bold text-ink-secondary">
+                  Rp
+                </span>
                 <input
                   type="text"
                   inputMode="numeric"
-                  value={form.flatOngkir !== undefined ? new Intl.NumberFormat('id-ID').format(form.flatOngkir) : ''}
+                  value={
+                    form.flatOngkir !== undefined
+                      ? new Intl.NumberFormat('id-ID').format(form.flatOngkir)
+                      : ''
+                  }
                   onChange={(e) => {
                     const rawVal = e.target.value.replace(/\D/g, '');
                     let val = Number(rawVal) || 0;
@@ -187,7 +211,8 @@ export default function JastipRegister() {
                 />
               </div>
               <p className="text-[10px] text-ink-secondary mt-1">
-                Ongkir flat yang dibayar customer saat checkout untuk diantar sampai tujuan oleh jastiper/jastiper.
+                Ongkir flat yang dibayar customer saat checkout untuk diantar sampai tujuan oleh
+                jastiper/jastiper.
               </p>
             </div>
           </div>
@@ -201,7 +226,11 @@ export default function JastipRegister() {
               <div className="relative h-32 w-full rounded-2xl overflow-hidden bg-gradient-to-r from-primary/80 to-primary flex items-center justify-center border border-border">
                 {form.coverUrl ? (
                   <>
-                    <img src={form.coverUrl} alt="Trip Cover Preview" className="w-full h-full object-cover" />
+                    <img
+                      src={form.coverUrl}
+                      alt="Trip Cover Preview"
+                      className="w-full h-full object-cover"
+                    />
                     <div className="absolute inset-0 bg-black/30" />
                     <button
                       type="button"
@@ -225,7 +254,13 @@ export default function JastipRegister() {
                 }`}
               >
                 <Camera size={14} />
-                <span>{uploadingCover ? 'Mengunggah foto...' : form.coverUrl ? 'Ganti Foto Banner' : 'Upload Foto Banner Trip'}</span>
+                <span>
+                  {uploadingCover
+                    ? 'Mengunggah foto...'
+                    : form.coverUrl
+                      ? 'Ganti Foto Banner'
+                      : 'Upload Foto Banner Trip'}
+                </span>
                 <input
                   type="file"
                   accept="image/*"
@@ -248,7 +283,8 @@ export default function JastipRegister() {
                 />
               </label>
               <p className="text-[10px] text-ink-secondary leading-tight">
-                Tips: Pasang foto toko/mall atau makanan khas yang akan kamu kunjungi untuk menarik perhatian customer.
+                Tips: Pasang foto toko/mall atau makanan khas yang akan kamu kunjungi untuk menarik
+                perhatian customer.
               </p>
             </div>
           </div>
@@ -268,7 +304,9 @@ export default function JastipRegister() {
               />
             </div>
             <div>
-              <label className="text-[11px] font-semibold text-ink-secondary">Destinasi / Lokasi Belanja</label>
+              <label className="text-[11px] font-semibold text-ink-secondary">
+                Destinasi / Lokasi Belanja
+              </label>
               <input
                 value={form.openTripDestination}
                 onChange={(e) => update('openTripDestination', e.target.value)}
@@ -279,7 +317,8 @@ export default function JastipRegister() {
             <div className="grid grid-cols-2 gap-2">
               <div>
                 <label className="text-[11px] font-semibold text-ink-secondary">
-                  <Clock size={11} className="inline mr-1" />Jadwal Kirim
+                  <Clock size={11} className="inline mr-1" />
+                  Jadwal Kirim
                 </label>
                 <input
                   value={form.openTripSchedule}
@@ -289,7 +328,9 @@ export default function JastipRegister() {
                 />
               </div>
               <div>
-                <label className="text-[11px] font-semibold text-ink-secondary">Batas Terima Order</label>
+                <label className="text-[11px] font-semibold text-ink-secondary">
+                  Batas Terima Order
+                </label>
                 <input
                   value={form.openTripClosing}
                   onChange={(e) => update('openTripClosing', e.target.value)}
@@ -338,10 +379,13 @@ export default function JastipRegister() {
           className="w-full h-12 rounded-2xl bg-primary text-white font-bold text-sm shadow-lg hover:bg-primary/90 active:scale-[0.98] transition-all disabled:opacity-60 flex items-center justify-center gap-2"
         >
           <Save size={18} />
-          {saving ? 'Menyimpan...' : jastiperData?.isJastiper ? 'Simpan Perubahan' : 'Daftar Sebagai Jastiper'}
+          {saving
+            ? 'Menyimpan...'
+            : jastiperData?.isJastiper
+              ? 'Simpan Perubahan'
+              : 'Daftar Sebagai Jastiper'}
         </button>
       </div>
     </div>
   );
 }
-

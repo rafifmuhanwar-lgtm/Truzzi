@@ -20,7 +20,8 @@ api.interceptors.response.use(
 
 export const API = {
   auth: {
-    login: (data: { email: string; password: string }) => api.post('/auth/login', data).then((r) => r.data),
+    login: (data: { email: string; password: string }) =>
+      api.post('/auth/login', data).then((r) => r.data),
     me: () => api.get('/auth/me').then((r) => r.data),
     logout: () => api.post('/auth/logout').then((r) => r.data),
   },
@@ -28,15 +29,19 @@ export const API = {
     register: (data: { name: string; email: string; password: string; phone: string }) =>
       api.post('/jastiper/register', data).then((r) => r.data),
     me: () => api.get('/jastiper/me').then((r) => r.data),
-    updateProfile: (data: Record<string, unknown>) => api.put('/jastiper/profile', data).then((r) => r.data),
-    kyc: (data: { ktpUrl: string; selfieUrl: string }) => api.post('/jastiper/kyc', data).then((r) => r.data),
-    setOnline: (isOnline: boolean) => api.post('/jastiper/online', { isOnline }).then((r) => r.data),
+    updateProfile: (data: Record<string, unknown>) =>
+      api.put('/jastiper/profile', data).then((r) => r.data),
+    kyc: (data: { ktpUrl: string; selfieUrl: string }) =>
+      api.post('/jastiper/kyc', data).then((r) => r.data),
+    setOnline: (isOnline: boolean) =>
+      api.post('/jastiper/online', { isOnline }).then((r) => r.data),
     availableOrders: () => api.get('/jastiper/orders/available').then((r) => r.data),
     myOrders: () => api.get('/jastiper/orders/mine').then((r) => r.data),
     acceptOrder: (id: string) => api.post(`/jastiper/orders/${id}/accept`).then((r) => r.data),
     updateStatus: (id: string, statusText: string, extra?: Record<string, unknown>) =>
       api.patch(`/jastiper/orders/${id}/status`, { statusText, ...extra }).then((r) => r.data),
-    sendLocation: (id: string, lat: number, lng: number) => api.post(`/jastiper/orders/${id}/location`, { lat, lng }).then((r) => r.data),
+    sendLocation: (id: string, lat: number, lng: number) =>
+      api.post(`/jastiper/orders/${id}/location`, { lat, lng }).then((r) => r.data),
     submitReceipt: (id: string, data: { strukImageUrl: string; totalBelanjaStruk: number }) =>
       api.post(`/jastiper/orders/${id}/receipt`, data).then((r) => r.data),
     completeOrder: (id: string, deliveryProofUrl: string) =>
@@ -52,7 +57,8 @@ export const API = {
   chat: {
     rooms: () => api.get('/chat/rooms').then((r) => r.data),
     messages: (roomId: string) => api.get(`/chat/rooms/${roomId}/messages`).then((r) => r.data),
-    send: (roomId: string, data: Record<string, unknown>) => api.post(`/chat/rooms/${roomId}/messages`, data).then((r) => r.data),
+    send: (roomId: string, data: Record<string, unknown>) =>
+      api.post(`/chat/rooms/${roomId}/messages`, data).then((r) => r.data),
     read: (roomId: string) => api.post(`/chat/rooms/${roomId}/read`).then((r) => r.data),
     csBot: (text: string) => api.post('/chat/cs/bot-reply', { text }).then((r) => r.data),
   },
@@ -66,17 +72,21 @@ export const API = {
       api.get('/distance', { params: p }).then((r) => r.data),
   },
   jastipProfile: {
-      /** Ambil profil jastiper saya sendiri (null jika belum daftar) */
+    /** Ambil profil jastiper saya sendiri (null jika belum daftar) */
     me: () => api.get('/jastipers/me').then((r) => r.data),
     /** Daftar atau update profil jastiper */
-    register: (data: Record<string, unknown>) => api.post('/jastipers/register', data).then((r) => r.data),
+    register: (data: Record<string, unknown>) =>
+      api.post('/jastipers/register', data).then((r) => r.data),
     update: (data: Record<string, unknown>) => api.put('/jastipers/me', data).then((r) => r.data),
     products: {
       list: () => api.get('/jastip-products').then((r) => r.data),
-      create: (data: Record<string, unknown>) => api.post('/jastip-products', data).then((r) => r.data),
-      update: (id: string, data: Record<string, unknown>) => api.patch(`/jastip-products/${id}`, data).then((r) => r.data),
+      create: (data: Record<string, unknown>) =>
+        api.post('/jastip-products', data).then((r) => r.data),
+      update: (id: string, data: Record<string, unknown>) =>
+        api.patch(`/jastip-products/${id}`, data).then((r) => r.data),
       remove: (id: string) => api.delete(`/jastip-products/${id}`).then((r) => r.data),
-      togglePublish: (id: string) => api.post(`/jastip-products/${id}/toggle-publish`).then((r) => r.data),
+      togglePublish: (id: string) =>
+        api.post(`/jastip-products/${id}/toggle-publish`).then((r) => r.data),
     },
   },
   upload: (file: File) => {
@@ -88,10 +98,9 @@ export const API = {
   },
 };
 
-
 /** Helper mengekstrak pesan kesalahan terpadu. */
 export function errMsg(e: unknown, fallback = 'Terjadi kesalahan'): string {
-  if (e && typeof e === 'object' && 'message' in e) return String((e as { message: string }).message);
+  if (e && typeof e === 'object' && 'message' in e)
+    return String((e as { message: string }).message);
   return fallback;
 }
-

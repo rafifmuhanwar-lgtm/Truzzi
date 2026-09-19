@@ -58,7 +58,9 @@ export const config = {
   server: {
     port: Number(process.env.PORT || 4000),
     // Bisa beberapa origin dipisah koma (customer :5173 + driver :5174).
-    webOrigins: (process.env.WEB_ORIGIN || 'http://localhost:5173,http://localhost:5174,http://localhost:5175')
+    webOrigins: (
+      process.env.WEB_ORIGIN || 'http://localhost:5173,http://localhost:5174,http://localhost:5175'
+    )
       .split(',')
       .map((s) => s.trim())
       .filter(Boolean),
@@ -75,7 +77,9 @@ export const config = {
   },
   demo: {
     // Demo aktif bila engine=demo, atau (Appwrite dipilih tapi tidak ada API key).
-    enabled: process.env.DATA_ENGINE === 'demo' || (!process.env.DATA_ENGINE && !process.env.APPWRITE_API_KEY),
+    enabled:
+      process.env.DATA_ENGINE === 'demo' ||
+      (!process.env.DATA_ENGINE && !process.env.APPWRITE_API_KEY),
   },
   storage: {
     // 'local' (folder) | 'appwrite'

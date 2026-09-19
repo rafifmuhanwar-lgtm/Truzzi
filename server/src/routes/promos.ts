@@ -50,18 +50,27 @@ router.post('/promos/validate', requireUser, async (req: any, res: any) => {
 
     // 3. Check Category
     if (promo.category && promo.category !== 'all' && category && promo.category !== category) {
-      return res.status(400).json({ valid: false, message: `Promo ini hanya berlaku untuk layanan ${promo.category}` });
+      return res
+        .status(400)
+        .json({ valid: false, message: `Promo ini hanya berlaku untuk layanan ${promo.category}` });
     }
 
     // 4. Check Min Transaction
     const amount = Number(cartAmount) || 0;
     if (promo.minTransaction > 0 && amount < promo.minTransaction) {
-      return res.status(400).json({ valid: false, message: `Minimal transaksi untuk promo ini adalah Rp ${promo.minTransaction}` });
+      return res
+        .status(400)
+        .json({
+          valid: false,
+          message: `Minimal transaksi untuk promo ini adalah Rp ${promo.minTransaction}`,
+        });
     }
 
     // 5. Check Quota & Budget
     if (promo.quota && promo.usedCount >= promo.quota) {
-      return res.status(400).json({ valid: false, message: 'Kuota promo ini sudah habis (Fully Redeemed)' });
+      return res
+        .status(400)
+        .json({ valid: false, message: 'Kuota promo ini sudah habis (Fully Redeemed)' });
     }
 
     // 6. Calculate Discount
@@ -79,7 +88,9 @@ router.post('/promos/validate', requireUser, async (req: any, res: any) => {
 
     // 7. Check if discount exceeds budgetMax
     if (promo.budgetMax && promo.budgetUsed + discountAmount > promo.budgetMax) {
-      return res.status(400).json({ valid: false, message: 'Anggaran promo ini sudah habis (Budget Exhausted)' });
+      return res
+        .status(400)
+        .json({ valid: false, message: 'Anggaran promo ini sudah habis (Budget Exhausted)' });
     }
 
     return res.json({
@@ -89,10 +100,9 @@ router.post('/promos/validate', requireUser, async (req: any, res: any) => {
       promoId: promo.$id || promo.id,
       promoDetails: {
         type: promo.type,
-        title: promo.title
-      }
+        title: promo.title,
+      },
     });
-
   } catch (error: any) {
     console.error('Validate Promo Error:', error);
     res.status(500).json({ valid: false, message: 'Terjadi kesalahan server' });
@@ -134,7 +144,7 @@ router.post('/promos/claim', requireUser, async (req: any, res: any) => {
         userId,
         promoId: promo.id,
         orderId: null, // Unused claim
-      }
+      },
     });
 
     if (existingClaim) {
@@ -147,11 +157,10 @@ router.post('/promos/claim', requireUser, async (req: any, res: any) => {
         userId,
         promoId: promo.id,
         orderId: null, // null indicates claimed but not used
-      }
+      },
     });
 
     return res.status(201).json({ success: true, message: 'Voucher berhasil diklaim!' });
-
   } catch (error: any) {
     console.error('Claim Promo Error:', error);
     res.status(500).json({ success: false, message: 'Terjadi kesalahan server' });
@@ -163,7 +172,7 @@ router.post('/promos/claim', requireUser, async (req: any, res: any) => {
 router.get('/promos/mine', requireUser, async (req: any, res: any) => {
   try {
     const userId = req.user.id;
-    
+
     // Find unused claims
     const claims = await getPrisma().userPromo.findMany({
       where: {
@@ -174,13 +183,13 @@ router.get('/promos/mine', requireUser, async (req: any, res: any) => {
         promo: true, // Fetch promo details
       },
       orderBy: {
-        createdAt: 'desc'
-      }
+        createdAt: 'desc',
+      },
     });
-    
+
     // Filter out expired promos from the results (they might have claimed it before it expired)
     const now = new Date();
-    const activeClaims = claims.filter(c => {
+    const activeClaims = claims.filter((c) => {
       const p = c.promo;
       if (!p.active) return false;
       if (p.endDate && new Date(p.endDate) < now) return false;
@@ -188,7 +197,6 @@ router.get('/promos/mine', requireUser, async (req: any, res: any) => {
     });
 
     res.json({ success: true, claims: activeClaims });
-
   } catch (error: any) {
     console.error('Mine Promo Error:', error);
     res.status(500).json({ success: false, claims: [] });

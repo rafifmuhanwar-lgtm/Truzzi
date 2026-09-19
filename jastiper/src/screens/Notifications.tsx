@@ -7,9 +7,12 @@ import type { AppNotification } from '../types';
 
 /** Ikon per kategori — persis notification_screen.dart. */
 function categoryIcon(category: string) {
-  if (category === 'Pesanan') return { icon: <ShoppingBag size={18} />, cls: 'bg-primary/10 text-primary' };
-  if (category === 'Promo & Info') return { icon: <Tag size={18} />, cls: 'bg-warning/10 text-warning' };
-  if (category === 'Sistem & Akun') return { icon: <Info size={18} />, cls: 'bg-blue-500/10 text-blue-600' };
+  if (category === 'Pesanan')
+    return { icon: <ShoppingBag size={18} />, cls: 'bg-primary/10 text-primary' };
+  if (category === 'Promo & Info')
+    return { icon: <Tag size={18} />, cls: 'bg-warning/10 text-warning' };
+  if (category === 'Sistem & Akun')
+    return { icon: <Info size={18} />, cls: 'bg-blue-500/10 text-blue-600' };
   return { icon: <Bell size={18} />, cls: 'bg-ink-secondary/10 text-ink-secondary' };
 }
 
@@ -42,13 +45,20 @@ export default function Notifications() {
       <div className="bg-primary px-4 pt-4 pb-5 sticky top-0 z-20">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <button onClick={() => navigate(-1)} className="p-2 -ml-2 text-white rounded-full hover:bg-white/10">
+            <button
+              onClick={() => navigate(-1)}
+              className="p-2 -ml-2 text-white rounded-full hover:bg-white/10"
+            >
               <ArrowLeft size={22} />
             </button>
             <h1 className="text-white font-semibold">Notifikasi</h1>
           </div>
           {unread.length > 0 && (
-            <button onClick={() => void markAll()} className="p-2 text-white rounded-full hover:bg-white/10" aria-label="Tandai semua dibaca">
+            <button
+              onClick={() => void markAll()}
+              className="p-2 text-white rounded-full hover:bg-white/10"
+              aria-label="Tandai semua dibaca"
+            >
               <CheckCheck size={20} />
             </button>
           )}
@@ -72,11 +82,19 @@ export default function Notifications() {
                   n.isRead ? '' : 'border-primary/40 bg-primary/[0.03]'
                 }`}
               >
-                <span className={`shrink-0 w-9 h-9 rounded-full flex items-center justify-center ${cls}`}>{icon}</span>
+                <span
+                  className={`shrink-0 w-9 h-9 rounded-full flex items-center justify-center ${cls}`}
+                >
+                  {icon}
+                </span>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-2">
-                    <p className={`text-body2 truncate ${n.isRead ? '' : 'font-bold'}`}>{n.title}</p>
-                    <span className="shrink-0 text-[11px] text-ink-secondary">{formatNotifTimeAgo(n.createdAt)}</span>
+                    <p className={`text-body2 truncate ${n.isRead ? '' : 'font-bold'}`}>
+                      {n.title}
+                    </p>
+                    <span className="shrink-0 text-[11px] text-ink-secondary">
+                      {formatNotifTimeAgo(n.createdAt)}
+                    </span>
                   </div>
                   <p className="text-small text-ink-secondary mt-0.5 line-clamp-2">{n.body}</p>
                 </div>
@@ -89,4 +107,3 @@ export default function Notifications() {
     </div>
   );
 }
-

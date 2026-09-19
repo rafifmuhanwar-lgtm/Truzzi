@@ -184,4 +184,3 @@ export interface DistanceResult {
   estimasiMenit: number;
   routePoints: { lat: number; lng: number }[];
 }
-

@@ -34,7 +34,10 @@ export default function TransactionHistory() {
     <div className="min-h-screen bg-background">
       <div className="bg-primary px-4 pt-4 pb-5 sticky top-0 z-20">
         <div className="flex items-center gap-2">
-          <button onClick={() => navigate(-1)} className="p-2 -ml-2 text-white rounded-full hover:bg-white/10">
+          <button
+            onClick={() => navigate(-1)}
+            className="p-2 -ml-2 text-white rounded-full hover:bg-white/10"
+          >
             <ArrowLeft size={22} />
           </button>
           <h1 className="text-white font-semibold">Riwayat Transaksi</h1>
@@ -46,20 +49,29 @@ export default function TransactionHistory() {
         <section>
           <h2 className="font-semibold text-body mb-3">Penarikan Saldo</h2>
           {withdrawals.length === 0 ? (
-            <p className="text-small text-ink-secondary py-4 text-center">Belum ada penarikan saldo</p>
+            <p className="text-small text-ink-secondary py-4 text-center">
+              Belum ada penarikan saldo
+            </p>
           ) : (
             <div className="space-y-3">
               {withdrawals.map((w) => {
                 const chip = statusChip(w.status);
                 return (
-                  <div key={w.$id ?? w.id} className="card-pad flex items-center justify-between gap-3">
+                  <div
+                    key={w.$id ?? w.id}
+                    className="card-pad flex items-center justify-between gap-3"
+                  >
                     <div className="min-w-0">
                       <p className="font-bold text-body2">{formatRupiah(w.amount)}</p>
                       <p className="text-small text-ink-secondary truncate">
                         {w.bankName} • {w.accountNumber}
                       </p>
                     </div>
-                    <span className={`shrink-0 px-2.5 py-1 rounded-full text-[11px] font-bold ${chip.cls}`}>{chip.label}</span>
+                    <span
+                      className={`shrink-0 px-2.5 py-1 rounded-full text-[11px] font-bold ${chip.cls}`}
+                    >
+                      {chip.label}
+                    </span>
                   </div>
                 );
               })}
@@ -71,13 +83,17 @@ export default function TransactionHistory() {
         <section>
           <h2 className="font-semibold text-body mb-3">Pesanan Selesai</h2>
           {doneOrders.length === 0 ? (
-            <p className="text-small text-ink-secondary py-4 text-center">Belum ada pesanan selesai</p>
+            <p className="text-small text-ink-secondary py-4 text-center">
+              Belum ada pesanan selesai
+            </p>
           ) : (
             <div className="space-y-3">
               {doneOrders.map((o) => {
                 const isJastip = (o.orderType ?? o.type) === 'jastip';
                 const belanja = isJastip
-                  ? (o.totalBelanjaStruk != null ? Number(o.totalBelanjaStruk) : Number(o.danaBelanja ?? 0))
+                  ? o.totalBelanjaStruk != null
+                    ? Number(o.totalBelanjaStruk)
+                    : Number(o.danaBelanja ?? 0)
                   : 0;
                 const ongkir = Number(o.ongkir ?? 0);
                 const totalEarned = ongkir + belanja;
@@ -88,7 +104,8 @@ export default function TransactionHistory() {
                       <div className="min-w-0">
                         <p className="font-semibold text-body2 truncate">{o.title}</p>
                         <p className="text-small text-ink-secondary">
-                          {orderTypeLabel(o.orderType ?? o.type)} • {formatOrderDateShort(o.createdAt)}
+                          {orderTypeLabel(o.orderType ?? o.type)} •{' '}
+                          {formatOrderDateShort(o.createdAt)}
                         </p>
                       </div>
                       <span className="shrink-0 font-bold text-body2 text-success">
@@ -123,4 +140,3 @@ export default function TransactionHistory() {
     </div>
   );
 }
-

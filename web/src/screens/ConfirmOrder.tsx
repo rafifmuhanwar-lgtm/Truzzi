@@ -58,14 +58,18 @@ export default function ConfirmOrder() {
     return (
       <div className="min-h-screen bg-background">
         <header className="bg-primary px-4 py-3 flex items-center gap-3 sticky top-0 z-10 text-white shadow-nav">
-          <button onClick={() => navigate(-1)}><ArrowLeft className="w-6 h-6" /></button>
+          <button onClick={() => navigate(-1)}>
+            <ArrowLeft className="w-6 h-6" />
+          </button>
           <p className="font-bold text-[15px]">Konfirmasi Pesanan</p>
         </header>
         <div className="px-5 py-16 text-center space-y-3">
           <CheckCircle2 className="w-16 h-16 text-emerald-500 mx-auto" />
           <h2 className="text-xl font-bold text-gray-900">Sudah Dikonfirmasi</h2>
           <p className="text-gray-500">Pesanan ini sudah dikonfirmasi sebelumnya.</p>
-          <button onClick={() => navigate('/main?tab=orders')} className="btn-primary mt-4">Kembali</button>
+          <button onClick={() => navigate('/main?tab=orders')} className="btn-primary mt-4">
+            Kembali
+          </button>
         </div>
       </div>
     );
@@ -74,7 +78,9 @@ export default function ConfirmOrder() {
   return (
     <div className="min-h-screen bg-background">
       <header className="bg-primary px-4 py-3 flex items-center gap-3 sticky top-0 z-10 text-white shadow-nav">
-        <button onClick={() => navigate(-1)}><ArrowLeft className="w-6 h-6" /></button>
+        <button onClick={() => navigate(-1)}>
+          <ArrowLeft className="w-6 h-6" />
+        </button>
         <p className="font-bold text-[15px]">Konfirmasi Penerimaan</p>
       </header>
 
@@ -156,7 +162,9 @@ export default function ConfirmOrder() {
 
         {/* Review text */}
         <div className="space-y-2">
-          <h3 className="font-semibold text-gray-900">Tulis Ulasan <span className="text-gray-400 font-normal">(opsional)</span></h3>
+          <h3 className="font-semibold text-gray-900">
+            Tulis Ulasan <span className="text-gray-400 font-normal">(opsional)</span>
+          </h3>
           <textarea
             value={reviewText}
             onChange={(e) => setReviewText(e.target.value)}
@@ -187,9 +195,13 @@ export default function ConfirmOrder() {
             <CheckCircle2 className="w-16 h-16 text-emerald-500 mx-auto" />
             <h2 className="text-xl font-bold text-gray-900">Terima Kasih!</h2>
             <p className="text-sm text-gray-500 leading-relaxed">
-              Pesanan telah dikonfirmasi dan ulasan Anda telah tersimpan. Dana jastiper akan segera dicairkan.
+              Pesanan telah dikonfirmasi dan ulasan Anda telah tersimpan. Dana jastiper akan segera
+              dicairkan.
             </p>
-            <button onClick={() => navigate('/main?tab=orders', { replace: true })} className="btn-primary mt-2">
+            <button
+              onClick={() => navigate('/main?tab=orders', { replace: true })}
+              className="btn-primary mt-2"
+            >
               Kembali ke Pesanan
             </button>
           </div>

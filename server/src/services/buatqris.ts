@@ -49,7 +49,9 @@ export interface CheckStatusResult {
 }
 
 /** POST form-urlencoded ke API BuatQris. */
-async function postForm(params: Record<string, string | number | boolean | undefined>): Promise<any> {
+async function postForm(
+  params: Record<string, string | number | boolean | undefined>,
+): Promise<any> {
   const body = new URLSearchParams();
   for (const [k, v] of Object.entries(params)) {
     if (v !== undefined && v !== '') body.append(k, String(v));
@@ -102,7 +104,9 @@ export async function testPay(transactionId: string): Promise<any> {
  */
 export function verifySignature(rawBody: string, signature: string | undefined): boolean {
   if (!signature) return false;
-  const expected = 'sha256=' + crypto.createHmac('sha256', config.buatqris.signingSecret).update(rawBody).digest('hex');
+  const expected =
+    'sha256=' +
+    crypto.createHmac('sha256', config.buatqris.signingSecret).update(rawBody).digest('hex');
   try {
     return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
   } catch {

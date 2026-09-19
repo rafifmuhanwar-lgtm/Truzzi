@@ -6,4 +6,4 @@ async function main() {
   const orders = await prisma.order.count();
   console.log('Users:', users, 'Orders:', orders);
 }
-main().catch(e => console.error(e));
+main().catch((e) => console.error(e));

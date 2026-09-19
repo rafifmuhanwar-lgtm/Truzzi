@@ -35,24 +35,27 @@ npm run dev                          # server :4000 + web :5173 + driver :5174
 Buka http://localhost:5173 → Splash → pilih area → daftar/login. Semua data **permanen di PostgreSQL**.
 
 ### Engine alternatif (`.env`)
-| `DATA_ENGINE` | Database |
-|---|---|
+
+| `DATA_ENGINE`        | Database                                                  |
+| -------------------- | --------------------------------------------------------- |
 | `postgres` (default) | PostgreSQL via Prisma — auth bcrypt, Google OAuth mandiri |
-| `appwrite` | Appwrite DB (butuh API key) |
-| `demo` | in-memory (hilang saat restart) — tanpa DB |
+| `appwrite`           | Appwrite DB (butuh API key)                               |
+| `demo`               | in-memory (hilang saat restart) — tanpa DB                |
 
 `STORAGE_ENGINE=local` (folder `server/uploads`) atau `=appwrite` (Appwrite Storage).
 
 ### Payment Gateway
-| `PAYMENT_PROVIDER` | Gateway |
-|---|---|
+
+| `PAYMENT_PROVIDER`   | Gateway                                                                    |
+| -------------------- | -------------------------------------------------------------------------- |
 | `buatqris` (default) | **BuatQris** (`https://buatqris.site`) — QRIS dinamis, webhook HMAC-SHA256 |
-| `pakasir` | Pakasir (gateway lama) |
-| `demo` | QR tiruan (tanpa charge asli) |
+| `pakasir`            | Pakasir (gateway lama)                                                     |
+| `demo`               | QR tiruan (tanpa charge asli)                                              |
 
 Konfigurasi BuatQris di `.env`: `BUATQRIS_ACCOUNT_ID`, `BUATQRIS_SECRET_TOKEN`, `BUATQRIS_SIGNING_SECRET` (dari dashboard buatqris.site). Webhook otomatis terdaftar ke `{WEB_ORIGIN}/api/topup/webhook` dan diverifikasi dengan signature `X-BuatQris-Signature`.
 
 ### Google OAuth
+
 - Buat **OAuth 2.0 Client ID (Web)** di Google Cloud Console.
 - Redirect URI: `http://localhost:5173/#/google/callback`
 - Isi `GOOGLE_CLIENT_ID` & `GOOGLE_CLIENT_SECRET` di `.env`.
@@ -71,18 +74,18 @@ Frontend **tidak pernah** memegang secret database / Pakasir / Mapbox / Google.
 
 ## Route web (klon `app_router.dart`)
 
-| Route | Screen |
-|---|---|
-| `/` | Splash (3 detik → /main atau /location) |
-| `/location` | Pilih area (Kota Bekasi default) |
-| `/login` `/register` | Masuk / Daftar (+ Google) |
-| `/main` | Shell 4 tab: Beranda / Order / Chat / Akun |
-| `/jastip` `/jastip/summary` `/jastip/success` `/jastip/delivery-address` | Form Titip Belanja → ringkasan → sukses |
-| `/suruh` `/suruh/summary` | Form Suruh Kurir → ringkasan |
-| `/order/detail` `/order/courier-receipt` `/tracking` | Detail, upload struk, tracking (peta + timeline) |
-| `/chat/room` | Obrolan kurir / CS (+auto-reply bot) |
-| `/profile/*` | Edit, alamat, pembayaran, bantuan, tentang, notifikasi |
-| `/wallet/topup` | Top up QRIS |
+| Route                                                                    | Screen                                                 |
+| ------------------------------------------------------------------------ | ------------------------------------------------------ |
+| `/`                                                                      | Splash (3 detik → /main atau /location)                |
+| `/location`                                                              | Pilih area (Kota Bekasi default)                       |
+| `/login` `/register`                                                     | Masuk / Daftar (+ Google)                              |
+| `/main`                                                                  | Shell 4 tab: Beranda / Order / Chat / Akun             |
+| `/jastip` `/jastip/summary` `/jastip/success` `/jastip/delivery-address` | Form Titip Belanja → ringkasan → sukses                |
+| `/suruh` `/suruh/summary`                                                | Form Suruh Kurir → ringkasan                           |
+| `/order/detail` `/order/courier-receipt` `/tracking`                     | Detail, upload struk, tracking (peta + timeline)       |
+| `/chat/room`                                                             | Obrolan kurir / CS (+auto-reply bot)                   |
+| `/profile/*`                                                             | Edit, alamat, pembayaran, bantuan, tentang, notifikasi |
+| `/wallet/topup`                                                          | Top up QRIS                                            |
 
 ## API utama (proxy)
 
@@ -119,4 +122,3 @@ Frontend **tidak pernah** memegang secret database / Pakasir / Mapbox / Google.
 ## Lisensi
 
 Private / internal.
-

@@ -40,11 +40,13 @@ const REPLY_PATTERNS: { keywords: string[]; reply: string }[] = [
   },
   {
     keywords: ['terima kasih', 'makasih', 'thanks'],
-    reply: 'Sama-sama! 😊 Senang bisa membantu. Jika ada pertanyaan lain, jangan ragu untuk menghubungi kami kembali ya.',
+    reply:
+      'Sama-sama! 😊 Senang bisa membantu. Jika ada pertanyaan lain, jangan ragu untuk menghubungi kami kembali ya.',
   },
   {
     keywords: ['halo', 'hy', 'hai', 'pagi', 'siang', 'sore', 'malam'],
-    reply: 'Halo! 👋 Ada yang bisa saya bantu? Silakan tanya seputar layanan Truzzi, top up saldo, atau kendala pesanan Anda.',
+    reply:
+      'Halo! 👋 Ada yang bisa saya bantu? Silakan tanya seputar layanan Truzzi, top up saldo, atau kendala pesanan Anda.',
   },
 ];
 

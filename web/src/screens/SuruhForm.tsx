@@ -2,7 +2,16 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { formatInputThousands, parseRupiah } from '../lib/format';
-import { ArrowLeft, Store, MapPin, Bike, PlusCircle, Globe, MapIcon, CheckCircle2 } from '../components/icons';
+import {
+  ArrowLeft,
+  Store,
+  MapPin,
+  Bike,
+  PlusCircle,
+  Globe,
+  MapIcon,
+  CheckCircle2,
+} from '../components/icons';
 import { consumeAddressPicked } from '../lib/address-picker';
 import type { Address } from '../types';
 
@@ -40,7 +49,8 @@ export default function SuruhForm() {
 
   const submit = () => {
     if (!task.trim()) return enqueueSnackbar('Tugas harus diisi', { variant: 'error' });
-    if (!pickupAddress.trim() || !dropoffAddress.trim()) return enqueueSnackbar('Lokasi Penjemputan dan Tujuan harus diisi', { variant: 'error' });
+    if (!pickupAddress.trim() || !dropoffAddress.trim())
+      return enqueueSnackbar('Lokasi Penjemputan dan Tujuan harus diisi', { variant: 'error' });
     const budgetRaw = parseRupiah(budget);
 
     let combinedNotes = notes.trim();
@@ -64,14 +74,18 @@ export default function SuruhForm() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="bg-surface px-4 py-3 flex items-center gap-3 sticky top-0 z-10">
-        <button onClick={() => navigate(-1)} aria-label="Kembali"><ArrowLeft className="w-6 h-6 text-ink" /></button>
+        <button onClick={() => navigate(-1)} aria-label="Kembali">
+          <ArrowLeft className="w-6 h-6 text-ink" />
+        </button>
         <h1 className="font-semibold text-base">Suruh Jastiper</h1>
       </header>
 
       <div className="flex-1 max-w-lg w-full mx-auto px-6 py-5 space-y-6 pb-28">
         {/* Header card */}
         <div className="bg-primary/8 rounded-2xl p-4 flex items-center gap-3">
-          <span className="p-2.5 rounded-xl bg-primary"><Bike className="w-7 h-7 text-white" /></span>
+          <span className="p-2.5 rounded-xl bg-primary">
+            <Bike className="w-7 h-7 text-white" />
+          </span>
           <div>
             <p className="font-semibold">Suruh Jastiper</p>
             <p className="text-xs text-ink-secondary">Jastiper siap bantuin tugas kamu</p>
@@ -96,10 +110,17 @@ export default function SuruhForm() {
             >
               {taskImage ? (
                 <>
-                  <img src={taskImage} alt="foto tugas" className="w-8 h-8 rounded-lg object-cover" />
+                  <img
+                    src={taskImage}
+                    alt="foto tugas"
+                    className="w-8 h-8 rounded-lg object-cover"
+                  />
                   Ganti Foto
                   <button
-                    onClick={(e) => { e.stopPropagation(); setTaskImage(null); }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setTaskImage(null);
+                    }}
                     aria-label="Hapus foto"
                   >
                     <span className="w-4 h-4">✕</span>
@@ -180,7 +201,9 @@ export default function SuruhForm() {
               {dropoffData && (
                 <div className="flex items-center gap-1.5 text-[10px] text-emerald-700 bg-emerald-50 rounded-lg px-2 py-1">
                   <CheckCircle2 className="w-3 h-3 shrink-0" />
-                  <span className="truncate">Tersambung ke alamat tersimpan: <strong>{dropoffData.label || 'Utama'}</strong></span>
+                  <span className="truncate">
+                    Tersambung ke alamat tersimpan: <strong>{dropoffData.label || 'Utama'}</strong>
+                  </span>
                 </div>
               )}
             </div>
@@ -190,9 +213,13 @@ export default function SuruhForm() {
         {/* Estimasi budget */}
         <section>
           <h2 className="text-base font-bold">Estimasi Budget Tugas</h2>
-          <p className="text-xs text-ink-secondary mt-1">Biaya jasa tugas/pekerjaan yang akan dibayarkan ke jastiper.</p>
+          <p className="text-xs text-ink-secondary mt-1">
+            Biaya jasa tugas/pekerjaan yang akan dibayarkan ke jastiper.
+          </p>
           <div className="card mt-3 flex items-center px-4 py-2">
-            <span className="bg-primary/10 rounded-lg px-2.5 py-1 font-bold text-lg text-primary mr-3">Rp</span>
+            <span className="bg-primary/10 rounded-lg px-2.5 py-1 font-bold text-lg text-primary mr-3">
+              Rp
+            </span>
             <input
               value={budget}
               onChange={(e) => setBudget(formatInputThousands(e.target.value))}

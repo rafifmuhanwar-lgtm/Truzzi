@@ -51,7 +51,10 @@ function AuthRedirect({ children }: { children: ReactNode }) {
   const location = useLocation();
   const navigate = useNavigate();
   useEffect(() => {
-    if (status === 'authenticated' && (location.pathname === '/login' || location.pathname === '/register')) {
+    if (
+      status === 'authenticated' &&
+      (location.pathname === '/login' || location.pathname === '/register')
+    ) {
       // Preserve tab param if present (e.g., /main?tab=chat)
       const target = location.search ? `/main${location.search}` : '/main';
       navigate(target, { replace: true });
@@ -114,36 +117,295 @@ export default function AppRouter() {
             </AuthGuard>
           }
         />
-        <Route path="/jastip" element={<AuthGuard><SuspenseBoundary><JastipExploreScreen /></SuspenseBoundary></AuthGuard>} />
-        <Route path="/jastip/form" element={<AuthGuard><SuspenseBoundary><JastipForm /></SuspenseBoundary></AuthGuard>} />
-        <Route path="/jastip/manage" element={<AuthGuard><SuspenseBoundary><JastipManageScreen /></SuspenseBoundary></AuthGuard>} />
-        <Route path="/jastip/summary" element={<AuthGuard><SuspenseBoundary><JastipSummary /></SuspenseBoundary></AuthGuard>} />
-        <Route path="/jastip/success" element={<AuthGuard><SuspenseBoundary><OrderSuccess /></SuspenseBoundary></AuthGuard>} />
-        <Route path="/jastip/delivery-address" element={<AuthGuard><SuspenseBoundary><DeliveryAddress /></SuspenseBoundary></AuthGuard>} />
-        <Route path="/suruh" element={<AuthGuard><SuspenseBoundary><SuruhForm /></SuspenseBoundary></AuthGuard>} />
-        <Route path="/suruh/summary" element={<AuthGuard><SuspenseBoundary><SuruhSummary /></SuspenseBoundary></AuthGuard>} />
-        <Route path="/order/detail" element={<AuthGuard><SuspenseBoundary><OrderDetail /></SuspenseBoundary></AuthGuard>} />
-        <Route path="/order/jastiper-receipt" element={<AuthGuard><SuspenseBoundary><JastiperReceipt /></SuspenseBoundary></AuthGuard>} />
-        <Route path="/order/confirm" element={<AuthGuard><SuspenseBoundary><ConfirmOrder /></SuspenseBoundary></AuthGuard>} />
-        <Route path="/tracking" element={<AuthGuard><SuspenseBoundary><Tracking /></SuspenseBoundary></AuthGuard>} />
-        <Route path="/chat/room" element={<AuthGuard><SuspenseBoundary><ChatRoom /></SuspenseBoundary></AuthGuard>} />
-        <Route path="/profile/edit" element={<AuthGuard><SuspenseBoundary><EditProfile /></SuspenseBoundary></AuthGuard>} />
-        <Route path="/profile/addresses" element={<AuthGuard><SuspenseBoundary><SavedAddresses /></SuspenseBoundary></AuthGuard>} />
-        <Route path="/profile/payment" element={<AuthGuard><SuspenseBoundary><PaymentMethods /></SuspenseBoundary></AuthGuard>} />
-        <Route path="/profile/help" element={<AuthGuard><SuspenseBoundary><HelpCenter /></SuspenseBoundary></AuthGuard>} />
-        <Route path="/profile/about" element={<AuthGuard><SuspenseBoundary><AboutApp /></SuspenseBoundary></AuthGuard>} />
-        <Route path="/profile/notifications" element={<AuthGuard><SuspenseBoundary><Notifications /></SuspenseBoundary></AuthGuard>} />
-        <Route path="/wallet/topup" element={<AuthGuard><SuspenseBoundary><Topup /></SuspenseBoundary></AuthGuard>} />
-        <Route path="/wallet/withdraw" element={<AuthGuard><SuspenseBoundary><WithdrawScreen /></SuspenseBoundary></AuthGuard>} />
-        <Route path="/inspirations" element={<AuthGuard><SuspenseBoundary><InspirationsScreen /></SuspenseBoundary></AuthGuard>} />
-        <Route path="/gigs" element={<AuthGuard><SuspenseBoundary><GigHomeScreen /></SuspenseBoundary></AuthGuard>} />
-        <Route path="/gigs/create" element={<AuthGuard><SuspenseBoundary><GigCreateScreen /></SuspenseBoundary></AuthGuard>} />
-        <Route path="/gigs/:id" element={<AuthGuard><SuspenseBoundary><GigDetailScreen /></SuspenseBoundary></AuthGuard>} />
-        <Route path="/jastiper/:id" element={<AuthGuard><SuspenseBoundary><JastiperStoreScreen /></SuspenseBoundary></AuthGuard>} />
-        <Route path="/vouchers" element={<AuthGuard><SuspenseBoundary><VoucherScreen /></SuspenseBoundary></AuthGuard>} />
-        <Route path="/admin" element={<AuthGuard><SuspenseBoundary><AdminDashboard /></SuspenseBoundary></AuthGuard>} />
+        <Route
+          path="/jastip"
+          element={
+            <AuthGuard>
+              <SuspenseBoundary>
+                <JastipExploreScreen />
+              </SuspenseBoundary>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/jastip/form"
+          element={
+            <AuthGuard>
+              <SuspenseBoundary>
+                <JastipForm />
+              </SuspenseBoundary>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/jastip/manage"
+          element={
+            <AuthGuard>
+              <SuspenseBoundary>
+                <JastipManageScreen />
+              </SuspenseBoundary>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/jastip/summary"
+          element={
+            <AuthGuard>
+              <SuspenseBoundary>
+                <JastipSummary />
+              </SuspenseBoundary>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/jastip/success"
+          element={
+            <AuthGuard>
+              <SuspenseBoundary>
+                <OrderSuccess />
+              </SuspenseBoundary>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/jastip/delivery-address"
+          element={
+            <AuthGuard>
+              <SuspenseBoundary>
+                <DeliveryAddress />
+              </SuspenseBoundary>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/suruh"
+          element={
+            <AuthGuard>
+              <SuspenseBoundary>
+                <SuruhForm />
+              </SuspenseBoundary>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/suruh/summary"
+          element={
+            <AuthGuard>
+              <SuspenseBoundary>
+                <SuruhSummary />
+              </SuspenseBoundary>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/order/detail"
+          element={
+            <AuthGuard>
+              <SuspenseBoundary>
+                <OrderDetail />
+              </SuspenseBoundary>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/order/jastiper-receipt"
+          element={
+            <AuthGuard>
+              <SuspenseBoundary>
+                <JastiperReceipt />
+              </SuspenseBoundary>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/order/confirm"
+          element={
+            <AuthGuard>
+              <SuspenseBoundary>
+                <ConfirmOrder />
+              </SuspenseBoundary>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/tracking"
+          element={
+            <AuthGuard>
+              <SuspenseBoundary>
+                <Tracking />
+              </SuspenseBoundary>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/chat/room"
+          element={
+            <AuthGuard>
+              <SuspenseBoundary>
+                <ChatRoom />
+              </SuspenseBoundary>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/profile/edit"
+          element={
+            <AuthGuard>
+              <SuspenseBoundary>
+                <EditProfile />
+              </SuspenseBoundary>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/profile/addresses"
+          element={
+            <AuthGuard>
+              <SuspenseBoundary>
+                <SavedAddresses />
+              </SuspenseBoundary>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/profile/payment"
+          element={
+            <AuthGuard>
+              <SuspenseBoundary>
+                <PaymentMethods />
+              </SuspenseBoundary>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/profile/help"
+          element={
+            <AuthGuard>
+              <SuspenseBoundary>
+                <HelpCenter />
+              </SuspenseBoundary>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/profile/about"
+          element={
+            <AuthGuard>
+              <SuspenseBoundary>
+                <AboutApp />
+              </SuspenseBoundary>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/profile/notifications"
+          element={
+            <AuthGuard>
+              <SuspenseBoundary>
+                <Notifications />
+              </SuspenseBoundary>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/wallet/topup"
+          element={
+            <AuthGuard>
+              <SuspenseBoundary>
+                <Topup />
+              </SuspenseBoundary>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/wallet/withdraw"
+          element={
+            <AuthGuard>
+              <SuspenseBoundary>
+                <WithdrawScreen />
+              </SuspenseBoundary>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/inspirations"
+          element={
+            <AuthGuard>
+              <SuspenseBoundary>
+                <InspirationsScreen />
+              </SuspenseBoundary>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/gigs"
+          element={
+            <AuthGuard>
+              <SuspenseBoundary>
+                <GigHomeScreen />
+              </SuspenseBoundary>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/gigs/create"
+          element={
+            <AuthGuard>
+              <SuspenseBoundary>
+                <GigCreateScreen />
+              </SuspenseBoundary>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/gigs/:id"
+          element={
+            <AuthGuard>
+              <SuspenseBoundary>
+                <GigDetailScreen />
+              </SuspenseBoundary>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/jastiper/:id"
+          element={
+            <AuthGuard>
+              <SuspenseBoundary>
+                <JastiperStoreScreen />
+              </SuspenseBoundary>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/vouchers"
+          element={
+            <AuthGuard>
+              <SuspenseBoundary>
+                <VoucherScreen />
+              </SuspenseBoundary>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <AuthGuard>
+              <SuspenseBoundary>
+                <AdminDashboard />
+              </SuspenseBoundary>
+            </AuthGuard>
+          }
+        />
         <Route path="/google/callback" element={<GoogleCallback />} />
-        <Route path="*" element={<AuthGuard><NotFound /></AuthGuard>} />
+        <Route
+          path="*"
+          element={
+            <AuthGuard>
+              <NotFound />
+            </AuthGuard>
+          }
+        />
       </Routes>
     </HashRouter>
   );

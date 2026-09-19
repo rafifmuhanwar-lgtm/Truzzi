@@ -43,7 +43,10 @@ export const useAuthStore = create<AuthState>((set) => ({
       const me = await API.jastiper.me();
       set({ status: 'authenticated', user: me.user ?? data.user, errorMessage: null });
     } catch (e) {
-      set({ status: 'error', errorMessage: `Login Gagal: ${(e as { message?: string })?.message ?? 'Terjadi kesalahan'}` });
+      set({
+        status: 'error',
+        errorMessage: `Login Gagal: ${(e as { message?: string })?.message ?? 'Terjadi kesalahan'}`,
+      });
     }
   },
 
@@ -54,7 +57,10 @@ export const useAuthStore = create<AuthState>((set) => ({
       const me = await API.jastiper.me();
       set({ status: 'authenticated', user: me.user, errorMessage: null });
     } catch (e) {
-      set({ status: 'error', errorMessage: `Register Gagal: ${(e as { message?: string })?.message ?? 'Terjadi kesalahan'}` });
+      set({
+        status: 'error',
+        errorMessage: `Register Gagal: ${(e as { message?: string })?.message ?? 'Terjadi kesalahan'}`,
+      });
     }
   },
 
@@ -69,4 +75,3 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   setUser: (user) => set({ user, status: 'authenticated' }),
 }));
-

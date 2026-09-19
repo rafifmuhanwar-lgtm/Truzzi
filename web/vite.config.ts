@@ -1,5 +1,5 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
@@ -9,7 +9,7 @@ export default defineConfig({
       '/wilayah': {
         target: 'https://wilayah.id',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/wilayah/, '')
+        rewrite: (path) => path.replace(/^\/wilayah/, ''),
       },
       '/api': {
         target: 'http://localhost:4000',
@@ -21,4 +21,4 @@ export default defineConfig({
       },
     },
   },
-})
+});

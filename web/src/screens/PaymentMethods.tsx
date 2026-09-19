@@ -38,18 +38,24 @@ export default function PaymentMethods() {
   });
   const withdrawals: any[] = withdrawalsData?.withdrawals ?? [];
 
-  const hasHistory = (wallet?.totalTopUp ?? 0) > 0 || (wallet?.totalSpent ?? 0) > 0 || withdrawals.length > 0;
+  const hasHistory =
+    (wallet?.totalTopUp ?? 0) > 0 || (wallet?.totalSpent ?? 0) > 0 || withdrawals.length > 0;
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="bg-surface px-4 py-3 flex items-center gap-3 sticky top-0 z-10">
-        <button onClick={() => navigate(-1)} aria-label="Kembali"><ArrowLeft className="w-6 h-6 text-ink" /></button>
+        <button onClick={() => navigate(-1)} aria-label="Kembali">
+          <ArrowLeft className="w-6 h-6 text-ink" />
+        </button>
         <h1 className="font-semibold text-base">Pembayaran</h1>
       </header>
 
       <div className="flex-1 max-w-lg w-full mx-auto px-6 py-5 space-y-4 pb-10">
         {/* Wallet card */}
-        <div className="rounded-2xl p-5 text-white" style={{ background: 'linear-gradient(135deg, #7F1D3A, #5A1228)' }}>
+        <div
+          className="rounded-2xl p-5 text-white"
+          style={{ background: 'linear-gradient(135deg, #7F1D3A, #5A1228)' }}
+        >
           <div className="flex items-center justify-between">
             <span className="font-bold text-sm">TruzziPay Wallet</span>
             <span className="px-2 py-1 rounded-lg bg-white/20 text-xs font-bold">Utama</span>
@@ -82,10 +88,14 @@ export default function PaymentMethods() {
             </div>
             <div className="space-y-2.5 divide-y divide-slate-100">
               {withdrawals.slice(0, 10).map((w) => (
-                <div key={w.id || w.$id} className="pt-2.5 first:pt-0 flex items-center justify-between text-xs">
+                <div
+                  key={w.id || w.$id}
+                  className="pt-2.5 first:pt-0 flex items-center justify-between text-xs"
+                >
                   <div className="space-y-0.5">
                     <p className="font-bold text-ink">
-                      {w.bankName?.toUpperCase() || 'PENARIKAN'} · <span className="font-medium text-slate-500">{w.accountNumber}</span>
+                      {w.bankName?.toUpperCase() || 'PENARIKAN'} ·{' '}
+                      <span className="font-medium text-slate-500">{w.accountNumber}</span>
                     </p>
                     <p className="text-[10px] text-slate-400">
                       {new Date(w.createdAt || Date.now()).toLocaleDateString('id-ID', {
@@ -104,15 +114,15 @@ export default function PaymentMethods() {
                         w.status === 'completed' || w.status === 'success'
                           ? 'bg-emerald-100 text-emerald-800'
                           : w.status === 'rejected' || w.status === 'failed'
-                          ? 'bg-rose-100 text-rose-800'
-                          : 'bg-amber-100 text-amber-800'
+                            ? 'bg-rose-100 text-rose-800'
+                            : 'bg-amber-100 text-amber-800'
                       }`}
                     >
                       {w.status === 'completed' || w.status === 'success'
                         ? 'Berhasil'
                         : w.status === 'rejected' || w.status === 'failed'
-                        ? 'Gagal'
-                        : 'Diproses (1x24 Jam)'}
+                          ? 'Gagal'
+                          : 'Diproses (1x24 Jam)'}
                     </span>
                   </div>
                 </div>
@@ -128,15 +138,17 @@ export default function PaymentMethods() {
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-ink-secondary">Total Top Up</span>
-                <span className="font-semibold text-success flex items-center gap-1"><TrendingUp className="w-4 h-4" /> {formatRupiah(wallet?.totalTopUp ?? 0)}</span>
+                <span className="font-semibold text-success flex items-center gap-1">
+                  <TrendingUp className="w-4 h-4" /> {formatRupiah(wallet?.totalTopUp ?? 0)}
+                </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-ink-secondary">Total Terpakai</span>
-                <span className="font-semibold text-error flex items-center gap-1"><TrendingDown className="w-4 h-4" /> {formatRupiah(wallet?.totalSpent ?? 0)}</span>
+                <span className="font-semibold text-error flex items-center gap-1">
+                  <TrendingDown className="w-4 h-4" /> {formatRupiah(wallet?.totalSpent ?? 0)}
+                </span>
               </div>
-              {escrows.length > 0 && (
-                <div className="h-px bg-divider my-1" />
-              )}
+              {escrows.length > 0 && <div className="h-px bg-divider my-1" />}
               {escrows.slice(0, 5).map((e) => (
                 <div key={e.$id ?? e.id} className="flex justify-between text-sm">
                   <span className="text-ink-secondary truncate">Escrow · {e.serviceType}</span>
@@ -147,8 +159,15 @@ export default function PaymentMethods() {
           ) : (
             <div className="py-3 text-center">
               <p className="text-sm text-ink-secondary">Belum ada transaksi</p>
-              <p className="text-xs text-ink-secondary mt-0.5">Top Up saldo pertama kamu untuk mulai transaksi</p>
-              <button onClick={() => navigate('/wallet/topup')} className="btn-outline mt-4 !h-10 !text-sm">Top Up Sekarang</button>
+              <p className="text-xs text-ink-secondary mt-0.5">
+                Top Up saldo pertama kamu untuk mulai transaksi
+              </p>
+              <button
+                onClick={() => navigate('/wallet/topup')}
+                className="btn-outline mt-4 !h-10 !text-sm"
+              >
+                Top Up Sekarang
+              </button>
             </div>
           )}
         </div>
@@ -161,10 +180,17 @@ export default function PaymentMethods() {
               {topups.slice(0, 10).map((t) => (
                 <div key={t.$id ?? t.id} className="flex items-center justify-between text-sm">
                   <span className="text-ink-secondary">
-                    {new Date(t.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })} · {t.paymentMethod.toUpperCase()}
+                    {new Date(t.createdAt).toLocaleDateString('id-ID', {
+                      day: 'numeric',
+                      month: 'short',
+                    })}{' '}
+                    · {t.paymentMethod.toUpperCase()}
                   </span>
-                  <span className={`font-semibold ${t.status === 'success' || t.status === 'completed' ? 'text-success' : t.status === 'failed' ? 'text-error' : 'text-warning'}`}>
-                    {t.status === 'success' || t.status === 'completed' ? '+' : ''}{formatRupiah(t.amount)}
+                  <span
+                    className={`font-semibold ${t.status === 'success' || t.status === 'completed' ? 'text-success' : t.status === 'failed' ? 'text-error' : 'text-warning'}`}
+                  >
+                    {t.status === 'success' || t.status === 'completed' ? '+' : ''}
+                    {formatRupiah(t.amount)}
                   </span>
                 </div>
               ))}

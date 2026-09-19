@@ -5,7 +5,17 @@ import { useSnackbar } from 'notistack';
 import { API } from '../lib/api';
 import { formatRupiah, formatTimeAgo } from '../lib/format';
 import type { Order } from '../types';
-import { Search, X, Inbox, MessageCircle, Eye, Star, Flag, Navigation, Calendar } from '../components/icons';
+import {
+  Search,
+  X,
+  Inbox,
+  MessageCircle,
+  Eye,
+  Star,
+  Flag,
+  Navigation,
+  Calendar,
+} from '../components/icons';
 
 type Filter = 'all' | 'pending' | 'processing' | 'bought' | 'shipping' | 'completed' | 'cancelled';
 
@@ -28,13 +38,25 @@ function StatusPill({ order }: { order: Order }) {
     shipping: { bg: 'bg-blue-100', text: 'text-blue-700', dot: 'bg-blue-500', label: 'Pengiriman' },
     completed: { bg: 'bg-success/15', text: 'text-success', dot: 'bg-success', label: 'Selesai' },
     cancelled: { bg: 'bg-error/15', text: 'text-error', dot: 'bg-error', label: 'Dibatalkan' },
-    waiting_confirmation: { bg: 'bg-amber-100', text: 'text-amber-700', dot: 'bg-amber-500', label: 'Menunggu Konfirmasi' },
+    waiting_confirmation: {
+      bg: 'bg-amber-100',
+      text: 'text-amber-700',
+      dot: 'bg-amber-500',
+      label: 'Menunggu Konfirmasi',
+    },
   };
-  const c = configs[status] ?? { bg: 'bg-ink-secondary/10', text: 'text-ink-secondary', dot: 'bg-ink-secondary', label: status };
+  const c = configs[status] ?? {
+    bg: 'bg-ink-secondary/10',
+    text: 'text-ink-secondary',
+    dot: 'bg-ink-secondary',
+    label: status,
+  };
   return (
     <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full ${c.bg}`}>
       <span className={`w-1.5 h-1.5 rounded-full ${c.dot}`} />
-      <span className={`text-[11px] font-semibold ${c.text} truncate max-w-[120px]`}>{c.label}</span>
+      <span className={`text-[11px] font-semibold ${c.text} truncate max-w-[120px]`}>
+        {c.label}
+      </span>
     </span>
   );
 }
@@ -43,11 +65,20 @@ function EmptyState({ filter }: { filter: Filter }) {
   const map: Record<string, { title: string; desc: string }> = {
     all: { title: 'Tidak Ada Pesanan', desc: 'Belum ada transaksi yang sesuai dengan pencarian.' },
     pending: { title: 'Belum Ada Pesanan Pending', desc: 'Mulai pesanan jastip pertamamu!' },
-    processing: { title: 'Tidak Ada Pesanan Diproses', desc: 'Semua pesanan sudah diproses atau belum ada yang baru.' },
+    processing: {
+      title: 'Tidak Ada Pesanan Diproses',
+      desc: 'Semua pesanan sudah diproses atau belum ada yang baru.',
+    },
     bought: { title: 'Tidak Ada Pesanan Dibeli', desc: 'Belum ada pesanan dalam tahap pembelian.' },
     shipping: { title: 'Tidak Ada Pengiriman', desc: 'Semua pesanan sudah dikirim atau selesai.' },
-    completed: { title: 'Belum Ada Riwayat Selesai', desc: 'Pesanan yang selesai akan muncul di sini.' },
-    cancelled: { title: 'Belum Ada Pesanan Dibatalkan', desc: 'Belum ada pesanan yang dibatalkan.' },
+    completed: {
+      title: 'Belum Ada Riwayat Selesai',
+      desc: 'Pesanan yang selesai akan muncul di sini.',
+    },
+    cancelled: {
+      title: 'Belum Ada Pesanan Dibatalkan',
+      desc: 'Belum ada pesanan yang dibatalkan.',
+    },
   };
   const m = map[filter] ?? map.all;
   return (
@@ -64,9 +95,14 @@ function RatingStars({ rating, count }: { rating?: number; count?: number }) {
   return (
     <div className="flex items-center gap-0.5">
       {[1, 2, 3, 4, 5].map((star) => (
-        <Star key={star} className={`w-3.5 h-3.5 ${star <= Math.round(r) ? 'text-amber-400 fill-amber-400' : 'text-border'}`} />
+        <Star
+          key={star}
+          className={`w-3.5 h-3.5 ${star <= Math.round(r) ? 'text-amber-400 fill-amber-400' : 'text-border'}`}
+        />
       ))}
-      {count !== undefined && <span className="text-[10px] text-ink-secondary ml-1">({count})</span>}
+      {count !== undefined && (
+        <span className="text-[10px] text-ink-secondary ml-1">({count})</span>
+      )}
     </div>
   );
 }
@@ -86,22 +122,34 @@ function OrderCard({
   return (
     <div className="card p-4">
       <div className="flex items-center justify-between gap-2">
-        <span className="px-2.5 py-1 rounded-lg bg-primary/10 text-primary text-[11px] font-bold">{order.serviceName}</span>
+        <span className="px-2.5 py-1 rounded-lg bg-primary/10 text-primary text-[11px] font-bold">
+          {order.serviceName}
+        </span>
         <StatusPill order={order} />
       </div>
       <div className="flex items-center justify-between gap-2 mt-3">
         <p className="font-bold truncate text-[15px]">{order.title}</p>
-        <span className="text-xs text-ink-secondary/80 font-medium shrink-0">{formatTimeAgo(order.createdAt)}</span>
+        <span className="text-xs text-ink-secondary/80 font-medium shrink-0">
+          {formatTimeAgo(order.createdAt)}
+        </span>
       </div>
-      {order.description && <p className="text-xs text-ink-secondary mt-1 line-clamp-2">{order.description}</p>}
+      {order.description && (
+        <p className="text-xs text-ink-secondary mt-1 line-clamp-2">{order.description}</p>
+      )}
 
       <div className="h-px bg-divider my-3" />
 
       <div className="flex items-center gap-3">
         {order.jastiperAvatar ? (
-          <img src={order.jastiperAvatar} alt="" className="w-8 h-8 rounded-full object-cover border border-border" />
+          <img
+            src={order.jastiperAvatar}
+            alt=""
+            className="w-8 h-8 rounded-full object-cover border border-border"
+          />
         ) : (
-          <span className="w-8 h-8 rounded-full bg-surface border border-border flex items-center justify-center text-xs">👤</span>
+          <span className="w-8 h-8 rounded-full bg-surface border border-border flex items-center justify-center text-xs">
+            👤
+          </span>
         )}
         <div className="flex-1 min-w-0">
           <span className="text-sm text-ink-secondary font-medium truncate block">
@@ -115,9 +163,15 @@ function OrderCard({
         {order.status === 'completed' && (
           <div className="flex items-center gap-1">
             {order.reviewRating || order.jastiperRating ? (
-              <RatingStars rating={order.reviewRating || order.jastiperRating!} count={order.reviewRating || order.jastiperRating!} />
+              <RatingStars
+                rating={order.reviewRating || order.jastiperRating!}
+                count={order.reviewRating || order.jastiperRating!}
+              />
             ) : (
-              <button onClick={() => onReview(order)} className="text-[11px] font-bold text-primary hover:underline">
+              <button
+                onClick={() => onReview(order)}
+                className="text-[11px] font-bold text-primary hover:underline"
+              >
                 Beri Ulasan
               </button>
             )}
@@ -154,7 +208,25 @@ function OrderCard({
           <>
             {order.status !== 'cancelled' && order.jastiperId && (
               <button
-                onClick={() => navigate(`/chat/room?roomId=${order.id}`, { state: { room: { id: order.id, senderName: order.jastiperName ?? 'Jastiper', avatarUrl: order.jastiperAvatar ?? '', lastMessage: order.title, lastMessageTime: order.createdAt, unreadCount: 0, isOnline: true, lastSeenText: 'Aktif', serviceType: order.serviceName, isSupport: false, orderStatus: order.status } } })}
+                onClick={() =>
+                  navigate(`/chat/room?roomId=${order.id}`, {
+                    state: {
+                      room: {
+                        id: order.id,
+                        senderName: order.jastiperName ?? 'Jastiper',
+                        avatarUrl: order.jastiperAvatar ?? '',
+                        lastMessage: order.title,
+                        lastMessageTime: order.createdAt,
+                        unreadCount: 0,
+                        isOnline: true,
+                        lastSeenText: 'Aktif',
+                        serviceType: order.serviceName,
+                        isSupport: false,
+                        orderStatus: order.status,
+                      },
+                    },
+                  })
+                }
                 className="btn-outline flex-1 !h-10 text-xs font-semibold"
               >
                 <MessageCircle className="w-4 h-4 mr-1.5 inline" /> Chat
@@ -214,10 +286,18 @@ export default function OrderList() {
   const orders: Order[] = data?.orders ?? [];
 
   const filtered = orders.filter((o) => {
-    if (filter !== 'all' && o.status !== filter && !(filter === 'completed' && o.status === 'cancelled') && !(filter === 'shipping' && o.status === 'waiting_confirmation')) return false;
+    if (
+      filter !== 'all' &&
+      o.status !== filter &&
+      !(filter === 'completed' && o.status === 'cancelled') &&
+      !(filter === 'shipping' && o.status === 'waiting_confirmation')
+    )
+      return false;
     const query = q.trim().toLowerCase();
     if (query) {
-      const hay = [o.id, o.title, o.serviceName, o.jastiperName ?? '', o.description].join(' ').toLowerCase();
+      const hay = [o.id, o.title, o.serviceName, o.jastiperName ?? '', o.description]
+        .join(' ')
+        .toLowerCase();
       if (!hay.includes(query)) return false;
     }
     if (dateFrom) {
@@ -258,7 +338,9 @@ export default function OrderList() {
     setSubmittingReport(true);
     try {
       await API.orders.report(reportOrder.id, { reason: reportReason, details: reportDetail });
-      enqueueSnackbar('Laporan Anda telah diteruskan ke Customer Service Truzzi.', { variant: 'info' });
+      enqueueSnackbar('Laporan Anda telah diteruskan ke Customer Service Truzzi.', {
+        variant: 'info',
+      });
       setReportOrder(null);
       setReportDetail('');
       qc.invalidateQueries({ queryKey: ['orders'] });
@@ -272,10 +354,15 @@ export default function OrderList() {
   return (
     <div className="min-h-0 bg-background pb-10">
       {/* Header burgundy lengkung */}
-      <div className="bg-primary rounded-b-[28px] px-5 pt-6 pb-4" style={{ boxShadow: '0 5px 15px rgba(127,29,58,0.25)' }}>
+      <div
+        className="bg-primary rounded-b-[28px] px-5 pt-6 pb-4"
+        style={{ boxShadow: '0 5px 15px rgba(127,29,58,0.25)' }}
+      >
         <div className="max-w-lg mx-auto">
           <h1 className="text-xl font-bold text-white font-sans">Pesanan Saya</h1>
-          <p className="text-sm text-white/85 mt-0.5">Pantau pesanan aktif &amp; riwayat transaksi</p>
+          <p className="text-sm text-white/85 mt-0.5">
+            Pantau pesanan aktif &amp; riwayat transaksi
+          </p>
           <div className="mt-3 bg-white rounded-[14px] flex items-center px-3.5 py-2.5">
             <Search className="w-[18px] h-[18px] text-ink-secondary mr-2 shrink-0" />
             <input
@@ -302,7 +389,9 @@ export default function OrderList() {
               key={f.id}
               onClick={() => setFilter(f.id)}
               className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium whitespace-nowrap transition-colors ${
-                active ? 'bg-primary text-white font-bold' : 'bg-surface border border-border text-ink'
+                active
+                  ? 'bg-primary text-white font-bold'
+                  : 'bg-surface border border-border text-ink'
               }`}
             >
               {f.label}
@@ -333,7 +422,10 @@ export default function OrderList() {
         </div>
         {(dateFrom || dateTo) && (
           <button
-            onClick={() => { setDateFrom(''); setDateTo(''); }}
+            onClick={() => {
+              setDateFrom('');
+              setDateTo('');
+            }}
             className="px-2.5 py-1 rounded-lg bg-surface border border-border text-xs text-ink-secondary"
           >
             Reset
@@ -349,7 +441,9 @@ export default function OrderList() {
               <Navigation className="w-5 h-5 text-primary" />
               <div>
                 <p className="text-sm font-bold text-ink">Rekomendasi Jastipper Favorit</p>
-                <p className="text-[11px] text-ink-secondary">Berdasarkan kepuasan &amp; riwayat pesananmu</p>
+                <p className="text-[11px] text-ink-secondary">
+                  Berdasarkan kepuasan &amp; riwayat pesananmu
+                </p>
               </div>
             </div>
             <div className="flex gap-2 mt-3 overflow-x-auto no-scrollbar">
@@ -364,7 +458,9 @@ export default function OrderList() {
                   className="shrink-0 bg-white rounded-xl p-2.5 border border-border text-left shadow-2xs hover:border-primary/40 transition-colors"
                 >
                   <p className="text-xs font-bold text-ink">{j.name}</p>
-                  <p className="text-[10px] text-ink-secondary">{j.area} · ⭐ {j.rating}</p>
+                  <p className="text-[10px] text-ink-secondary">
+                    {j.area} · ⭐ {j.rating}
+                  </p>
                 </button>
               ))}
             </div>
@@ -396,8 +492,14 @@ export default function OrderList() {
 
       {/* Review Modal */}
       {reviewOrder && (
-        <div className="fixed inset-0 z-[1600] bg-black/40 flex items-center justify-center p-4" onClick={() => setReviewOrder(null)}>
-          <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-modal animate-in fade-in" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="fixed inset-0 z-[1600] bg-black/40 flex items-center justify-center p-4"
+          onClick={() => setReviewOrder(null)}
+        >
+          <div
+            className="bg-white w-full max-w-md rounded-2xl p-6 shadow-modal animate-in fade-in"
+            onClick={(e) => e.stopPropagation()}
+          >
             <h3 className="text-base font-bold text-ink">Beri Ulasan Pesanan</h3>
             <p className="text-xs text-ink-secondary mt-0.5">{reviewOrder.title}</p>
 
@@ -414,9 +516,7 @@ export default function OrderList() {
                   >
                     <Star
                       className={`w-8 h-8 transition-colors ${
-                        isFilled
-                          ? 'text-amber-400 fill-amber-400'
-                          : 'text-gray-300 stroke-[1.5]'
+                        isFilled ? 'text-amber-400 fill-amber-400' : 'text-gray-300 stroke-[1.5]'
                       }`}
                     />
                   </button>
@@ -453,12 +553,20 @@ export default function OrderList() {
 
       {/* Report Modal */}
       {reportOrder && (
-        <div className="fixed inset-0 z-[1600] bg-black/40 flex items-center justify-center p-4" onClick={() => setReportOrder(null)}>
-          <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-modal animate-in fade-in" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="fixed inset-0 z-[1600] bg-black/40 flex items-center justify-center p-4"
+          onClick={() => setReportOrder(null)}
+        >
+          <div
+            className="bg-white w-full max-w-md rounded-2xl p-6 shadow-modal animate-in fade-in"
+            onClick={(e) => e.stopPropagation()}
+          >
             <h3 className="text-base font-bold text-error flex items-center gap-1.5">
               <Flag className="w-5 h-5 text-error" /> Laporkan Kendala Pesanan
             </h3>
-            <p className="text-xs text-ink-secondary mt-0.5">{reportOrder.title} · #{reportOrder.id.slice(0, 8)}</p>
+            <p className="text-xs text-ink-secondary mt-0.5">
+              {reportOrder.title} · #{reportOrder.id.slice(0, 8)}
+            </p>
 
             <div className="mt-4 space-y-2">
               <label className="text-xs font-semibold text-ink block">Kategori Masalah:</label>

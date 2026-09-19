@@ -18,12 +18,17 @@ export async function addWatermark(file: File): Promise<File> {
 
       // Watermark settings
       const now = new Date();
-      const dateStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
-      const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-      const lines = [
-        `📅 ${dateStr}  ⏰ ${timeStr}`,
-        '✅ Truzzi Verified',
-      ];
+      const dateStr = now.toLocaleDateString('id-ID', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+      });
+      const timeStr = now.toLocaleTimeString('id-ID', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+      });
+      const lines = [`📅 ${dateStr}  ⏰ ${timeStr}`, '✅ Truzzi Verified'];
 
       const fontSize = Math.max(14, Math.floor(img.width / 30));
       ctx.font = `bold ${fontSize}px sans-serif`;
@@ -43,11 +48,15 @@ export async function addWatermark(file: File): Promise<File> {
       });
 
       // Convert canvas to File
-      canvas.toBlob((blob) => {
-        if (!blob) return reject(new Error('Failed to create blob'));
-        const watermarkedFile = new File([blob], file.name, { type: 'image/jpeg' });
-        resolve(watermarkedFile);
-      }, 'image/jpeg', 0.9);
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) return reject(new Error('Failed to create blob'));
+          const watermarkedFile = new File([blob], file.name, { type: 'image/jpeg' });
+          resolve(watermarkedFile);
+        },
+        'image/jpeg',
+        0.9,
+      );
     };
     img.onerror = () => reject(new Error('Failed to load image'));
     img.src = URL.createObjectURL(file);

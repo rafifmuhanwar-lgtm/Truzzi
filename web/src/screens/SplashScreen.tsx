@@ -26,16 +26,15 @@ export default function SplashScreen() {
       <div className="flex-1 flex flex-col items-center justify-center mt-20">
         {/* Logo Truzzi Baru */}
         <div className="flex flex-col items-center transform transition-all hover:scale-105">
-          <img src={truzziLogo} alt="Truzzi Logo" className="w-[220px] object-contain drop-shadow-xl" />
+          <img
+            src={truzziLogo}
+            alt="Truzzi Logo"
+            className="w-[220px] object-contain drop-shadow-xl"
+          />
         </div>
       </div>
       <div className="relative flex-1">
-        <img
-          src={jastiperScooter}
-          alt=""
-          className="w-full"
-          style={{ transform: 'scale(1.15)' }}
-        />
+        <img src={jastiperScooter} alt="" className="w-full" style={{ transform: 'scale(1.15)' }} />
       </div>
     </div>
   );

@@ -11,7 +11,6 @@ function getUnifiedRoomId(userA: string, userB: string) {
   return userA < userB ? `room_${userA}_${userB}` : `room_${userB}_${userA}`;
 }
 
-
 function getCookieName(app?: string): string {
   if (app === 'driver') return config.session.cookieNameDriver;
   if (app === 'customer') return config.session.cookieNameCustomer;
@@ -71,7 +70,7 @@ async function buildRooms(userId: string, role?: string): Promise<Record<string,
   for (const order of orders) {
     const jastiperId = order.jastiperId ?? '';
     if (!jastiperId) continue;
-    
+
     const status = order.status ?? 'ongoing';
     const updated = order.updatedAt ?? order.createdAt;
 
@@ -89,7 +88,9 @@ async function buildRooms(userId: string, role?: string): Promise<Record<string,
     if (isJastiper) {
       const customer = await db.getUserDoc(order.userId);
       avatar = customer?.photoUrl || '';
-      senderName = customer?.name ? `${customer.name}` : `Customer #${String(order.userId).slice(0, 6).toUpperCase()}`;
+      senderName = customer?.name
+        ? `${customer.name}`
+        : `Customer #${String(order.userId).slice(0, 6).toUpperCase()}`;
     } else {
       if (jastiperId) {
         const jastiper = await db.getJastiper(jastiperId);
@@ -121,7 +122,9 @@ async function buildRooms(userId: string, role?: string): Promise<Record<string,
 
   let searchId = userId;
   if (isJastiper) {
-    const jRow = await getPrisma().jastiper.findUnique({ where: { id: userId } }).catch(() => null);
+    const jRow = await getPrisma()
+      .jastiper.findUnique({ where: { id: userId } })
+      .catch(() => null);
     if (jRow) searchId = jRow.id;
   }
 
@@ -130,7 +133,7 @@ async function buildRooms(userId: string, role?: string): Promise<Record<string,
     where: {
       orderId: { contains: searchId },
     },
-    orderBy: { timestamp: 'desc' }
+    orderBy: { timestamp: 'desc' },
   });
 
   for (const msg of unifiedMessages) {
@@ -138,7 +141,7 @@ async function buildRooms(userId: string, role?: string): Promise<Record<string,
     if (!roomId.startsWith('room_')) continue; // Skip non-unified room IDs
     // The format is `room_${userA}_${userB}`. Since user IDs might contain underscores (e.g. `usr_123`), we should extract them differently.
     const rest = roomId.substring(5); // remove 'room_'
-    
+
     // We know searchId is one of the users. Let's find out which one.
     let targetUserId = '';
     if (rest.startsWith(searchId + '_')) {
@@ -170,9 +173,9 @@ async function buildRooms(userId: string, role?: string): Promise<Record<string,
           isOnline = jastiper.isOnline;
           serviceType = 'Jastiper';
         } else {
-           const other = await db.getUserDoc(targetUserId);
-           avatar = other?.photoUrl || '';
-           senderName = other?.name || 'Pengguna';
+          const other = await db.getUserDoc(targetUserId);
+          avatar = other?.photoUrl || '';
+          senderName = other?.name || 'Pengguna';
         }
       }
 
@@ -210,14 +213,14 @@ async function buildRooms(userId: string, role?: string): Promise<Record<string,
   const unreads = await getPrisma().chatMessage.groupBy({
     by: ['orderId'],
     _count: {
-      id: true
+      id: true,
     },
     where: {
       isRead: false,
-      senderId: { not: searchId }
-    }
+      senderId: { not: searchId },
+    },
   });
-  const unreadMap = new Map(unreads.map(u => [u.orderId, u._count.id]));
+  const unreadMap = new Map(unreads.map((u) => [u.orderId, u._count.id]));
 
   for (const room of roomsMap.values()) {
     room.unreadCount = unreadMap.get(room.id as string) || 0;
@@ -225,7 +228,9 @@ async function buildRooms(userId: string, role?: string): Promise<Record<string,
 
   // Sort by lastMessageTime descending
   return Array.from(roomsMap.values()).sort((a, b) => {
-    return new Date(String(b.lastMessageTime)).getTime() - new Date(String(a.lastMessageTime)).getTime();
+    return (
+      new Date(String(b.lastMessageTime)).getTime() - new Date(String(a.lastMessageTime)).getTime()
+    );
   });
 }
 
@@ -240,10 +245,12 @@ router.get('/rooms', requireUser, async (req: Request, res: Response) => {
 router.post('/rooms/:roomId/read', requireUser, async (req: Request, res: Response) => {
   const user = getUser(req)!;
   const roomId = req.params.roomId;
-  
+
   let searchId = user.id;
   if (user.role === 'jastiper') {
-    const jRow = await getPrisma().jastiper.findUnique({ where: { id: user.id } }).catch(() => null);
+    const jRow = await getPrisma()
+      .jastiper.findUnique({ where: { id: user.id } })
+      .catch(() => null);
     if (jRow) searchId = jRow.id;
   }
 
@@ -251,11 +258,11 @@ router.post('/rooms/:roomId/read', requireUser, async (req: Request, res: Respon
     where: {
       orderId: roomId,
       isRead: false,
-      senderId: { not: searchId }
+      senderId: { not: searchId },
     },
     data: {
-      isRead: true
-    }
+      isRead: true,
+    },
   });
 
   res.json({ success: true });
@@ -284,22 +291,20 @@ router.get('/rooms/:roomId/messages', requireUser, async (req: Request, res: Res
     return res.json({ messages: seeded });
   }
 
-  
   let messages = await db.listChatMessages(roomId);
-  
+
   // Jika tidak ketemu dan roomId BUKAN room_ unified, coba cari unified room-nya
   if (messages.length === 0 && !roomId.startsWith('room_') && roomId !== 'room_cs') {
-     // cek apakah ada order dengan ID ini
-     try {
-       const order = await db.getOrder(roomId);
-       if (order && order.jastiperId) {
-         const unifiedId = getUnifiedRoomId(order.userId, order.jastiperId);
-         const unifiedMsgs = await db.listChatMessages(unifiedId);
-         if (unifiedMsgs.length > 0) messages = unifiedMsgs;
-       }
-     } catch(e) {}
+    // cek apakah ada order dengan ID ini
+    try {
+      const order = await db.getOrder(roomId);
+      if (order && order.jastiperId) {
+        const unifiedId = getUnifiedRoomId(order.userId, order.jastiperId);
+        const unifiedMsgs = await db.listChatMessages(unifiedId);
+        if (unifiedMsgs.length > 0) messages = unifiedMsgs;
+      }
+    } catch (e) {}
   }
-
 
   const normalized = messages.map((m) => ({
     id: m.$id ?? m.id,
@@ -374,7 +379,9 @@ router.post('/rooms/:roomId/messages', requireUser, async (req: Request, res: Re
         // If the sender is a Jastiper, user.id is their User.id, but the room ID uses Jastiper.id!
         // We need to resolve their Jastiper ID to parse it correctly if they are a Jastiper.
         if (isJastiper) {
-          const jRow = await getPrisma().jastiper.findUnique({ where: { id: user.id } }).catch(() => null);
+          const jRow = await getPrisma()
+            .jastiper.findUnique({ where: { id: user.id } })
+            .catch(() => null);
           if (jRow) {
             const jId = jRow.id;
             if (rest.startsWith(jId + '_')) {
@@ -388,7 +395,7 @@ router.post('/rooms/:roomId/messages', requireUser, async (req: Request, res: Re
     } else {
       const order = await db.getOrder(roomId).catch(() => null);
       if (order) {
-        targetUserId = isJastiper ? order.userId : (order.jastiperId || '');
+        targetUserId = isJastiper ? order.userId : order.jastiperId || '';
       }
     }
 
@@ -396,11 +403,15 @@ router.post('/rooms/:roomId/messages', requireUser, async (req: Request, res: Re
       // Ensure targetUserId is a User.id, not a Jastiper.id
       let finalUserId = targetUserId;
       try {
-        const jastiper = await getPrisma().jastiper.findUnique({ where: { id: targetUserId } }).catch(() => null);
+        const jastiper = await getPrisma()
+          .jastiper.findUnique({ where: { id: targetUserId } })
+          .catch(() => null);
         if (jastiper) {
           finalUserId = jastiper.id;
         }
-      } catch { /* ignore */ }
+      } catch {
+        /* ignore */
+      }
 
       await createNotification({
         userId: finalUserId,

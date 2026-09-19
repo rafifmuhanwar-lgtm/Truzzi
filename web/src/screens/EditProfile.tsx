@@ -28,10 +28,16 @@ export default function EditProfile() {
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
-    if (name.trim().length < 3) return enqueueSnackbar('Nama minimal 3 karakter', { variant: 'error' });
+    if (name.trim().length < 3)
+      return enqueueSnackbar('Nama minimal 3 karakter', { variant: 'error' });
     setSaving(true);
     try {
-      const updated = await updateProfile({ name: name.trim(), phone, selectedArea: area, photoUrl });
+      const updated = await updateProfile({
+        name: name.trim(),
+        phone,
+        selectedArea: area,
+        photoUrl,
+      });
       setUser(updated);
       enqueueSnackbar('Profil berhasil diperbarui', { variant: 'success' });
       navigate(-1);
@@ -45,13 +51,19 @@ export default function EditProfile() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="bg-surface px-4 py-3 flex items-center gap-3 sticky top-0 z-10">
-        <button onClick={() => navigate(-1)} aria-label="Kembali"><ArrowLeft className="w-6 h-6 text-ink" /></button>
+        <button onClick={() => navigate(-1)} aria-label="Kembali">
+          <ArrowLeft className="w-6 h-6 text-ink" />
+        </button>
         <h1 className="font-semibold text-base">Edit Profil</h1>
       </header>
 
       <div className="flex-1 max-w-md w-full mx-auto px-6 py-6">
         <div className="flex justify-center">
-          <button onClick={() => fileRef.current?.click()} className="relative" aria-label="Ubah foto profil">
+          <button
+            onClick={() => fileRef.current?.click()}
+            className="relative"
+            aria-label="Ubah foto profil"
+          >
             {photoUrl ? (
               <img src={photoUrl} alt="" className="w-24 h-24 rounded-full object-cover" />
             ) : (
@@ -68,7 +80,12 @@ export default function EditProfile() {
         <form onSubmit={submit} className="mt-8 space-y-4">
           <div>
             <label className="text-sm font-medium mb-1.5 block">Nama Lengkap</label>
-            <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Nama kamu" className="input-base" />
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Nama kamu"
+              className="input-base"
+            />
           </div>
           <div>
             <label className="text-sm font-medium mb-1.5 block">Email</label>
@@ -77,7 +94,13 @@ export default function EditProfile() {
           </div>
           <div>
             <label className="text-sm font-medium mb-1.5 block">Nomor Telepon</label>
-            <input value={phone ?? ''} onChange={(e) => setPhone(e.target.value)} placeholder="08xxxxxxxxxx" className="input-base" type="tel" />
+            <input
+              value={phone ?? ''}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="08xxxxxxxxxx"
+              className="input-base"
+              type="tel"
+            />
           </div>
           <div>
             <label className="text-sm font-medium mb-1.5 block">Area</label>
@@ -93,7 +116,16 @@ export default function EditProfile() {
         </form>
       </div>
 
-      <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) void uploadPic(f); }} />
+      <input
+        ref={fileRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={(e) => {
+          const f = e.target.files?.[0];
+          if (f) void uploadPic(f);
+        }}
+      />
     </div>
   );
 }
@@ -101,7 +133,12 @@ export default function EditProfile() {
 function useProfile() {
   const user = useAuthStore((s) => s.user);
   const setUserStore = useAuthStore((s) => s.setUser);
-  const updateProfile = async (data: { name?: string; phone?: string; selectedArea?: string; photoUrl?: string }) => {
+  const updateProfile = async (data: {
+    name?: string;
+    phone?: string;
+    selectedArea?: string;
+    photoUrl?: string;
+  }) => {
     const res = await API.auth.updateProfile(data);
     return res.user;
   };

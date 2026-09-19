@@ -33,23 +33,32 @@ export default function DeliveryAddress() {
   };
 
   const pickManual = () => {
-    emitAddressPicked({ address: manualText.trim(), data: { label: 'Manual', fullAddress: manualText.trim() } });
+    emitAddressPicked({
+      address: manualText.trim(),
+      data: { label: 'Manual', fullAddress: manualText.trim() },
+    });
     navigate(-1);
   };
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="bg-surface px-4 py-3 flex items-center gap-3 sticky top-0 z-10">
-        <button onClick={() => navigate(-1)} aria-label="Kembali"><ArrowLeft className="w-6 h-6 text-ink" /></button>
+        <button onClick={() => navigate(-1)} aria-label="Kembali">
+          <ArrowLeft className="w-6 h-6 text-ink" />
+        </button>
         <h1 className="font-semibold text-base">Alamat Pengantaran</h1>
       </header>
 
       <div className="flex-1 max-w-lg w-full mx-auto px-6 py-5 pb-32">
         <div className="bg-primary/5 border border-primary/10 rounded-[14px] p-4 flex items-center gap-3">
-          <span className="p-2 rounded-lg bg-primary text-white shrink-0"><MapPin className="w-5 h-5" /></span>
+          <span className="p-2 rounded-lg bg-primary text-white shrink-0">
+            <MapPin className="w-5 h-5" />
+          </span>
           <div>
             <p className="font-semibold text-sm">Pilih tujuan pengiriman</p>
-            <p className="text-xs text-ink-secondary mt-0.5">Jastiper akan mengantar ke alamat yang kamu pilih</p>
+            <p className="text-xs text-ink-secondary mt-0.5">
+              Jastiper akan mengantar ke alamat yang kamu pilih
+            </p>
           </div>
         </div>
 
@@ -75,7 +84,9 @@ export default function DeliveryAddress() {
               {addresses.map((a) => (
                 <button key={a.id} onClick={() => pick(a)} className="w-full card p-4 text-left">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="px-2 py-0.5 rounded-lg bg-primary/10 text-primary text-[11px] font-semibold">{a.label}</span>
+                    <span className="px-2 py-0.5 rounded-lg bg-primary/10 text-primary text-[11px] font-semibold">
+                      {a.label}
+                    </span>
                     {a.isPrimary && (
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-primary text-white text-[10px] font-semibold">
                         <Star className="w-3 h-3 fill-current" /> Utama
@@ -105,15 +116,25 @@ export default function DeliveryAddress() {
                 className="input-base resize-none"
                 autoFocus
               />
-              <button className="btn-primary" onClick={pickManual}>Konfirmasi Alamat</button>
-              <button className="btn-outline" onClick={() => setManual(false)}>Kembali</button>
+              <button className="btn-primary" onClick={pickManual}>
+                Konfirmasi Alamat
+              </button>
+              <button className="btn-outline" onClick={() => setManual(false)}>
+                Kembali
+              </button>
             </div>
           ) : (
             <>
-              <button className="btn-primary flex items-center justify-center gap-2" onClick={() => navigate('/profile/addresses')}>
+              <button
+                className="btn-primary flex items-center justify-center gap-2"
+                onClick={() => navigate('/profile/addresses')}
+              >
                 <Plus className="w-4 h-4" /> Tambah Alamat Baru
               </button>
-              <button className="btn-outline flex items-center justify-center gap-2" onClick={() => setManual(true)}>
+              <button
+                className="btn-outline flex items-center justify-center gap-2"
+                onClick={() => setManual(true)}
+              >
                 <MapIcon className="w-4 h-4" /> Masukkan Alamat Manual Sekali Pakai
               </button>
             </>

@@ -44,12 +44,18 @@ function formatDate(iso?: string | null) {
 
 function statusColor(s: string) {
   switch (s) {
-    case 'open': return 'bg-success/10 text-success border border-success/20';
-    case 'in_progress': return 'bg-[#E3F2FD] text-[#1565C0] border border-[#1565C0]/20';
-    case 'submitted': return 'bg-[#FFF3E0] text-[#E65100] border border-[#E65100]/20';
-    case 'completed': return 'bg-[#E8F5E9] text-[#2E7D32] border border-[#2E7D32]/20';
-    case 'cancelled': return 'bg-[#FFEBEE] text-[#C62828] border border-[#C62828]/20';
-    default: return 'bg-slate-100 text-ink-secondary';
+    case 'open':
+      return 'bg-success/10 text-success border border-success/20';
+    case 'in_progress':
+      return 'bg-[#E3F2FD] text-[#1565C0] border border-[#1565C0]/20';
+    case 'submitted':
+      return 'bg-[#FFF3E0] text-[#E65100] border border-[#E65100]/20';
+    case 'completed':
+      return 'bg-[#E8F5E9] text-[#2E7D32] border border-[#2E7D32]/20';
+    case 'cancelled':
+      return 'bg-[#FFEBEE] text-[#C62828] border border-[#C62828]/20';
+    default:
+      return 'bg-slate-100 text-ink-secondary';
   }
 }
 
@@ -100,14 +106,18 @@ export default function GigHomeScreen() {
         <div className="p-4 relative z-10 space-y-2.5">
           {/* Header Row: Category Badge + Status Badge */}
           <div className="flex items-center justify-between gap-2">
-            <span
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold border bg-slate-100/90 text-slate-800 border-slate-200"
-            >
-              {isDigital ? <Monitor className="w-3.5 h-3.5 text-primary" /> : <Wrench className="w-3.5 h-3.5 text-primary" />}
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold border bg-slate-100/90 text-slate-800 border-slate-200">
+              {isDigital ? (
+                <Monitor className="w-3.5 h-3.5 text-primary" />
+              ) : (
+                <Wrench className="w-3.5 h-3.5 text-primary" />
+              )}
               {isDigital ? 'Digital' : 'Fisik'}
             </span>
 
-            <span className={`px-2.5 py-0.5 rounded-lg text-[10px] font-bold shrink-0 ${statusColor(g.status)}`}>
+            <span
+              className={`px-2.5 py-0.5 rounded-lg text-[10px] font-bold shrink-0 ${statusColor(g.status)}`}
+            >
               {STATUS_LABEL[g.status] ?? g.status}
             </span>
           </div>
@@ -164,7 +174,11 @@ export default function GigHomeScreen() {
       {/* Top Header */}
       <header className="bg-white/95 backdrop-blur-md px-4 h-14 flex items-center justify-between sticky top-0 z-20 border-b border-slate-200/80 shadow-2xs">
         <div className="flex items-center gap-3">
-          <button onClick={() => navigate('/main')} className="p-2 -ml-2 rounded-full hover:bg-slate-100 transition-colors text-ink active:scale-95" aria-label="Kembali">
+          <button
+            onClick={() => navigate('/main')}
+            className="p-2 -ml-2 rounded-full hover:bg-slate-100 transition-colors text-ink active:scale-95"
+            aria-label="Kembali"
+          >
             <ArrowLeft className="w-5 h-5" />
           </button>
           <h1 className="font-bold text-base text-ink leading-tight">Cari Cuan</h1>
@@ -204,21 +218,24 @@ export default function GigHomeScreen() {
                 </div>
                 <h3 className="font-bold text-base text-ink">Belum Ada Tugas Terbuka</h3>
                 <p className="mt-1.5 text-xs text-ink-secondary max-w-xs leading-relaxed">
-                  Ayo pasang tugas pertamamu dengan menekan tombol Pasang di bawah, atau coba ganti kategori filter.
+                  Ayo pasang tugas pertamamu dengan menekan tombol Pasang di bawah, atau coba ganti
+                  kategori filter.
                 </p>
               </div>
             ) : (
-              <div className="mt-4 space-y-3">
-                {openGigs.map(renderGigCard)}
-              </div>
+              <div className="mt-4 space-y-3">{openGigs.map(renderGigCard)}</div>
             )}
           </>
         ) : (
           <div className="space-y-5">
             <section>
               <div className="flex items-center justify-between mb-2">
-                <h2 className="text-xs font-extrabold text-ink-secondary uppercase tracking-wider">Yang Saya Pasang</h2>
-                <span className="text-[11px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">{posted.length}</span>
+                <h2 className="text-xs font-extrabold text-ink-secondary uppercase tracking-wider">
+                  Yang Saya Pasang
+                </h2>
+                <span className="text-[11px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
+                  {posted.length}
+                </span>
               </div>
               {posted.length === 0 ? (
                 <div className="bg-white p-4 rounded-2xl border border-slate-200 text-xs text-ink-secondary text-center">
@@ -231,8 +248,12 @@ export default function GigHomeScreen() {
 
             <section>
               <div className="flex items-center justify-between mb-2">
-                <h2 className="text-xs font-extrabold text-ink-secondary uppercase tracking-wider">Yang Saya Kerjakan</h2>
-                <span className="text-[11px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">{worked.length}</span>
+                <h2 className="text-xs font-extrabold text-ink-secondary uppercase tracking-wider">
+                  Yang Saya Kerjakan
+                </h2>
+                <span className="text-[11px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
+                  {worked.length}
+                </span>
               </div>
               {worked.length === 0 ? (
                 <div className="bg-white p-4 rounded-2xl border border-slate-200 text-xs text-ink-secondary text-center">
@@ -254,10 +275,14 @@ export default function GigHomeScreen() {
               <button
                 onClick={openTab}
                 className={`flex flex-col items-center justify-center gap-1.5 transition-all active:scale-95 py-1 ${
-                  tab === 'buka' ? 'text-primary font-bold scale-105' : 'text-slate-400 hover:text-slate-600 font-semibold'
+                  tab === 'buka'
+                    ? 'text-primary font-bold scale-105'
+                    : 'text-slate-400 hover:text-slate-600 font-semibold'
                 }`}
               >
-                <BookOpen className={`w-6 h-6 ${tab === 'buka' ? 'text-primary' : 'text-slate-400'}`} />
+                <BookOpen
+                  className={`w-6 h-6 ${tab === 'buka' ? 'text-primary' : 'text-slate-400'}`}
+                />
                 <span className="text-xs leading-none">Terbuka</span>
               </button>
             </div>
@@ -278,10 +303,14 @@ export default function GigHomeScreen() {
               <button
                 onClick={myTab}
                 className={`flex flex-col items-center justify-center gap-1.5 transition-all active:scale-95 py-1 ${
-                  tab === 'saya' ? 'text-primary font-bold scale-105' : 'text-slate-400 hover:text-slate-600 font-semibold'
+                  tab === 'saya'
+                    ? 'text-primary font-bold scale-105'
+                    : 'text-slate-400 hover:text-slate-600 font-semibold'
                 }`}
               >
-                <Briefcase className={`w-6 h-6 ${tab === 'saya' ? 'text-primary' : 'text-slate-400'}`} />
+                <Briefcase
+                  className={`w-6 h-6 ${tab === 'saya' ? 'text-primary' : 'text-slate-400'}`}
+                />
                 <span className="text-xs leading-none">Tugas Saya</span>
               </button>
             </div>
@@ -291,4 +320,3 @@ export default function GigHomeScreen() {
     </div>
   );
 }
-

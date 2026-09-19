@@ -17,7 +17,7 @@ export const adminAuth = async (req: Request, res: Response, next: NextFunction)
     }
 
     const decoded = jwt.verify(token, JWT_SECRET) as { id: string; role: string };
-    
+
     if (decoded.role !== 'admin') {
       return res.status(403).json({ error: 'Forbidden: Admin access required' });
     }
@@ -29,7 +29,7 @@ export const adminAuth = async (req: Request, res: Response, next: NextFunction)
 
     // Attach admin to request if needed by other routes
     (req as any).adminUser = adminUser;
-    
+
     next();
   } catch (error) {
     console.error('Admin Auth Error:', error);

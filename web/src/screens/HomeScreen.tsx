@@ -20,8 +20,12 @@ import {
   MyLocation,
   Bike,
   Sparkles,
-  PlusCircle, Flame, Star, ArrowRight,
-  Heart, MessageCircle,
+  PlusCircle,
+  Flame,
+  Star,
+  ArrowRight,
+  Heart,
+  MessageCircle,
 } from '../components/icons';
 import jastiperRunning from '../assets/images/jastiper_running.png';
 import Carousel from '../components/Carousel';
@@ -44,7 +48,13 @@ type PromoSlideDef = {
   description?: string;
 };
 /** Slide promo dengan layout identik supaya ukuran banner serasi antar slide. */
-function PromoSlide({ slide, onOpen }: { slide: PromoSlideDef; onOpen: (s: PromoSlideDef) => void }) {
+function PromoSlide({
+  slide,
+  onOpen,
+}: {
+  slide: PromoSlideDef;
+  onOpen: (s: PromoSlideDef) => void;
+}) {
   const BadgeIcon = slide.badgeIcon || Sparkles;
   const Visual = slide.image ? undefined : slide.icon;
   return (
@@ -62,8 +72,12 @@ function PromoSlide({ slide, onOpen }: { slide: PromoSlideDef; onOpen: (s: Promo
           <BadgeIcon className="w-3.5 h-3.5" />
           <span>{slide.badge}</span>
         </div>
-        <p className="text-white text-lg font-bold font-sans leading-snug truncate">{slide.title}</p>
-        <p className="text-white/80 text-xs mt-1.5 leading-relaxed line-clamp-2">{slide.subtitle}</p>
+        <p className="text-white text-lg font-bold font-sans leading-snug truncate">
+          {slide.title}
+        </p>
+        <p className="text-white/80 text-xs mt-1.5 leading-relaxed line-clamp-2">
+          {slide.subtitle}
+        </p>
         <span className="inline-flex items-center gap-1.5 mt-3 text-white/70 text-[11px]">
           <ChevronRight className="w-3 h-3" />
           Detail &amp; kode promo
@@ -74,7 +88,11 @@ function PromoSlide({ slide, onOpen }: { slide: PromoSlideDef; onOpen: (s: Promo
         {slide.image || Visual ? (
           <span className="inline-flex items-center justify-center w-24 h-24 rounded-2xl bg-white/20 text-white">
             {slide.image ? (
-              <img src={slide.image} alt={slide.title} className="w-16 h-16 object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.2)]" />
+              <img
+                src={slide.image}
+                alt={slide.title}
+                className="w-16 h-16 object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.2)]"
+              />
             ) : Visual ? (
               <Visual className="w-16 h-16 object-contain" />
             ) : null}
@@ -86,12 +104,25 @@ function PromoSlide({ slide, onOpen }: { slide: PromoSlideDef; onOpen: (s: Promo
 }
 
 /** Bottom sheet detail promo — muncul saat banner diklik. */
-function PromoDetailSheet({ slide, onClose, isClaimed, onClaim }: { slide: PromoSlideDef | null; onClose: () => void; isClaimed?: boolean; onClaim?: (code: string) => void }) {
+function PromoDetailSheet({
+  slide,
+  onClose,
+  isClaimed,
+  onClaim,
+}: {
+  slide: PromoSlideDef | null;
+  onClose: () => void;
+  isClaimed?: boolean;
+  onClaim?: (code: string) => void;
+}) {
   if (!slide) return null;
   const BadgeIcon = slide.badgeIcon || Sparkles;
 
   return (
-    <div className="fixed inset-0 z-[1500] bg-black/40 flex items-end justify-center" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-[1500] bg-black/40 flex items-end justify-center"
+      onClick={onClose}
+    >
       <div
         onClick={(e) => e.stopPropagation()}
         className="bg-white w-full max-w-lg rounded-t-3xl overflow-hidden animate-[slideUp_0.25s_ease-out]"
@@ -116,14 +147,18 @@ function PromoDetailSheet({ slide, onClose, isClaimed, onClaim }: { slide: Promo
             </div>
           </div>
         ) : (
-          <div className={`bg-gradient-to-br ${slide.gradient} p-6 flex items-center gap-4 relative overflow-hidden`}>
+          <div
+            className={`bg-gradient-to-br ${slide.gradient} p-6 flex items-center gap-4 relative overflow-hidden`}
+          >
             <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
             <div className="flex-1 min-w-0 relative z-10">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 text-white text-[10px] font-bold uppercase tracking-wide">
                 <BadgeIcon className="w-3.5 h-3.5" />
                 <span>{slide.badge}</span>
               </div>
-              <p className="text-white text-xl font-bold font-sans leading-snug mt-2.5">{slide.title}</p>
+              <p className="text-white text-xl font-bold font-sans leading-snug mt-2.5">
+                {slide.title}
+              </p>
               <p className="text-white/80 text-sm mt-1.5 leading-relaxed">{slide.subtitle}</p>
             </div>
             {slide.icon && (
@@ -160,7 +195,10 @@ function PromoDetailSheet({ slide, onClose, isClaimed, onClaim }: { slide: Promo
             <h3 className="font-bold text-sm mb-2">Syarat &amp; Ketentuan</h3>
             <ul className="space-y-1.5">
               {slide.terms?.map((t, i) => (
-                <li key={i} className="flex items-start gap-2 text-xs text-ink-secondary leading-relaxed">
+                <li
+                  key={i}
+                  className="flex items-start gap-2 text-xs text-ink-secondary leading-relaxed"
+                >
                   <span className="w-1 h-1 rounded-full bg-ink-secondary/50 shrink-0 mt-1.5" />
                   <span>{t}</span>
                 </li>
@@ -171,18 +209,21 @@ function PromoDetailSheet({ slide, onClose, isClaimed, onClaim }: { slide: Promo
 
         {/* Footer actions */}
         <div className="p-6 pt-0 space-y-2.5">
-          <button 
+          <button
             disabled={isClaimed}
-            onClick={() => onClaim?.(slide.code)} 
+            onClick={() => onClaim?.(slide.code)}
             className={`flex items-center justify-center gap-2 !h-[50px] w-full rounded-2xl font-bold text-sm transition-colors ${
-              isClaimed 
-                ? 'bg-slate-200 text-slate-500 cursor-not-allowed' 
+              isClaimed
+                ? 'bg-slate-200 text-slate-500 cursor-not-allowed'
                 : 'bg-primary text-white hover:bg-primary-dark shadow-sm'
             }`}
           >
             {isClaimed ? 'Sudah Diklaim' : 'Klaim Voucher'}
           </button>
-          <button onClick={onClose} className="btn-outline flex-1 !h-[46px] w-full !border-border !bg-background !text-ink-secondary">
+          <button
+            onClick={onClose}
+            className="btn-outline flex-1 !h-[46px] w-full !border-border !bg-background !text-ink-secondary"
+          >
             Tutup
           </button>
         </div>
@@ -191,10 +232,20 @@ function PromoDetailSheet({ slide, onClose, isClaimed, onClaim }: { slide: Promo
   );
 }
 
-function QuickAction({ icon, label, onClick }: { icon: JSX.Element; label: string; onClick?: () => void }) {
+function QuickAction({
+  icon,
+  label,
+  onClick,
+}: {
+  icon: JSX.Element;
+  label: string;
+  onClick?: () => void;
+}) {
   return (
     <button onClick={onClick} className="flex flex-col items-center gap-2">
-      <span className="w-12 h-12 rounded-xl bg-surface border border-border flex items-center justify-center">{icon}</span>
+      <span className="w-12 h-12 rounded-xl bg-surface border border-border flex items-center justify-center">
+        {icon}
+      </span>
       <span className="text-[11px] text-ink-secondary">{label}</span>
     </button>
   );
@@ -212,14 +263,32 @@ export default function HomeScreen() {
   const { data: ordersData } = useQuery({ queryKey: ['orders'], queryFn: () => API.orders.list() });
 
   const orders: Order[] = ordersData?.orders ?? [];
-  const activeOrder = useMemo(() => orders.find((o) => o.status === 'processing' || o.status === 'shipping'), [orders]);
+  const activeOrder = useMemo(
+    () => orders.find((o) => o.status === 'processing' || o.status === 'shipping'),
+    [orders],
+  );
 
   const { data: promosData } = useQuery({ queryKey: ['promos'], queryFn: () => API.promos.list() });
-  const { data: claimsData } = useQuery({ queryKey: ['my-promos'], queryFn: () => API.promos.mine() });
+  const { data: claimsData } = useQuery({
+    queryKey: ['my-promos'],
+    queryFn: () => API.promos.mine(),
+  });
   useQuery({ queryKey: ['jastipers'], queryFn: () => API.jastipers.list(), staleTime: 60000 });
-  const { data: popularData } = useQuery({ queryKey: ['jastipers-popular'], queryFn: () => API.jastipers.popular(), staleTime: 60000 });
-  const { data: newestData } = useQuery({ queryKey: ['jastipers-newest'], queryFn: () => API.jastipers.newest(), staleTime: 60000 });
-  const { data: favoritesData } = useQuery({ queryKey: ['favorites'], queryFn: () => API.favorites.list(), staleTime: 30000 });
+  const { data: popularData } = useQuery({
+    queryKey: ['jastipers-popular'],
+    queryFn: () => API.jastipers.popular(),
+    staleTime: 60000,
+  });
+  const { data: newestData } = useQuery({
+    queryKey: ['jastipers-newest'],
+    queryFn: () => API.jastipers.newest(),
+    staleTime: 60000,
+  });
+  const { data: favoritesData } = useQuery({
+    queryKey: ['favorites'],
+    queryFn: () => API.favorites.list(),
+    staleTime: 30000,
+  });
   const favorites: Jastiper[] = favoritesData?.favorites ?? [];
   const popularJastipers: Jastiper[] = popularData?.jastipers ?? [];
   const newestJastipers: Jastiper[] = newestData?.jastipers ?? [];
@@ -237,52 +306,64 @@ export default function HomeScreen() {
 
   const customPromosList = useMemo(() => {
     const rawList: any[] = promosData?.promos ?? [];
-    return rawList
-      .map((p) => {
-        const details = [];
-        if (p.subtitle) details.push(p.subtitle);
-        if (p.minTransaction > 0) details.push(`Minimal transaksi ${formatRupiah(p.minTransaction)}`);
-        
-        let promoVal = '';
-        if (p.type === 'discount' && p.discountPercent) {
-          promoVal = `Diskon ${p.discountPercent}%` + (p.maxDiscount ? ` s.d ${formatRupiah(p.maxDiscount)}` : '');
-        } else if (p.type === 'cashback') {
-          promoVal = `Potongan langsung ${formatRupiah(p.discountFlat)}`;
-        } else if (p.type === 'gratis_ongkir') {
-          promoVal = `Gratis Ongkir` + (p.maxDiscount ? ` s.d ${formatRupiah(p.maxDiscount)}` : '');
-        }
-        if (promoVal) details.push(promoVal);
-        
-        details.push(p.category === 'all' ? 'Berlaku untuk semua layanan Truzzi' : `Khusus layanan ${p.category === 'jastip' ? 'Jastip' : 'Suruh'}`);
-        
-        let periodText = 'Berlaku s.d. Selesai';
-        if (p.startDate && p.endDate) {
-          const start = new Date(p.startDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
-          const end = new Date(p.endDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
-          periodText = `${start} - ${end}`;
-        }
-        
-        const terms = [
-          'Syarat & Ketentuan berlaku',
-          'Promo tidak dapat digabungkan dengan promo lain',
-          'Truzzi berhak membatalkan promo bila ditemukan kecurangan',
-        ];
-        if (p.quota > 0) terms.unshift(`Kuota promo terbatas!`);
+    return rawList.map((p) => {
+      const details = [];
+      if (p.subtitle) details.push(p.subtitle);
+      if (p.minTransaction > 0) details.push(`Minimal transaksi ${formatRupiah(p.minTransaction)}`);
 
-        return {
-          badge: p.badge || 'PROMO TRUZZI',
-          badgeIcon: Sparkles,
-          title: p.title,
-          subtitle: p.subtitle || '',
-          code: p.code || 'TRUZZI',
-          gradient: p.gradient || 'from-primary via-primary-dark to-[#5C1A3A]',
-          accent: p.accent || 'text-primary-dark',
-          image: p.imageUrl,
-          detail: details,
-          period: periodText,
-          terms: terms,
-        };
-      });
+      let promoVal = '';
+      if (p.type === 'discount' && p.discountPercent) {
+        promoVal =
+          `Diskon ${p.discountPercent}%` +
+          (p.maxDiscount ? ` s.d ${formatRupiah(p.maxDiscount)}` : '');
+      } else if (p.type === 'cashback') {
+        promoVal = `Potongan langsung ${formatRupiah(p.discountFlat)}`;
+      } else if (p.type === 'gratis_ongkir') {
+        promoVal = `Gratis Ongkir` + (p.maxDiscount ? ` s.d ${formatRupiah(p.maxDiscount)}` : '');
+      }
+      if (promoVal) details.push(promoVal);
+
+      details.push(
+        p.category === 'all'
+          ? 'Berlaku untuk semua layanan Truzzi'
+          : `Khusus layanan ${p.category === 'jastip' ? 'Jastip' : 'Suruh'}`,
+      );
+
+      let periodText = 'Berlaku s.d. Selesai';
+      if (p.startDate && p.endDate) {
+        const start = new Date(p.startDate).toLocaleDateString('id-ID', {
+          day: 'numeric',
+          month: 'short',
+        });
+        const end = new Date(p.endDate).toLocaleDateString('id-ID', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+        });
+        periodText = `${start} - ${end}`;
+      }
+
+      const terms = [
+        'Syarat & Ketentuan berlaku',
+        'Promo tidak dapat digabungkan dengan promo lain',
+        'Truzzi berhak membatalkan promo bila ditemukan kecurangan',
+      ];
+      if (p.quota > 0) terms.unshift(`Kuota promo terbatas!`);
+
+      return {
+        badge: p.badge || 'PROMO TRUZZI',
+        badgeIcon: Sparkles,
+        title: p.title,
+        subtitle: p.subtitle || '',
+        code: p.code || 'TRUZZI',
+        gradient: p.gradient || 'from-primary via-primary-dark to-[#5C1A3A]',
+        accent: p.accent || 'text-primary-dark',
+        image: p.imageUrl,
+        detail: details,
+        period: periodText,
+        terms: terms,
+      };
+    });
   }, [promosData]);
 
   const allSlides = customPromosList;
@@ -298,10 +379,16 @@ export default function HomeScreen() {
             </h1>
             <p className="text-sm text-white/70 mt-1">Mau dibantuin apa hari ini?</p>
             <button
-              onClick={() => enqueueSnackbar('Pilih lokasi baru di form pemesanan', { variant: 'info' })}
+              onClick={() =>
+                enqueueSnackbar('Pilih lokasi baru di form pemesanan', { variant: 'info' })
+              }
               className="mt-3 inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-[20px] bg-white/15 border border-white/35 text-white text-[11px] font-medium max-w-full"
             >
-              {loc.status === 'loading' ? <MyLocation className="w-3.5 h-3.5 shrink-0" /> : <MapPin className="w-3.5 h-3.5 shrink-0" />}
+              {loc.status === 'loading' ? (
+                <MyLocation className="w-3.5 h-3.5 shrink-0" />
+              ) : (
+                <MapPin className="w-3.5 h-3.5 shrink-0" />
+              )}
               <span className="min-w-0 truncate">
                 {loc.status === 'ready'
                   ? loc.address
@@ -312,7 +399,11 @@ export default function HomeScreen() {
               <ChevronDown className="w-4 h-4 text-white/80 shrink-0" />
             </button>
           </div>
-          <img src={jastiperRunning} alt="" className="w-20 h-20 object-contain rounded-xl shrink-0" />
+          <img
+            src={jastiperRunning}
+            alt=""
+            className="w-20 h-20 object-contain rounded-xl shrink-0"
+          />
         </div>
 
         {/* Search */}
@@ -342,8 +433,12 @@ export default function HomeScreen() {
                 <BagService className="w-[42px] h-[42px] rounded-xl object-contain" />
               </span>
               <div className="text-left min-w-0">
-                <p className="font-bold text-base leading-tight text-ink">Yuk, Eksplore Open Trip & Jastip disini!</p>
-                <p className="text-xs text-ink-secondary mt-0.5 truncate">Open Trip, Oleh-Oleh &amp; Titip Belanja</p>
+                <p className="font-bold text-base leading-tight text-ink">
+                  Yuk, Eksplore Open Trip & Jastip disini!
+                </p>
+                <p className="text-xs text-ink-secondary mt-0.5 truncate">
+                  Open Trip, Oleh-Oleh &amp; Titip Belanja
+                </p>
               </div>
             </div>
             <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover:translate-x-0.5 transition-transform ml-2">
@@ -354,20 +449,44 @@ export default function HomeScreen() {
 
         {/* Quick actions */}
         <div className="px-6 mt-6 flex justify-around">
-          <QuickAction icon={<History className="w-6 h-6 text-primary" />} label="Riwayat" onClick={() => navigate('/main?tab=orders&filter=completed')} />
-          <QuickAction icon={<PlusCircle className="w-6 h-6 text-primary" />} label="Buka Jastip" onClick={() => navigate('/jastip/manage')} />
-          <QuickAction icon={<Ticket className="w-6 h-6 text-primary" />} label="Voucher" onClick={() => navigate('/vouchers')} />
-          <QuickAction icon={<HelpCircle className="w-6 h-6 text-primary" />} label="Bantuan" onClick={() => navigate('/profile/help')} />
+          <QuickAction
+            icon={<History className="w-6 h-6 text-primary" />}
+            label="Riwayat"
+            onClick={() => navigate('/main?tab=orders&filter=completed')}
+          />
+          <QuickAction
+            icon={<PlusCircle className="w-6 h-6 text-primary" />}
+            label="Buka Jastip"
+            onClick={() => navigate('/jastip/manage')}
+          />
+          <QuickAction
+            icon={<Ticket className="w-6 h-6 text-primary" />}
+            label="Voucher"
+            onClick={() => navigate('/vouchers')}
+          />
+          <QuickAction
+            icon={<HelpCircle className="w-6 h-6 text-primary" />}
+            label="Bantuan"
+            onClick={() => navigate('/profile/help')}
+          />
         </div>
 
         {/* Active Order Tracker */}
         {activeOrder && (
           <div className="px-6 mt-6">
-            <div className="card p-4" style={{ borderColor: 'rgba(127,29,58,0.2)', boxShadow: '0 4px 12px rgba(127,29,58,0.05)' }}>
+            <div
+              className="card p-4"
+              style={{
+                borderColor: 'rgba(127,29,58,0.2)',
+                boxShadow: '0 4px 12px rgba(127,29,58,0.05)',
+              }}
+            >
               <div className="flex items-center justify-between gap-2">
                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#E8F5E9]">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#2E7D32]" />
-                  <span className="text-[10px] font-bold text-[#2E7D32] uppercase">{activeOrder.statusText}</span>
+                  <span className="text-[10px] font-bold text-[#2E7D32] uppercase">
+                    {activeOrder.statusText}
+                  </span>
                 </span>
                 <span className="text-xs font-bold text-primary shrink-0">Sedang Proses</span>
               </div>
@@ -384,11 +503,17 @@ export default function HomeScreen() {
                     {activeOrder.serviceName} - {activeOrder.title}
                   </p>
                   <p className="text-[11px] leading-snug mt-1 text-ink-secondary line-clamp-2">
-                    {activeOrder.statusText || (activeOrder.jastiperId ? 'Jastiper sedang memproses pesananmu' : 'Sedang mencari jastiper...')}
+                    {activeOrder.statusText ||
+                      (activeOrder.jastiperId
+                        ? 'Jastiper sedang memproses pesananmu'
+                        : 'Sedang mencari jastiper...')}
                   </p>
                 </div>
               </div>
-              <button onClick={() => navigate('/tracking', { state: { order: activeOrder } })} className="btn-primary mt-3.5 !h-[38px] text-xs">
+              <button
+                onClick={() => navigate('/tracking', { state: { order: activeOrder } })}
+                className="btn-primary mt-3.5 !h-[38px] text-xs"
+              >
                 Lacak Jastiper Langsung
               </button>
             </div>
@@ -397,7 +522,12 @@ export default function HomeScreen() {
 
         {/* Promo Carousel — gabungkan bawaan + custom promo dari admin */}
         <div className="mt-6">
-          <Carousel autoSlide={true} autoSlideInterval={5000} showIndicators={true} showArrows={false}>
+          <Carousel
+            autoSlide={true}
+            autoSlideInterval={5000}
+            showIndicators={true}
+            showArrows={false}
+          >
             {allSlides.map((slide, idx) => (
               <PromoSlide key={slide.code + '_' + idx} slide={slide} onOpen={setSelectedPromo} />
             ))}
@@ -412,23 +542,38 @@ export default function HomeScreen() {
                 <h2 className="text-base font-bold">Jastiper Terbaru</h2>
                 <p className="text-xs text-ink-secondary mt-0.5">Jastiper yang baru bergabung</p>
               </div>
-              <button onClick={() => navigate('/jastip')} className="text-xs text-primary font-semibold shrink-0 flex items-center gap-1">
+              <button
+                onClick={() => navigate('/jastip')}
+                className="text-xs text-primary font-semibold shrink-0 flex items-center gap-1"
+              >
                 Lihat Semua <ArrowRight className="w-3 h-3" />
               </button>
             </div>
             <div className="mt-3.5 px-6 flex gap-3.5 overflow-x-auto no-scrollbar">
               {newestJastipers.slice(0, 5).map((j) => (
-                <button key={j.id} onClick={() => setSelectedJastiper(j)} className="card w-[140px] shrink-0 text-left overflow-hidden hover:shadow-soft transition-shadow">
+                <button
+                  key={j.id}
+                  onClick={() => setSelectedJastiper(j)}
+                  className="card w-[140px] shrink-0 text-left overflow-hidden hover:shadow-soft transition-shadow"
+                >
                   <div className="h-[80px] bg-surface rounded-xl flex items-center justify-center overflow-hidden">
-                    {j.photoUrl ? <img src={j.photoUrl} alt="" className="w-full h-full object-cover" /> : <span className="text-3xl">📦</span>}
+                    {j.photoUrl ? (
+                      <img src={j.photoUrl} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-3xl">📦</span>
+                    )}
                   </div>
                   <div className="p-3">
                     <p className="text-[12px] font-bold truncate">{j.name}</p>
                     <div className="flex items-center gap-1 mt-0.5">
                       <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
-                      <span className="text-[10px] text-ink-secondary">{Number(j.rating || 0).toFixed(1)}</span>
+                      <span className="text-[10px] text-ink-secondary">
+                        {Number(j.rating || 0).toFixed(1)}
+                      </span>
                     </div>
-                    {j.area && <p className="text-[9px] text-ink-secondary mt-0.5 truncate">{j.area}</p>}
+                    {j.area && (
+                      <p className="text-[9px] text-ink-secondary mt-0.5 truncate">{j.area}</p>
+                    )}
                   </div>
                 </button>
               ))}
@@ -441,18 +586,35 @@ export default function HomeScreen() {
           <div className="mt-7">
             <div className="px-6 flex items-center justify-between">
               <div className="min-w-0">
-                <h2 className="text-base font-bold flex items-center gap-2">Jastiper Terpopuler <Flame className="w-5 h-5 text-amber-500" /></h2>
-                <p className="text-xs text-ink-secondary mt-0.5">Jastiper dengan rating tertinggi</p>
+                <h2 className="text-base font-bold flex items-center gap-2">
+                  Jastiper Terpopuler <Flame className="w-5 h-5 text-amber-500" />
+                </h2>
+                <p className="text-xs text-ink-secondary mt-0.5">
+                  Jastiper dengan rating tertinggi
+                </p>
               </div>
-              <button onClick={() => navigate('/jastip')} className="text-xs text-primary font-semibold shrink-0 flex items-center gap-1">
+              <button
+                onClick={() => navigate('/jastip')}
+                className="text-xs text-primary font-semibold shrink-0 flex items-center gap-1"
+              >
                 Lihat Semua <ArrowRight className="w-3 h-3" />
               </button>
             </div>
             <div className="mt-3.5 px-6 space-y-3">
               {popularJastipers.slice(0, 3).map((j, i) => (
-                <button key={j.id} onClick={() => setSelectedJastiper(j)} className="w-full text-left flex items-center gap-3 card p-3 hover:shadow-soft transition-shadow">
+                <button
+                  key={j.id}
+                  onClick={() => setSelectedJastiper(j)}
+                  className="w-full text-left flex items-center gap-3 card p-3 hover:shadow-soft transition-shadow"
+                >
                   <span className="text-sm font-bold text-ink-secondary w-5">#{i + 1}</span>
-                  {j.photoUrl ? <img src={j.photoUrl} alt="" className="w-12 h-12 rounded-xl object-cover" /> : <span className="w-12 h-12 rounded-xl bg-surface flex items-center justify-center text-xl">📦</span>}
+                  {j.photoUrl ? (
+                    <img src={j.photoUrl} alt="" className="w-12 h-12 rounded-xl object-cover" />
+                  ) : (
+                    <span className="w-12 h-12 rounded-xl bg-surface flex items-center justify-center text-xl">
+                      📦
+                    </span>
+                  )}
                   <div className="flex-1 min-w-0">
                     <p className="font-bold text-sm truncate">{j.name}</p>
                     <div className="flex items-center gap-1">
@@ -462,28 +624,32 @@ export default function HomeScreen() {
                       </span>
                     </div>
                   </div>
-                  {j.status === 'online' && <span className="w-2 h-2 rounded-full bg-success shrink-0" />}
+                  {j.status === 'online' && (
+                    <span className="w-2 h-2 rounded-full bg-success shrink-0" />
+                  )}
                 </button>
               ))}
             </div>
           </div>
         )}
-
-
-
       </div>
 
       {/* Bottom sheet detail promo */}
-      <PromoDetailSheet 
-        slide={selectedPromo} 
-        onClose={() => setSelectedPromo(null)} 
-        isClaimed={selectedPromo ? myClaims.some(c => c.promo?.code === selectedPromo.code) : false}
+      <PromoDetailSheet
+        slide={selectedPromo}
+        onClose={() => setSelectedPromo(null)}
+        isClaimed={
+          selectedPromo ? myClaims.some((c) => c.promo?.code === selectedPromo.code) : false
+        }
         onClaim={handleClaim}
       />
 
       {/* Jastiper Detail Sheet */}
       {selectedJastiper && (
-        <div className="fixed inset-0 z-[1500] bg-black/40 flex items-end justify-center" onClick={() => setSelectedJastiper(null)}>
+        <div
+          className="fixed inset-0 z-[1500] bg-black/40 flex items-end justify-center"
+          onClick={() => setSelectedJastiper(null)}
+        >
           <div
             className="bg-white w-full max-w-lg rounded-t-3xl p-6 max-h-[85vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
@@ -495,16 +661,26 @@ export default function HomeScreen() {
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">
                 {selectedJastiper.photoUrl ? (
-                  <img src={selectedJastiper.photoUrl} alt="" className="w-16 h-16 rounded-2xl object-cover border border-border" />
+                  <img
+                    src={selectedJastiper.photoUrl}
+                    alt=""
+                    className="w-16 h-16 rounded-2xl object-cover border border-border"
+                  />
                 ) : (
-                  <span className="w-16 h-16 rounded-2xl bg-surface border border-border flex items-center justify-center text-3xl">📦</span>
+                  <span className="w-16 h-16 rounded-2xl bg-surface border border-border flex items-center justify-center text-3xl">
+                    📦
+                  </span>
                 )}
                 <div>
                   <h3 className="font-bold text-base text-ink">{selectedJastiper.name}</h3>
                   <div className="flex items-center gap-1 mt-0.5">
                     <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                    <span className="text-xs font-bold text-ink">{Number(selectedJastiper.rating || 0).toFixed(1)}</span>
-                    <span className="text-xs text-ink-secondary">({selectedJastiper.totalOrders ?? 0} pesanan)</span>
+                    <span className="text-xs font-bold text-ink">
+                      {Number(selectedJastiper.rating || 0).toFixed(1)}
+                    </span>
+                    <span className="text-xs text-ink-secondary">
+                      ({selectedJastiper.totalOrders ?? 0} pesanan)
+                    </span>
                   </div>
                   {selectedJastiper.area && (
                     <div className="flex items-center gap-1 mt-0.5">
@@ -535,7 +711,9 @@ export default function HomeScreen() {
               >
                 <Heart
                   className={`w-5 h-5 ${
-                    favorites.some((f) => f.id === selectedJastiper.id) ? 'text-error fill-error' : 'text-ink-secondary'
+                    favorites.some((f) => f.id === selectedJastiper.id)
+                      ? 'text-error fill-error'
+                      : 'text-ink-secondary'
                   }`}
                 />
               </button>
@@ -546,7 +724,10 @@ export default function HomeScreen() {
                 <p className="text-xs font-semibold text-ink-secondary mb-1.5">Layanan Unggulan:</p>
                 <div className="flex flex-wrap gap-1.5">
                   {selectedJastiper.services.map((s) => (
-                    <span key={s} className="px-2.5 py-1 rounded-lg bg-primary/10 text-primary text-xs font-medium">
+                    <span
+                      key={s}
+                      className="px-2.5 py-1 rounded-lg bg-primary/10 text-primary text-xs font-medium"
+                    >
                       {s}
                     </span>
                   ))}
@@ -557,19 +738,25 @@ export default function HomeScreen() {
             {/* Produk Jastip */}
             {selectedJastiper.products && selectedJastiper.products.length > 0 && (
               <div className="mt-5">
-                <p className="text-xs font-semibold text-ink-secondary mb-2">Katalog Jastip Tersedia:</p>
+                <p className="text-xs font-semibold text-ink-secondary mb-2">
+                  Katalog Jastip Tersedia:
+                </p>
                 <div className="space-y-2">
                   {selectedJastiper.products.map((p) => (
                     <div key={p.id} className="card p-3 flex items-center justify-between gap-3">
                       <div className="min-w-0">
                         <p className="text-xs font-bold text-ink truncate">{p.title}</p>
                         <p className="text-[11px] text-ink-secondary truncate">{p.description}</p>
-                        <p className="text-xs font-bold text-primary mt-1">{formatRupiah(p.price)}</p>
+                        <p className="text-xs font-bold text-primary mt-1">
+                          {formatRupiah(p.price)}
+                        </p>
                       </div>
                       <button
                         onClick={() => {
                           setSelectedJastiper(null);
-                          navigate('/jastip/form', { state: { item: p.title, budget: String(p.price) } });
+                          navigate('/jastip/form', {
+                            state: { item: p.title, budget: String(p.price) },
+                          });
                         }}
                         className="btn-primary !h-8 !w-auto px-3 text-[11px] font-semibold shrink-0"
                       >

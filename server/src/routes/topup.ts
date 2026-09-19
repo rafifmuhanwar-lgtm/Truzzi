@@ -48,7 +48,10 @@ async function creditTopUp(txn: any): Promise<void> {
     totalTopUp: Number(wallet.totalTopUp ?? 0) + amount,
     updatedAt: new Date().toISOString(),
   });
-  await db.updateTopUp(txn.$id ?? txn.id, { status: 'completed', completedAt: new Date().toISOString() });
+  await db.updateTopUp(txn.$id ?? txn.id, {
+    status: 'completed',
+    completedAt: new Date().toISOString(),
+  });
   await createNotification({
     userId: txn.userId,
     category: 'Sistem & Akun',
@@ -95,14 +98,21 @@ router.post('/', requireUser, async (req: Request, res: Response) => {
     if (provider === 'buatqris' && !config.buatqris.accountId) {
       return res.status(201).json({
         topup: txn,
-        payment: { total_amount: amount, status: 'pending', demo: true, message: 'BUATQRIS_ACCOUNT_ID belum diisi — mode demo.' },
+        payment: {
+          total_amount: amount,
+          status: 'pending',
+          demo: true,
+          message: 'BUATQRIS_ACCOUNT_ID belum diisi — mode demo.',
+        },
       });
     }
 
     const callbackUrl = `${config.server.webOrigin.replace(/\/$/, '')}/api/topup/webhook`;
     const isTest = config.buatqris.sandbox && config.payment.provider === 'buatqris';
     // Coba beberapa metode QRIS berurutan; biarkan default bila gagal semua.
-    const qrisMethods = req.body?.qrisMethod ? [req.body.qrisMethod] : ['qris_one', 'qris_two', 'qris_three', 'qris_four'];
+    const qrisMethods = req.body?.qrisMethod
+      ? [req.body.qrisMethod]
+      : ['qris_one', 'qris_two', 'qris_three', 'qris_four'];
     let result: Awaited<ReturnType<typeof buatqris.createQris>> | null = null;
     let lastError = '';
     for (const m of qrisMethods) {
@@ -148,7 +158,9 @@ router.post('/', requireUser, async (req: Request, res: Response) => {
     });
   } catch (e) {
     console.error(e);
-    res.status(400).json({ message: `Gagal membuat pembayaran: ${e instanceof Error ? e.message : e}` });
+    res
+      .status(400)
+      .json({ message: `Gagal membuat pembayaran: ${e instanceof Error ? e.message : e}` });
   }
 });
 
@@ -169,7 +181,11 @@ router.post('/webhook', async (req: Request, res: Response) => {
     const payload = req.body as any;
     const transactionId = String(payload.transaction_id ?? '');
 
-    if (event === 'payment.success' || payload.event === 'payment.success' || payload.status === 'success') {
+    if (
+      event === 'payment.success' ||
+      payload.event === 'payment.success' ||
+      payload.status === 'success'
+    ) {
       const txn = await db.getTopUpByRef(transactionId);
       if (txn) {
         await creditTopUp(txn);
@@ -177,7 +193,12 @@ router.post('/webhook', async (req: Request, res: Response) => {
       } else {
         console.log(`[buatqris] webhook success untuk transaksi tak dikenal: ${transactionId}`);
       }
-    } else if (event === 'payment.expired' || event === 'payment.failed' || payload.status === 'expired' || payload.status === 'failed') {
+    } else if (
+      event === 'payment.expired' ||
+      event === 'payment.failed' ||
+      payload.status === 'expired' ||
+      payload.status === 'failed'
+    ) {
       const txn = await db.getTopUpByRef(transactionId);
       if (txn && (txn.status ?? 'pending') === 'pending') {
         await db.updateTopUp(txn.$id ?? txn.id, { status: 'failed' });
@@ -245,7 +266,11 @@ router.post('/:id/simulate', requireUser, async (req: Request, res: Response) =>
       console.log(`[buatqris] test_pay ${refId} — menunggu webhook payment.success`);
       // Jangan kredit di sini; biarkan webhook melakukannya (uji alur penuh).
       const fresh = (await db.getTopUp(req.params.id)) ?? txn;
-      return res.json({ topup: fresh, waitingWebhook: true, message: 'Menandai lunas (test). Saldo dikredit setelah webhook.' });
+      return res.json({
+        topup: fresh,
+        waitingWebhook: true,
+        message: 'Menandai lunas (test). Saldo dikredit setelah webhook.',
+      });
     } catch (e) {
       console.error('[buatqris] test_pay gagal:', e instanceof Error ? e.message : e);
       // Fallback: bila test_pay ditolak (mis. butuh sesi login pemilik), kredit lokal agar tetap bisa uji.

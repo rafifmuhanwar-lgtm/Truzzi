@@ -1,17 +1,17 @@
-import "dotenv/config";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "./src/generated/prisma/client.js";
+import 'dotenv/config';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { PrismaClient } from './src/generated/prisma/client.js';
 
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL ?? "" });
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL ?? '' });
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
   try {
     const user = await prisma.user.create({
-      data: { email: 'test-courier@x.id', name: 'Test', passwordHash: 'x', role: 'courier' }
+      data: { email: 'test-courier@x.id', name: 'Test', passwordHash: 'x', role: 'courier' },
     });
     const courier = await prisma.courier.create({
-      data: { id: user.id, name: 'Test', email: user.email }
+      data: { id: user.id, name: 'Test', email: user.email },
     });
     console.log('Created:', courier.id);
 

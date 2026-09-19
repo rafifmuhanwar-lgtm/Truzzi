@@ -10,9 +10,15 @@ function Avatar({ room }: { room: ChatRoom }) {
   return (
     <span className="relative shrink-0">
       {room.avatarUrl ? (
-        <img src={room.avatarUrl} alt="" className="w-11 h-11 rounded-full object-cover border border-gray-200" />
+        <img
+          src={room.avatarUrl}
+          alt=""
+          className="w-11 h-11 rounded-full object-cover border border-gray-200"
+        />
       ) : (
-        <span className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center text-primary text-base">👤</span>
+        <span className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center text-primary text-base">
+          👤
+        </span>
       )}
     </span>
   );
@@ -21,7 +27,10 @@ function Avatar({ room }: { room: ChatRoom }) {
 export default function ChatList() {
   const navigate = useNavigate();
   const [q, setQ] = useState('');
-  const { data, isLoading } = useQuery({ queryKey: ['chat-rooms'], queryFn: () => API.chat.rooms() });
+  const { data, isLoading } = useQuery({
+    queryKey: ['chat-rooms'],
+    queryFn: () => API.chat.rooms(),
+  });
   const rooms: ChatRoom[] = data?.rooms ?? [];
 
   const filtered = rooms.filter((r) => {
@@ -31,19 +40,22 @@ export default function ChatList() {
     // Search query
     const query = q.trim().toLowerCase();
     if (query) {
-      const hay = `${r.id} ${r.senderName} ${r.serviceType} ${r.orderTitle ?? ''} ${r.lastMessage}`.toLowerCase();
+      const hay =
+        `${r.id} ${r.senderName} ${r.serviceType} ${r.orderTitle ?? ''} ${r.lastMessage}`.toLowerCase();
       if (!hay.includes(query)) return false;
     }
     return true;
   });
-
 
   const totalUnread = rooms.reduce((acc, r) => acc + (r.unreadCount || 0), 0);
 
   return (
     <div className="min-h-0 bg-background pb-10">
       {/* Header burgundy melengkung */}
-      <div className="bg-primary rounded-b-[28px] px-5 pt-6 pb-5" style={{ boxShadow: '0 5px 15px rgba(127,29,58,0.25)' }}>
+      <div
+        className="bg-primary rounded-b-[28px] px-5 pt-6 pb-5"
+        style={{ boxShadow: '0 5px 15px rgba(127,29,58,0.25)' }}
+      >
         <div className="max-w-lg mx-auto">
           <div className="flex items-center justify-between">
             <div>
@@ -73,8 +85,6 @@ export default function ChatList() {
         </div>
       </div>
 
-
-
       <div className="mt-4 px-4 pb-8 space-y-2 max-w-lg mx-auto">
         {isLoading ? (
           <p className="text-center text-xs text-gray-400 py-12">Memuat obrolan...</p>
@@ -96,10 +106,14 @@ export default function ChatList() {
                 <div className="flex items-center justify-between gap-1">
                   <p className="font-semibold text-sm text-gray-900 truncate">{room.senderName}</p>
                 </div>
-                <p className="text-xs text-gray-500 mt-1 truncate font-normal">{room.lastMessage}</p>
+                <p className="text-xs text-gray-500 mt-1 truncate font-normal">
+                  {room.lastMessage}
+                </p>
               </div>
               <div className="flex flex-col items-end gap-2 shrink-0">
-                <span className="text-[11px] font-medium text-ink-secondary">{formatRoomTime(room.lastMessageTime)}</span>
+                <span className="text-[11px] font-medium text-ink-secondary">
+                  {formatRoomTime(room.lastMessageTime)}
+                </span>
                 {room.unreadCount > 0 && (
                   <span className="min-w-5 h-5 px-1.5 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center shrink-0">
                     {room.unreadCount}

@@ -15,12 +15,15 @@ export default function LoginScreen() {
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
-    if (emailInvalid(email)) return enqueueSnackbar('Format email tidak valid', { variant: 'error' });
+    if (emailInvalid(email))
+      return enqueueSnackbar('Format email tidak valid', { variant: 'error' });
     if (!password) return enqueueSnackbar('Password tidak boleh kosong', { variant: 'error' });
-    if (password.length < 8) return enqueueSnackbar('Password minimal 8 karakter', { variant: 'error' });
+    if (password.length < 8)
+      return enqueueSnackbar('Password minimal 8 karakter', { variant: 'error' });
     await login(email.trim(), password);
     if (useAuthStore.getState().status === 'authenticated') navigate('/main', { replace: true });
-    else if (useAuthStore.getState().errorMessage) enqueueSnackbar(useAuthStore.getState().errorMessage, { variant: 'error' });
+    else if (useAuthStore.getState().errorMessage)
+      enqueueSnackbar(useAuthStore.getState().errorMessage, { variant: 'error' });
   };
 
   const handleGoogle = async () => {
@@ -73,7 +76,11 @@ export default function LoginScreen() {
                 className="absolute right-3 top-1/2 -translate-y-1/2"
                 aria-label="Tampilkan password"
               >
-                {showPass ? <EyeOff className="w-5 h-5 text-ink-secondary" /> : <Eye className="w-5 h-5 text-ink-secondary" />}
+                {showPass ? (
+                  <EyeOff className="w-5 h-5 text-ink-secondary" />
+                ) : (
+                  <Eye className="w-5 h-5 text-ink-secondary" />
+                )}
               </button>
             </div>
           </div>

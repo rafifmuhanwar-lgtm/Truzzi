@@ -35,9 +35,13 @@ function Row({
 }) {
   return (
     <button onClick={onClick} className="w-full flex items-center gap-3.5 py-3.5 text-left">
-      <span className="w-9 h-9 rounded-xl bg-primary/8 flex items-center justify-center shrink-0">{icon}</span>
+      <span className="w-9 h-9 rounded-xl bg-primary/8 flex items-center justify-center shrink-0">
+        {icon}
+      </span>
       <span className="flex-1 min-w-0">
-        <span className={`block text-sm font-medium ${danger ? 'text-error' : 'text-ink'}`}>{label}</span>
+        <span className={`block text-sm font-medium ${danger ? 'text-error' : 'text-ink'}`}>
+          {label}
+        </span>
         {sub && <span className="block text-xs text-ink-secondary truncate">{sub}</span>}
       </span>
       <ChevronRight className="w-4 h-4 text-ink-secondary shrink-0" />
@@ -67,7 +71,13 @@ export default function ProfileScreen() {
   const stats = useMemo(() => {
     const total = orders.length;
     const completed = orders.filter((o) => o.status === 'completed').length;
-    const active = orders.filter((o) => o.status === 'processing' || o.status === 'pending' || o.status === 'shipping' || o.status === 'bought').length;
+    const active = orders.filter(
+      (o) =>
+        o.status === 'processing' ||
+        o.status === 'pending' ||
+        o.status === 'shipping' ||
+        o.status === 'bought',
+    ).length;
     const cancelled = orders.filter((o) => o.status === 'cancelled').length;
     const successRate = total > 0 ? Math.round((completed / total) * 100) : 100;
     return { total, completed, active, cancelled, successRate };
@@ -85,7 +95,11 @@ export default function ProfileScreen() {
       <div className="bg-primary rounded-b-[28px] px-6 pt-8 pb-8 text-white">
         <div className="flex items-center gap-4">
           {user?.photoUrl ? (
-            <img src={user.photoUrl} alt="" className="w-16 h-16 rounded-full object-cover border-2 border-white/40" />
+            <img
+              src={user.photoUrl}
+              alt=""
+              className="w-16 h-16 rounded-full object-cover border-2 border-white/40"
+            />
           ) : (
             <span className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center">
               <UserIcon className="w-9 h-9 text-white" />
@@ -153,8 +167,6 @@ export default function ProfileScreen() {
           </div>
         </div>
 
-
-
         {/* Akun & Pembayaran */}
         <div className="card-pad divide-y divide-divider">
           <Row
@@ -195,12 +207,16 @@ export default function ProfileScreen() {
             label="Tentang Aplikasi"
             onClick={() => navigate('/profile/about')}
           />
-
         </div>
 
         {/* Keluar */}
         <div className="card-pad">
-          <Row icon={<LogOut className="w-5 h-5 text-error" />} label="Keluar" danger onClick={handleLogout} />
+          <Row
+            icon={<LogOut className="w-5 h-5 text-error" />}
+            label="Keluar"
+            danger
+            onClick={handleLogout}
+          />
         </div>
 
         <p className="text-center text-xs text-ink-secondary pt-2">Truzzi v1.0.0 — by Truzzi</p>

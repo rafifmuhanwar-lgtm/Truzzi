@@ -52,7 +52,9 @@ export default function SavedAddresses() {
   };
 
   const remove = async (a: Address) => {
-    const ok = window.confirm(`Apakah kamu yakin ingin menghapus alamat "${a.label} - ${a.recipientName}"?`);
+    const ok = window.confirm(
+      `Apakah kamu yakin ingin menghapus alamat "${a.label} - ${a.recipientName}"?`,
+    );
     if (!ok) return;
     try {
       await API.addresses.remove(a.id);
@@ -64,7 +66,10 @@ export default function SavedAddresses() {
   };
 
   const selectToUse = (a: Address) => {
-    if (locationState?.select_for === 'delivery' || (locationState?.select_for as string | undefined)?.startsWith('delivery')) {
+    if (
+      locationState?.select_for === 'delivery' ||
+      (locationState?.select_for as string | undefined)?.startsWith('delivery')
+    ) {
       emitAddressPicked({ address: a.fullAddress, data: a });
     }
     navigate(-1);
@@ -73,7 +78,9 @@ export default function SavedAddresses() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="bg-surface px-4 py-3 flex items-center gap-3 sticky top-0 z-10 border-b border-divider">
-        <button onClick={() => navigate(-1)} aria-label="Kembali"><ArrowLeft className="w-6 h-6 text-primary" /></button>
+        <button onClick={() => navigate(-1)} aria-label="Kembali">
+          <ArrowLeft className="w-6 h-6 text-primary" />
+        </button>
         <h1 className="font-semibold text-lg text-ink">Alamat Saya</h1>
       </header>
 
@@ -97,7 +104,11 @@ export default function SavedAddresses() {
         ) : (
           <div className="flex flex-col">
             {addresses.map((a) => (
-              <div key={a.id} onClick={() => selectToUse(a)} className="px-4 py-4 border-b border-divider cursor-pointer">
+              <div
+                key={a.id}
+                onClick={() => selectToUse(a)}
+                className="px-4 py-4 border-b border-divider cursor-pointer"
+              >
                 <div className="flex justify-between items-start">
                   <div>
                     <h3 className="font-bold text-sm text-ink">{a.recipientName || a.label}</h3>
@@ -107,11 +118,12 @@ export default function SavedAddresses() {
                       </p>
                       {(a.village || a.district || a.city || a.province) && (
                         <p className="uppercase mt-0.5">
-                          {[a.village, a.district, a.city, a.province].filter(Boolean).join(', ')}{a.postalCode ? `, ID ${a.postalCode}` : ''}
+                          {[a.village, a.district, a.city, a.province].filter(Boolean).join(', ')}
+                          {a.postalCode ? `, ID ${a.postalCode}` : ''}
                         </p>
                       )}
                     </div>
-                    
+
                     <div className="mt-2.5 flex items-center gap-2">
                       {a.isPrimary && (
                         <span className="inline-block px-1.5 py-0.5 rounded border border-primary text-primary text-[10px] font-medium">
@@ -119,17 +131,33 @@ export default function SavedAddresses() {
                         </span>
                       )}
                       {!a.isPrimary && (
-                        <button onClick={(e) => { e.stopPropagation(); setPrimary(a); }} className="text-[10px] font-medium text-ink-secondary underline">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setPrimary(a);
+                          }}
+                          className="text-[10px] font-medium text-ink-secondary underline"
+                        >
                           Jadikan Utama
                         </button>
                       )}
                     </div>
                   </div>
-                  
-                  <div className="flex flex-col items-end justify-between h-full py-1 shrink-0" onClick={(e) => e.stopPropagation()}>
-                    <button onClick={() => setModal(a)} className="text-primary text-sm font-semibold p-2 -mr-2">Edit</button>
+
+                  <div
+                    className="flex flex-col items-end justify-between h-full py-1 shrink-0"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <button
+                      onClick={() => setModal(a)}
+                      className="text-primary text-sm font-semibold p-2 -mr-2"
+                    >
+                      Edit
+                    </button>
                     {!a.isPrimary && (
-                      <button onClick={() => remove(a)} className="p-2 -mr-2 mt-4"><Trash2 className="w-4 h-4 text-error" /></button>
+                      <button onClick={() => remove(a)} className="p-2 -mr-2 mt-4">
+                        <Trash2 className="w-4 h-4 text-error" />
+                      </button>
                     )}
                   </div>
                 </div>
@@ -140,12 +168,21 @@ export default function SavedAddresses() {
       </div>
 
       <div className="sticky bottom-0 bg-white px-4 pt-3 pb-5 border-t border-divider z-20">
-        <button className="w-full py-3 rounded-lg border border-primary text-primary font-semibold flex items-center justify-center gap-2 active:bg-primary/5 transition-colors" onClick={() => setModal('new')}>
+        <button
+          className="w-full py-3 rounded-lg border border-primary text-primary font-semibold flex items-center justify-center gap-2 active:bg-primary/5 transition-colors"
+          onClick={() => setModal('new')}
+        >
           <Plus className="w-5 h-5" /> Tambah Alamat Baru
         </button>
       </div>
 
-      {modal && <AddressModal address={modal === 'new' ? null : modal} onClose={() => setModal(null)} onSave={save} />}
+      {modal && (
+        <AddressModal
+          address={modal === 'new' ? null : modal}
+          onClose={() => setModal(null)}
+          onSave={save}
+        />
+      )}
     </div>
   );
 }
@@ -166,7 +203,15 @@ interface AddressFormData {
   isPrimary?: boolean;
 }
 
-function AddressModal({ address, onClose, onSave }: { address: Address | null; onClose: () => void; onSave: (f: AddressFormData) => void }) {
+function AddressModal({
+  address,
+  onClose,
+  onSave,
+}: {
+  address: Address | null;
+  onClose: () => void;
+  onSave: (f: AddressFormData) => void;
+}) {
   const [form, setForm] = useState<AddressFormData>({
     label: address?.label ?? 'Rumah',
     recipientName: address?.recipientName ?? '',
@@ -202,7 +247,12 @@ function AddressModal({ address, onClose, onSave }: { address: Address | null; o
   // Fetch Regencies
   useEffect(() => {
     if (!selectedProv) {
-      setRegencies([]); setSelectedReg(''); setDistricts([]); setSelectedDist(''); setVillages([]); setSelectedVill('');
+      setRegencies([]);
+      setSelectedReg('');
+      setDistricts([]);
+      setSelectedDist('');
+      setVillages([]);
+      setSelectedVill('');
       return;
     }
     fetch(`/wilayah/api/regencies/${selectedProv}.json`)
@@ -214,7 +264,10 @@ function AddressModal({ address, onClose, onSave }: { address: Address | null; o
   // Fetch Districts
   useEffect(() => {
     if (!selectedReg) {
-      setDistricts([]); setSelectedDist(''); setVillages([]); setSelectedVill('');
+      setDistricts([]);
+      setSelectedDist('');
+      setVillages([]);
+      setSelectedVill('');
       return;
     }
     fetch(`/wilayah/api/districts/${selectedReg}.json`)
@@ -226,7 +279,8 @@ function AddressModal({ address, onClose, onSave }: { address: Address | null; o
   // Fetch Villages
   useEffect(() => {
     if (!selectedDist) {
-      setVillages([]); setSelectedVill('');
+      setVillages([]);
+      setSelectedVill('');
       return;
     }
     fetch(`/wilayah/api/villages/${selectedDist}.json`)
@@ -240,10 +294,10 @@ function AddressModal({ address, onClose, onSave }: { address: Address | null; o
     if (!form.fullAddress.trim()) return;
 
     // Build the final form data mapping the selected region codes to their names
-    const provName = provinces.find(p => p.code === selectedProv)?.name || form.province;
-    const regName = regencies.find(r => r.code === selectedReg)?.name || form.city;
-    const distName = districts.find(d => d.code === selectedDist)?.name || form.district;
-    const villName = villages.find(v => v.code === selectedVill)?.name || form.village;
+    const provName = provinces.find((p) => p.code === selectedProv)?.name || form.province;
+    const regName = regencies.find((r) => r.code === selectedReg)?.name || form.city;
+    const distName = districts.find((d) => d.code === selectedDist)?.name || form.district;
+    const villName = villages.find((v) => v.code === selectedVill)?.name || form.village;
 
     onSave({
       ...form,
@@ -268,10 +322,17 @@ function AddressModal({ address, onClose, onSave }: { address: Address | null; o
   );
 
   return (
-    <div className="fixed inset-0 z-[1500] bg-black/40 flex items-end sm:items-center justify-center overflow-y-auto" onClick={onClose}>
-      <form onSubmit={submit} onClick={(e) => e.stopPropagation()} className="bg-white w-full sm:max-w-lg sm:rounded-3xl rounded-t-3xl p-6 space-y-3 mt-auto sm:my-auto max-h-[90vh] overflow-y-auto">
+    <div
+      className="fixed inset-0 z-[1500] bg-black/40 flex items-end sm:items-center justify-center overflow-y-auto"
+      onClick={onClose}
+    >
+      <form
+        onSubmit={submit}
+        onClick={(e) => e.stopPropagation()}
+        className="bg-white w-full sm:max-w-lg sm:rounded-3xl rounded-t-3xl p-6 space-y-3 mt-auto sm:my-auto max-h-[90vh] overflow-y-auto"
+      >
         <h3 className="text-lg font-bold">{address ? 'Edit Alamat' : 'Tambah Alamat Baru'}</h3>
-        
+
         <div>
           <label className="text-xs font-medium mb-1 block text-ink-secondary">Label</label>
           <select
@@ -295,12 +356,16 @@ function AddressModal({ address, onClose, onSave }: { address: Address | null; o
             >
               <option value="">{form.province || 'Pilih Provinsi...'}</option>
               {provinces.map((p) => (
-                <option key={p.code} value={p.code}>{p.name}</option>
+                <option key={p.code} value={p.code}>
+                  {p.name}
+                </option>
               ))}
             </select>
           </div>
           <div>
-            <label className="text-xs font-medium mb-1 block text-ink-secondary">Kota/Kabupaten</label>
+            <label className="text-xs font-medium mb-1 block text-ink-secondary">
+              Kota/Kabupaten
+            </label>
             <select
               value={selectedReg}
               onChange={(e) => setSelectedReg(e.target.value)}
@@ -309,7 +374,9 @@ function AddressModal({ address, onClose, onSave }: { address: Address | null; o
             >
               <option value="">{form.city || 'Pilih Kota...'}</option>
               {regencies.map((r) => (
-                <option key={r.code} value={r.code}>{r.name}</option>
+                <option key={r.code} value={r.code}>
+                  {r.name}
+                </option>
               ))}
             </select>
           </div>
@@ -326,12 +393,16 @@ function AddressModal({ address, onClose, onSave }: { address: Address | null; o
             >
               <option value="">{form.district || 'Pilih Kecamatan...'}</option>
               {districts.map((d) => (
-                <option key={d.code} value={d.code}>{d.name}</option>
+                <option key={d.code} value={d.code}>
+                  {d.name}
+                </option>
               ))}
             </select>
           </div>
           <div>
-            <label className="text-xs font-medium mb-1 block text-ink-secondary">Desa/Kelurahan</label>
+            <label className="text-xs font-medium mb-1 block text-ink-secondary">
+              Desa/Kelurahan
+            </label>
             <select
               value={selectedVill}
               onChange={(e) => setSelectedVill(e.target.value)}
@@ -340,7 +411,9 @@ function AddressModal({ address, onClose, onSave }: { address: Address | null; o
             >
               <option value="">{form.village || 'Pilih Desa...'}</option>
               {villages.map((v) => (
-                <option key={v.code} value={v.code}>{v.name}</option>
+                <option key={v.code} value={v.code}>
+                  {v.name}
+                </option>
               ))}
             </select>
           </div>
@@ -352,8 +425,16 @@ function AddressModal({ address, onClose, onSave }: { address: Address | null; o
           </div>
         </div>
 
-        {input('fullAddress', 'Nama Jalan, Gedung, Perumahan', 'Cth: Perumahan Griya Setu, Jl. Dahlia V No. 20')}
-        {input('details', 'Detail RT/RW, Blok, Patokan (Opsional)', 'Cth: RT 11/RW 10, Blok D5, Pagar Hitam')}
+        {input(
+          'fullAddress',
+          'Nama Jalan, Gedung, Perumahan',
+          'Cth: Perumahan Griya Setu, Jl. Dahlia V No. 20',
+        )}
+        {input(
+          'details',
+          'Detail RT/RW, Blok, Patokan (Opsional)',
+          'Cth: RT 11/RW 10, Blok D5, Pagar Hitam',
+        )}
 
         <div className="flex items-center justify-between py-2 border-t border-b border-divider mt-2">
           <div className="min-w-0 pr-4">
@@ -361,8 +442,8 @@ function AddressModal({ address, onClose, onSave }: { address: Address | null; o
             <p className="text-[11px] text-ink-secondary">Gunakan alamat ini sebagai prioritas</p>
           </div>
           <label className="relative inline-flex items-center cursor-pointer shrink-0">
-            <input 
-              type="checkbox" 
+            <input
+              type="checkbox"
               className="sr-only peer"
               checked={form.isPrimary}
               onChange={(e) => setForm((f) => ({ ...f, isPrimary: e.target.checked }))}
@@ -372,11 +453,14 @@ function AddressModal({ address, onClose, onSave }: { address: Address | null; o
         </div>
 
         <div className="flex gap-2 pt-2">
-          <button type="button" className="btn-outline flex-1" onClick={onClose}>Batal</button>
-          <button type="submit" className="btn-primary flex-1">{address ? 'Simpan' : 'Simpan'}</button>
+          <button type="button" className="btn-outline flex-1" onClick={onClose}>
+            Batal
+          </button>
+          <button type="submit" className="btn-primary flex-1">
+            {address ? 'Simpan' : 'Simpan'}
+          </button>
         </div>
       </form>
     </div>
   );
 }
-

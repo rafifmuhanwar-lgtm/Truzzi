@@ -32,7 +32,9 @@ export default function OrderDetail() {
     const watchId = navigator.geolocation.watchPosition(
       (pos) => {
         if (stop) return;
-        void API.jastiper.sendLocation(order.$id ?? order.id, pos.coords.latitude, pos.coords.longitude).catch(() => {});
+        void API.jastiper
+          .sendLocation(order.$id ?? order.id, pos.coords.latitude, pos.coords.longitude)
+          .catch(() => {});
       },
       () => {},
       { enableHighAccuracy: true, maximumAge: 15000 },
@@ -119,22 +121,33 @@ export default function OrderDetail() {
   function openNavigation() {
     if (!order) return;
     const isPickup = (order.statusText ?? '') === 'Menuju Lokasi';
-    
+
     // First try using exact string address if available, otherwise fallback to coordinates
     let destination = '';
-    
+
     if (isPickup) {
-      destination = order.pickupAddress ? encodeURIComponent(order.pickupAddress) : (order.pickupLat && order.pickupLng ? `${order.pickupLat},${order.pickupLng}` : '');
+      destination = order.pickupAddress
+        ? encodeURIComponent(order.pickupAddress)
+        : order.pickupLat && order.pickupLng
+          ? `${order.pickupLat},${order.pickupLng}`
+          : '';
     } else {
       // For dropoff, the detailed address is usually better for maps than default coordinates
-      destination = order.deliveryAddress ? encodeURIComponent(order.deliveryAddress) : (order.dropoffLat && order.dropoffLng ? `${order.dropoffLat},${order.dropoffLng}` : '');
+      destination = order.deliveryAddress
+        ? encodeURIComponent(order.deliveryAddress)
+        : order.dropoffLat && order.dropoffLng
+          ? `${order.dropoffLat},${order.dropoffLng}`
+          : '';
     }
 
     if (!destination) {
       enqueueSnackbar('Alamat tujuan tidak tersedia', { variant: 'warning' });
       return;
     }
-    window.open(`https://www.google.com/maps/dir/?api=1&destination=${destination}&travelmode=driving`, '_blank');
+    window.open(
+      `https://www.google.com/maps/dir/?api=1&destination=${destination}&travelmode=driving`,
+      '_blank',
+    );
   }
 
   if (!order) {
@@ -151,10 +164,15 @@ export default function OrderDetail() {
       {/* AppBar */}
       <div className="bg-primary px-4 pt-4 pb-5 sticky top-0 z-20">
         <div className="flex items-center gap-2">
-          <button onClick={() => navigate(-1)} className="p-2 -ml-2 text-white rounded-full hover:bg-white/10">
+          <button
+            onClick={() => navigate(-1)}
+            className="p-2 -ml-2 text-white rounded-full hover:bg-white/10"
+          >
             <ArrowLeft size={22} />
           </button>
-          <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold text-white ${type === 'jastip' ? 'bg-success' : 'bg-warning'}`}>
+          <span
+            className={`px-2 py-0.5 rounded-full text-[11px] font-bold text-white ${type === 'jastip' ? 'bg-success' : 'bg-warning'}`}
+          >
             {type === 'jastip' ? 'Jastip' : 'Suruh'}
           </span>
           <h1 className="text-white font-semibold truncate">{order.title}</h1>
@@ -165,17 +183,23 @@ export default function OrderDetail() {
         {/* Tombol Navigasi Cepat Google Maps */}
         <div className="card-pad bg-gradient-to-r from-primary to-primary-light text-white space-y-2.5 shadow-md">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold tracking-wider uppercase opacity-90">RUTE &amp; NAVIGASI</span>
-            <span className="text-xs font-semibold bg-white/20 px-2 py-0.5 rounded-full">Google Maps</span>
+            <span className="text-[11px] font-bold tracking-wider uppercase opacity-90">
+              RUTE &amp; NAVIGASI
+            </span>
+            <span className="text-xs font-semibold bg-white/20 px-2 py-0.5 rounded-full">
+              Google Maps
+            </span>
           </div>
           <p className="text-xs opacity-90 leading-relaxed">
-            Gunakan navigasi Google Maps untuk petunjuk arah real-time ke lokasi {(order.statusText ?? '') === 'Menuju Lokasi' ? 'Pengambilan' : 'Tujuan'}.
+            Gunakan navigasi Google Maps untuk petunjuk arah real-time ke lokasi{' '}
+            {(order.statusText ?? '') === 'Menuju Lokasi' ? 'Pengambilan' : 'Tujuan'}.
           </p>
           <button
             onClick={openNavigation}
             className="w-full h-11 rounded-xl bg-white text-primary font-bold text-xs hover:bg-white/90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-sm"
           >
-            <Navigation size={16} /> Buka Navigasi ke {(order.statusText ?? '') === 'Menuju Lokasi' ? 'Pickup' : 'Tujuan'}
+            <Navigation size={16} /> Buka Navigasi ke{' '}
+            {(order.statusText ?? '') === 'Menuju Lokasi' ? 'Pickup' : 'Tujuan'}
           </button>
         </div>
 
@@ -193,7 +217,9 @@ export default function OrderDetail() {
           </div>
           <div className="border-t border-divider pt-3">
             <p className="text-small font-semibold text-ink">Deskripsi Pesanan</p>
-            <p className="text-body2 mt-0.5 whitespace-pre-line">{order.description || 'Tidak ada deskripsi'}</p>
+            <p className="text-body2 mt-0.5 whitespace-pre-line">
+              {order.description || 'Tidak ada deskripsi'}
+            </p>
           </div>
         </div>
 
@@ -243,8 +269,9 @@ function Row({ label, value, bold }: { label: string; value: string; bold?: bool
   return (
     <div className="flex items-center justify-between">
       <span className={`text-body2 ${bold ? 'font-bold' : 'text-ink-secondary'}`}>{label}</span>
-      <span className={`${bold ? 'font-bold text-primary' : 'font-semibold'} text-body2`}>{value}</span>
+      <span className={`${bold ? 'font-bold text-primary' : 'font-semibold'} text-body2`}>
+        {value}
+      </span>
     </div>
   );
 }
-

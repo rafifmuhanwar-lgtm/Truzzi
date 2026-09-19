@@ -12,9 +12,7 @@ export default function ChatList() {
     queryFn: () => API.chat.rooms(),
     refetchInterval: 8000,
   });
-  const rooms = (data?.rooms ?? []).filter(r => !r.isSupport);
-
-
+  const rooms = (data?.rooms ?? []).filter((r) => !r.isSupport);
 
   return (
     <div className="px-5 py-5">
@@ -49,7 +47,11 @@ function RoomRow({ room }: { room: ChatRoom }) {
           <Headset size={22} className="text-primary" />
         </span>
       ) : (
-        <img src={room.avatarUrl} alt={room.senderName} className="w-12 h-12 rounded-full object-cover shrink-0" />
+        <img
+          src={room.avatarUrl}
+          alt={room.senderName}
+          className="w-12 h-12 rounded-full object-cover shrink-0"
+        />
       )}
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between gap-2">
@@ -58,7 +60,9 @@ function RoomRow({ room }: { room: ChatRoom }) {
         <p className="text-xs text-ink-secondary mt-1 truncate">{room.lastMessage}</p>
       </div>
       <div className="flex flex-col items-end gap-2 shrink-0">
-        <span className="text-[11px] font-medium text-ink-secondary">{formatRoomTime(room.lastMessageTime)}</span>
+        <span className="text-[11px] font-medium text-ink-secondary">
+          {formatRoomTime(room.lastMessageTime)}
+        </span>
         {room.unreadCount > 0 && (
           <span className="min-w-5 h-5 px-1.5 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center shrink-0">
             {room.unreadCount}

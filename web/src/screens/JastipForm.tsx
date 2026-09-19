@@ -23,8 +23,6 @@ export default function JastipForm() {
   const [dropoffData, setDropoffData] = useState<Partial<Address> | null>(null);
   const [dropoffMapLink, setDropoffMapLink] = useState('');
 
-
-
   useEffect(() => {
     const p = consumeAddressPicked();
     if (p) {
@@ -35,7 +33,8 @@ export default function JastipForm() {
 
   const submit = () => {
     if (!item.trim()) return enqueueSnackbar('Detail barang harus diisi', { variant: 'error' });
-    if (!dropoffAddress.trim()) return enqueueSnackbar('Alamat pengantaran tujuan harus diisi', { variant: 'error' });
+    if (!dropoffAddress.trim())
+      return enqueueSnackbar('Alamat pengantaran tujuan harus diisi', { variant: 'error' });
 
     // Gabungkan link maps / patokan ke notes jika ada
     let combinedNotes = notes.trim();
@@ -97,7 +96,9 @@ export default function JastipForm() {
                 </label>
                 <button
                   type="button"
-                  onClick={() => navigate('/jastip/delivery-address', { state: { from: 'jastip' } })}
+                  onClick={() =>
+                    navigate('/jastip/delivery-address', { state: { from: 'jastip' } })
+                  }
                   className="inline-flex items-center gap-1 text-[11px] font-bold text-primary hover:underline"
                 >
                   <MapIcon className="w-3.5 h-3.5" /> Pilih Alamat Tersimpan
@@ -125,7 +126,9 @@ export default function JastipForm() {
               {dropoffData && (
                 <div className="flex items-center gap-1.5 text-[10px] text-emerald-700 bg-emerald-50 rounded-lg px-2 py-1">
                   <CheckCircle2 className="w-3 h-3 shrink-0" />
-                  <span className="truncate">Tersambung ke alamat tersimpan: <strong>{dropoffData.label || 'Utama'}</strong></span>
+                  <span className="truncate">
+                    Tersambung ke alamat tersimpan: <strong>{dropoffData.label || 'Utama'}</strong>
+                  </span>
                 </div>
               )}
             </div>

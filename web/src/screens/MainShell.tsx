@@ -35,8 +35,12 @@ export default function MainShell() {
     navigate(`/main?tab=${TABS[i].id}`, { replace: true });
   }
 
-  const { data: roomData } = useQuery({ queryKey: ['chat-rooms'], queryFn: () => API.chat.rooms(), refetchInterval: 8000 });
-  
+  const { data: roomData } = useQuery({
+    queryKey: ['chat-rooms'],
+    queryFn: () => API.chat.rooms(),
+    refetchInterval: 8000,
+  });
+
   const hasUnreadChat = (roomData?.rooms ?? []).some((r: any) => (r.unreadCount || 0) > 0);
 
   const { load } = useNotificationStore();
@@ -82,7 +86,10 @@ export default function MainShell() {
                 aria-label={t.label}
               >
                 <div className="relative">
-                  <Icon className={`w-6 h-6 ${active ? 'text-primary' : 'text-ink-secondary'}`} strokeWidth={active ? 2.4 : 2} />
+                  <Icon
+                    className={`w-6 h-6 ${active ? 'text-primary' : 'text-ink-secondary'}`}
+                    strokeWidth={active ? 2.4 : 2}
+                  />
                   {t.id === 'chat' && hasUnreadChat && (
                     <span className="absolute -top-1 -right-1 flex h-3 w-3">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-error opacity-75"></span>
@@ -90,7 +97,11 @@ export default function MainShell() {
                     </span>
                   )}
                 </div>
-                <span className={`text-[11px] ${active ? 'text-primary font-semibold' : 'text-ink-secondary'}`}>{t.label}</span>
+                <span
+                  className={`text-[11px] ${active ? 'text-primary font-semibold' : 'text-ink-secondary'}`}
+                >
+                  {t.label}
+                </span>
               </button>
             );
           })}

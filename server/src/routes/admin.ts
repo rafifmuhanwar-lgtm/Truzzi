@@ -27,7 +27,10 @@ router.post('/login', async (req: Request, res: Response) => {
     }
 
     const token = jwt.sign({ id: admin.id, role: admin.role }, JWT_SECRET, { expiresIn: '1d' });
-    res.json({ token, user: { id: admin.id, name: admin.name, email: admin.email, role: admin.role } });
+    res.json({
+      token,
+      user: { id: admin.id, name: admin.name, email: admin.email, role: admin.role },
+    });
   } catch (e) {
     console.error('Login error:', e);
     res.status(500).json({ error: 'Internal server error' });
@@ -37,22 +40,22 @@ router.post('/login', async (req: Request, res: Response) => {
 // Protect all routes below this line
 router.use(adminAuth);
 
-
-
 // GET /api/admin/stats — Ringkasan statistik platform
 router.get('/stats', async (_req: Request, res: Response) => {
   try {
     // 1. Ambil data pesanan
-    const orders = await (db as any).listAllOrders?.() ?? [];
-    const gigs = await (db as any).listAllGigs?.() ?? [];
-    const withdrawals = await (db as any).listAllWithdrawals?.() ?? [];
-    const jastipers = await (db as any).listAllJastipers?.() ?? [];
-    const users = await (db as any).listAllUsers?.() ?? [];
+    const orders = (await (db as any).listAllOrders?.()) ?? [];
+    const gigs = (await (db as any).listAllGigs?.()) ?? [];
+    const withdrawals = (await (db as any).listAllWithdrawals?.()) ?? [];
+    const jastipers = (await (db as any).listAllJastipers?.()) ?? [];
+    const users = (await (db as any).listAllUsers?.()) ?? [];
 
     const totalOrdersCount = orders.length;
     const completedOrders = orders.filter((o: any) => o.status === 'completed');
-    const ongoingOrders = orders.filter((o: any) => ['ongoing', 'accepted', 'on_the_way'].includes(o.status));
-    
+    const ongoingOrders = orders.filter((o: any) =>
+      ['ongoing', 'accepted', 'on_the_way'].includes(o.status),
+    );
+
     // Hitung total nilai transaksi & estimasi admin fee
     let totalGMV = 0;
     let totalPlatformFee = 0;
@@ -91,7 +94,7 @@ router.get('/stats', async (_req: Request, res: Response) => {
 // GET /api/admin/withdrawals — Daftar semua penarikan saldo
 router.get('/withdrawals', async (_req: Request, res: Response) => {
   try {
-    const withdrawals = await (db as any).listAllWithdrawals?.() ?? [];
+    const withdrawals = (await (db as any).listAllWithdrawals?.()) ?? [];
     res.json({ withdrawals });
   } catch (e) {
     console.error(e);
@@ -113,7 +116,11 @@ router.post('/withdrawals/:id/approve', async (req: Request, res: Response) => {
         routeName: '/profile/payment',
       });
     }
-    res.json({ success: true, message: 'Penarikan saldo disetujui & berhasil ditransfer!', withdrawal: updated });
+    res.json({
+      success: true,
+      message: 'Penarikan saldo disetujui & berhasil ditransfer!',
+      withdrawal: updated,
+    });
   } catch (e) {
     console.error(e);
     res.status(500).json({ message: 'Gagal menyetujui penarikan saldo' });
@@ -134,7 +141,11 @@ router.post('/withdrawals/:id/reject', async (req: Request, res: Response) => {
         routeName: '/profile/payment',
       });
     }
-    res.json({ success: true, message: 'Penarikan saldo ditolak dan saldo dikembalikan', withdrawal: updated });
+    res.json({
+      success: true,
+      message: 'Penarikan saldo ditolak dan saldo dikembalikan',
+      withdrawal: updated,
+    });
   } catch (e) {
     console.error(e);
     res.status(500).json({ message: 'Gagal menolak penarikan saldo' });
@@ -180,7 +191,7 @@ router.post('/promos', async (req: Request, res: Response) => {
       imageUrl: body.imageUrl ? String(body.imageUrl) : undefined,
       gradient: body.gradient || 'from-[#7F1D3A] via-[#5C1A3A] to-[#3B0E1E]',
       accent: body.accent || 'text-white',
-      
+
       // Advanced fields
       type: body.type,
       category: body.category,
@@ -196,7 +207,9 @@ router.post('/promos', async (req: Request, res: Response) => {
       isNewUserOnly: body.isNewUserOnly,
     });
 
-    res.status(201).json({ success: true, message: 'Banner promo berhasil ditambahkan!', promo: newPromo });
+    res
+      .status(201)
+      .json({ success: true, message: 'Banner promo berhasil ditambahkan!', promo: newPromo });
   } catch (e) {
     console.error(e);
     res.status(500).json({ message: 'Gagal membuat banner promo' });
@@ -337,4 +350,3 @@ router.delete('/gigs/:id', async (req: Request, res: Response) => {
 });
 
 export default router;
-

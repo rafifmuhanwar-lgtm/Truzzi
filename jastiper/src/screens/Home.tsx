@@ -65,7 +65,9 @@ export default function Home() {
               user?.isOnline ? 'bg-emerald-600 text-white' : 'bg-black/25 text-white/80'
             }`}
           >
-            <span className={`w-2 h-2 rounded-full ${user?.isOnline ? 'bg-white' : 'bg-white/40'}`} />
+            <span
+              className={`w-2 h-2 rounded-full ${user?.isOnline ? 'bg-white' : 'bg-white/40'}`}
+            />
             {user?.isOnline ? 'Online' : 'Offline'}
           </button>
         </div>
@@ -94,11 +96,15 @@ export default function Home() {
           <div className="grid grid-cols-3 gap-2 pt-3 text-center">
             <div>
               <p className="text-[11px] text-stone-500">Hari Ini</p>
-              <p className="text-xs font-semibold text-stone-800 mt-0.5">{formatRupiah(earnings.hariIni)}</p>
+              <p className="text-xs font-semibold text-stone-800 mt-0.5">
+                {formatRupiah(earnings.hariIni)}
+              </p>
             </div>
             <div className="border-x border-stone-100">
               <p className="text-[11px] text-stone-500">Bulan Ini</p>
-              <p className="text-xs font-semibold text-stone-800 mt-0.5">{formatRupiah(earnings.bulanIni)}</p>
+              <p className="text-xs font-semibold text-stone-800 mt-0.5">
+                {formatRupiah(earnings.bulanIni)}
+              </p>
             </div>
             <div>
               <p className="text-[11px] text-stone-500">Poin</p>
@@ -152,7 +158,8 @@ export default function Home() {
           <div>
             <p className="text-xs font-medium text-stone-800">Tips Keselamatan</p>
             <p className="text-[11px] text-stone-500 leading-relaxed mt-0.5">
-              Selalu kenakan helm dan patuhi batas kecepatan selama proses pengantaran barang titipan.
+              Selalu kenakan helm dan patuhi batas kecepatan selama proses pengantaran barang
+              titipan.
             </p>
           </div>
         </div>
@@ -180,4 +187,3 @@ function MenuButton({
     </button>
   );
 }
-

@@ -5,14 +5,32 @@ import { API, errMsg } from '../lib/api';
 import type { JastiperProfile, JastipProduct } from '../types';
 import { useAuthStore } from '../store/auth';
 import {
-  ShoppingBag, Plus, Edit3, Trash2, Eye, EyeOff, MapPin, Clock,
-  ChevronRight, Sparkles, X, Star, Search, Package, Settings2, Camera,
+  ShoppingBag,
+  Plus,
+  Edit3,
+  Trash2,
+  Eye,
+  EyeOff,
+  MapPin,
+  Clock,
+  ChevronRight,
+  Sparkles,
+  X,
+  Star,
+  Search,
+  Package,
+  Settings2,
+  Camera,
 } from 'lucide-react';
 
 const PRESET_CATEGORIES = ['Kuliner', 'Home & Living', 'Beauty', 'Fashion', 'Snack', 'Umum'];
 
 function formatRupiah(n: number) {
-  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(n);
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+  }).format(n);
 }
 
 // ── Sub-components ──────────────────────────────────────────────────────────
@@ -55,7 +73,13 @@ function TripActiveCard({
                 title="Ganti Foto Banner Trip"
               >
                 <Camera size={12} />
-                <span>{uploadingCover ? 'Mengunggah...' : jastiper.coverUrl ? 'Ganti Banner' : 'Upload Banner'}</span>
+                <span>
+                  {uploadingCover
+                    ? 'Mengunggah...'
+                    : jastiper.coverUrl
+                      ? 'Ganti Banner'
+                      : 'Upload Banner'}
+                </span>
                 <input
                   type="file"
                   accept="image/*"
@@ -79,14 +103,18 @@ function TripActiveCard({
           </h2>
           <div className="flex items-center gap-1.5 text-[11px] text-white/90 mt-1 drop-shadow-sm">
             <MapPin size={12} className="shrink-0 text-amber-300" />
-            <span className="truncate">{jastiper.openTripDestination || jastiper.area || 'Belum diatur'}</span>
+            <span className="truncate">
+              {jastiper.openTripDestination || jastiper.area || 'Belum diatur'}
+            </span>
           </div>
         </div>
 
         <div className="relative z-10 flex items-center justify-between pt-2 text-xs border-t border-white/15 mt-2">
           <div className="flex items-center gap-1 text-white/90 text-[11px]">
             <Clock size={11} className="text-amber-300" />
-            <span>Tutup: <strong className="text-white">{jastiper.openTripClosing || '-'}</strong></span>
+            <span>
+              Tutup: <strong className="text-white">{jastiper.openTripClosing || '-'}</strong>
+            </span>
           </div>
           <div className="text-white/90 text-[11px]">
             Kirim: <strong className="text-emerald-300">{jastiper.openTripSchedule || '-'}</strong>
@@ -116,33 +144,50 @@ function TripActiveCard({
   );
 }
 
-function ProductCard({ product, onToggle, onEdit, onDelete }: {
+function ProductCard({
+  product,
+  onToggle,
+  onEdit,
+  onDelete,
+}: {
   product: JastipProduct;
   onToggle: () => void;
   onEdit: () => void;
   onDelete: () => void;
 }) {
   return (
-    <div className={`card p-3.5 border border-border/80 ${!product.published ? 'opacity-60 bg-surface/50' : 'bg-surface'}`}>
+    <div
+      className={`card p-3.5 border border-border/80 ${!product.published ? 'opacity-60 bg-surface/50' : 'bg-surface'}`}
+    >
       <div className="flex items-center justify-between gap-3">
         <div className="flex flex-1 items-center gap-3 min-w-0">
           {product.images && product.images.length > 0 && (
-            <img src={product.images[0]} alt={product.title} className="w-12 h-12 rounded-xl object-cover shrink-0 border border-border/60" />
+            <img
+              src={product.images[0]}
+              alt={product.title}
+              className="w-12 h-12 rounded-xl object-cover shrink-0 border border-border/60"
+            />
           )}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
               <p className="font-bold text-xs text-ink truncate">{product.title}</p>
-              <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold shrink-0 ${
-                product.published
-                  ? 'bg-emerald-500/15 text-emerald-700'
-                  : 'bg-ink-secondary/15 text-ink-secondary'
-              }`}>
+              <span
+                className={`px-2 py-0.5 rounded-full text-[9px] font-bold shrink-0 ${
+                  product.published
+                    ? 'bg-emerald-500/15 text-emerald-700'
+                    : 'bg-ink-secondary/15 text-ink-secondary'
+                }`}
+              >
                 {product.published ? 'AKTIF' : 'NONAKTIF'}
               </span>
             </div>
-            <p className="text-[11px] text-ink-secondary mt-0.5 line-clamp-2 leading-relaxed">{product.description || 'Tidak ada deskripsi'}</p>
+            <p className="text-[11px] text-ink-secondary mt-0.5 line-clamp-2 leading-relaxed">
+              {product.description || 'Tidak ada deskripsi'}
+            </p>
             <div className="flex items-center gap-2 mt-1">
-              <span className="text-xs font-bold text-primary truncate">{formatRupiah(product.price)}</span>
+              <span className="text-xs font-bold text-primary truncate">
+                {formatRupiah(product.price)}
+              </span>
               {product.category && (
                 <span className="px-2 py-0.5 rounded bg-primary/10 text-[10px] font-medium text-primary whitespace-nowrap shrink-0">
                   {product.category}
@@ -157,7 +202,11 @@ function ProductCard({ product, onToggle, onEdit, onDelete }: {
             className="w-8 h-8 rounded-full bg-surface border border-border flex items-center justify-center hover:bg-surface-hover active:scale-95"
             aria-label={product.published ? 'Nonaktifkan' : 'Aktifkan'}
           >
-            {product.published ? <EyeOff size={14} className="text-ink-secondary" /> : <Eye size={14} className="text-primary" />}
+            {product.published ? (
+              <EyeOff size={14} className="text-ink-secondary" />
+            ) : (
+              <Eye size={14} className="text-primary" />
+            )}
           </button>
           <button
             onClick={onEdit}
@@ -192,10 +241,18 @@ export default function JastipDashboard() {
   const [searchQ, setSearchQ] = useState('');
   const [showProductForm, setShowProductForm] = useState(false);
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
-  const [productForm, setProductForm] = useState({ title: '', description: '', price: '', category: 'Kuliner', images: [] as string[] });
+  const [productForm, setProductForm] = useState({
+    title: '',
+    description: '',
+    price: '',
+    category: 'Kuliner',
+    images: [] as string[],
+  });
   const [savingProduct, setSavingProduct] = useState(false);
   const [uploadingProductImage, setUploadingProductImage] = useState(false);
-  const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' | 'info' } | null>(null);
+  const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' | 'info' } | null>(
+    null,
+  );
 
   const showToast = (msg: string, type: 'success' | 'error' | 'info' = 'success') => {
     setToast({ msg, type });
@@ -213,7 +270,11 @@ export default function JastipDashboard() {
   const isJastiper = jastiperData?.isJastiper === true;
 
   // Fetch products
-  const { data: productsData, isLoading: loadingProducts, refetch: refetchProducts } = useQuery({
+  const {
+    data: productsData,
+    isLoading: loadingProducts,
+    refetch: refetchProducts,
+  } = useQuery({
     queryKey: ['jastip-products-mine'],
     queryFn: () => API.jastipProfile.products.list(),
     enabled: isJastiper,
@@ -297,7 +358,13 @@ export default function JastipDashboard() {
 
   const handleEditProduct = (p: JastipProduct) => {
     setEditingProductId(p.id);
-    setProductForm({ title: p.title, description: p.description ?? '', price: String(p.price), category: p.category || 'Kuliner', images: p.images || [] });
+    setProductForm({
+      title: p.title,
+      description: p.description ?? '',
+      price: String(p.price),
+      category: p.category || 'Kuliner',
+      images: p.images || [],
+    });
     setShowProductForm(true);
   };
 
@@ -330,9 +397,12 @@ export default function JastipDashboard() {
         <div className="px-5 -mt-4 space-y-4">
           <div className="card-pad space-y-4">
             <div className="text-4xl text-center">🛍️</div>
-            <h2 className="font-bold text-base text-ink text-center">Belum Terdaftar sebagai Jastiper</h2>
+            <h2 className="font-bold text-base text-ink text-center">
+              Belum Terdaftar sebagai Jastiper
+            </h2>
             <p className="text-xs text-ink-secondary text-center leading-relaxed">
-              Aktifkan mode Jastiper untuk membuka trip, mengelola katalog barang titipan, dan menerima pesanan dari customer langsung di driver app ini.
+              Aktifkan mode Jastiper untuk membuka trip, mengelola katalog barang titipan, dan
+              menerima pesanan dari customer langsung di driver app ini.
             </p>
             <div className="space-y-2.5 pt-1">
               {[
@@ -341,7 +411,10 @@ export default function JastipDashboard() {
                 { icon: '💰', text: 'Terima pembayaran aman via escrow Truzzi' },
                 { icon: '⭐', text: 'Bangun reputasi & rating jastiper terpercaya' },
               ].map((item, i) => (
-                <div key={i} className="flex items-center gap-3 p-2.5 bg-surface rounded-xl border border-border/60">
+                <div
+                  key={i}
+                  className="flex items-center gap-3 p-2.5 bg-surface rounded-xl border border-border/60"
+                >
                   <span className="text-lg">{item.icon}</span>
                   <p className="text-xs text-ink font-medium">{item.text}</p>
                 </div>
@@ -367,9 +440,15 @@ export default function JastipDashboard() {
     <div className="min-h-screen bg-background pb-4">
       {/* Toast */}
       {toast && (
-        <div className={`fixed top-4 left-1/2 -translate-x-1/2 z-[99] px-4 py-2.5 rounded-2xl text-white text-xs font-semibold shadow-xl max-w-[320px] text-center ${
-          toast.type === 'error' ? 'bg-red-500' : toast.type === 'info' ? 'bg-ink' : 'bg-emerald-600'
-        }`}>
+        <div
+          className={`fixed top-4 left-1/2 -translate-x-1/2 z-[99] px-4 py-2.5 rounded-2xl text-white text-xs font-semibold shadow-xl max-w-[320px] text-center ${
+            toast.type === 'error'
+              ? 'bg-red-500'
+              : toast.type === 'info'
+                ? 'bg-ink'
+                : 'bg-emerald-600'
+          }`}
+        >
           {toast.msg}
         </div>
       )}
@@ -404,10 +483,12 @@ export default function JastipDashboard() {
 
         {/* Tab Switcher */}
         <div className="bg-white border border-border/80 rounded-2xl p-1 flex gap-1 shadow-2xs">
-          {([
-            { key: 'trip' as ActiveTab, label: '🗺️ Info Trip' },
-            { key: 'produk' as ActiveTab, label: '📦 Katalog Produk' },
-          ] as const).map((t) => (
+          {(
+            [
+              { key: 'trip' as ActiveTab, label: '🗺️ Info Trip' },
+              { key: 'produk' as ActiveTab, label: '📦 Katalog Produk' },
+            ] as const
+          ).map((t) => (
             <button
               key={t.key}
               onClick={() => setActiveTab(t.key)}
@@ -435,12 +516,20 @@ export default function JastipDashboard() {
                 { label: 'Wilayah', value: jastiper.area || '-' },
                 { label: 'Kategori', value: jastiper.category || '-' },
                 { label: 'Estimasi Fee', value: jastiper.feeEstimate || '-' },
-                { label: 'Ongkir Flat', value: formatRupiah(jastiper.flatOngkir ?? 10000) + ' (Maks. 25rb)' },
+                {
+                  label: 'Ongkir Flat',
+                  value: formatRupiah(jastiper.flatOngkir ?? 10000) + ' (Maks. 25rb)',
+                },
                 { label: 'Bio', value: jastiper.bio || '-' },
               ].map((item) => (
-                <div key={item.label} className="flex items-start gap-3 border-b border-border/40 pb-2 last:border-0">
+                <div
+                  key={item.label}
+                  className="flex items-start gap-3 border-b border-border/40 pb-2 last:border-0"
+                >
                   <span className="text-[11px] text-ink-secondary w-28 shrink-0">{item.label}</span>
-                  <span className="text-[11px] font-semibold text-ink flex-1 leading-snug">{item.value}</span>
+                  <span className="text-[11px] font-semibold text-ink flex-1 leading-snug">
+                    {item.value}
+                  </span>
                 </div>
               ))}
             </div>
@@ -462,7 +551,13 @@ export default function JastipDashboard() {
                 onClick={() => {
                   setShowProductForm(true);
                   setEditingProductId(null);
-                  setProductForm({ title: '', description: '', price: '', category: 'Kuliner', images: [] });
+                  setProductForm({
+                    title: '',
+                    description: '',
+                    price: '',
+                    category: 'Kuliner',
+                    images: [],
+                  });
                 }}
                 className="h-10 px-4 rounded-xl bg-primary text-white font-bold text-xs shadow-sm shrink-0 flex items-center gap-1.5 hover:bg-primary/90 active:scale-95 transition-all"
               >
@@ -492,11 +587,15 @@ export default function JastipDashboard() {
                     <Sparkles size={14} className="text-primary" />
                     {editingProductId ? 'Edit Produk Jastip' : 'Tambah Produk Baru'}
                   </h3>
-                  <button onClick={cancelProductForm}><X size={16} className="text-ink-secondary" /></button>
+                  <button onClick={cancelProductForm}>
+                    <X size={16} className="text-ink-secondary" />
+                  </button>
                 </div>
 
                 <div>
-                  <label className="text-[11px] font-semibold text-ink-secondary">Nama / Judul Barang *</label>
+                  <label className="text-[11px] font-semibold text-ink-secondary">
+                    Nama / Judul Barang *
+                  </label>
                   <input
                     value={productForm.title}
                     onChange={(e) => setProductForm({ ...productForm, title: e.target.value })}
@@ -506,11 +605,17 @@ export default function JastipDashboard() {
                 </div>
 
                 <div>
-                  <label className="text-[11px] font-semibold text-ink-secondary">Foto Produk</label>
+                  <label className="text-[11px] font-semibold text-ink-secondary">
+                    Foto Produk
+                  </label>
                   <div className="mt-1 flex items-center gap-3">
                     {productForm.images.length > 0 && (
                       <div className="relative w-14 h-14 rounded-xl border border-border overflow-hidden shrink-0">
-                        <img src={productForm.images[0]} alt="preview" className="w-full h-full object-cover" />
+                        <img
+                          src={productForm.images[0]}
+                          alt="preview"
+                          className="w-full h-full object-cover"
+                        />
                         <button
                           onClick={() => setProductForm({ ...productForm, images: [] })}
                           className="absolute top-0.5 right-0.5 bg-black/50 rounded-full p-0.5"
@@ -552,10 +657,14 @@ export default function JastipDashboard() {
                 </div>
 
                 <div>
-                  <label className="text-[11px] font-semibold text-ink-secondary">Deskripsi & Varian</label>
+                  <label className="text-[11px] font-semibold text-ink-secondary">
+                    Deskripsi & Varian
+                  </label>
                   <textarea
                     value={productForm.description}
-                    onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
+                    onChange={(e) =>
+                      setProductForm({ ...productForm, description: e.target.value })
+                    }
                     placeholder="Cth: Varian jagung, keju, coklat. Fresh hari H."
                     rows={2}
                     className="w-full bg-background border border-border rounded-xl px-3 py-2 text-xs text-ink placeholder:text-ink-secondary/60 focus:outline-none focus:border-primary mt-1 resize-none"
@@ -564,7 +673,9 @@ export default function JastipDashboard() {
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="text-[11px] font-semibold text-ink-secondary">Harga (Rp) *</label>
+                    <label className="text-[11px] font-semibold text-ink-secondary">
+                      Harga (Rp) *
+                    </label>
                     <input
                       value={productForm.price}
                       onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
@@ -580,13 +691,20 @@ export default function JastipDashboard() {
                       onChange={(e) => setProductForm({ ...productForm, category: e.target.value })}
                       className="w-full bg-background border border-border rounded-xl px-3 py-2 text-xs text-ink focus:outline-none focus:border-primary mt-1"
                     >
-                      {PRESET_CATEGORIES.map((cat) => <option key={cat} value={cat}>{cat}</option>)}
+                      {PRESET_CATEGORIES.map((cat) => (
+                        <option key={cat} value={cat}>
+                          {cat}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </div>
 
                 <div className="flex gap-2 pt-1">
-                  <button onClick={cancelProductForm} className="flex-1 h-10 rounded-xl border border-border text-ink-secondary text-xs font-semibold hover:bg-surface active:scale-95 transition-all">
+                  <button
+                    onClick={cancelProductForm}
+                    className="flex-1 h-10 rounded-xl border border-border text-ink-secondary text-xs font-semibold hover:bg-surface active:scale-95 transition-all"
+                  >
                     Batal
                   </button>
                   <button
@@ -603,7 +721,9 @@ export default function JastipDashboard() {
             {/* Product List */}
             <div className="space-y-2.5">
               <div className="flex items-center justify-between">
-                <h3 className="font-bold text-xs text-ink">Daftar Produk ({filteredProducts.length})</h3>
+                <h3 className="font-bold text-xs text-ink">
+                  Daftar Produk ({filteredProducts.length})
+                </h3>
                 <span className="text-[11px] text-ink-secondary">Aktif tampil di publik</span>
               </div>
 

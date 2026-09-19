@@ -65,7 +65,9 @@ export default function Profile() {
           </div>
           <div className="rounded-btn bg-primary/5 border border-primary/20 p-3 text-center">
             <p className="text-small text-ink-secondary">Total Keseluruhan</p>
-            <p className="font-bold text-title mt-0.5 text-primary">{formatRupiah(earnings.total)}</p>
+            <p className="font-bold text-title mt-0.5 text-primary">
+              {formatRupiah(earnings.total)}
+            </p>
           </div>
           <button onClick={() => navigate('/profile/withdrawal')} className="btn-primary !h-11">
             Tarik Saldo
@@ -74,14 +76,42 @@ export default function Profile() {
 
         {/* Menu */}
         <div className="card divide-y divide-divider overflow-hidden">
-          <MenuItem to="/profile/edit" icon={<UserCog size={18} />} label="Edit Profil" sub="Ubah data diri dan kendaraan" />
-          <MenuItem to="/notifications" icon={<Bell size={18} />} label="Notifikasi" sub="Kirim dan lihat riwayat notifikasi" />
-          <MenuItem to="/profile/transactions" icon={<History size={18} />} label="Riwayat Transaksi" sub="Lihat daftar transaksi sebelumnya" />
-          <MenuItem to="/profile/help" icon={<LifeBuoy size={18} />} label="Pusat Bantuan" sub="FAQ dan layanan bantuan" />
-          <MenuItem to="/profile/settings" icon={<SettingsIcon size={18} />} label="Pengaturan" sub="Notifikasi, privasi dan keamanan" />
+          <MenuItem
+            to="/profile/edit"
+            icon={<UserCog size={18} />}
+            label="Edit Profil"
+            sub="Ubah data diri dan kendaraan"
+          />
+          <MenuItem
+            to="/notifications"
+            icon={<Bell size={18} />}
+            label="Notifikasi"
+            sub="Kirim dan lihat riwayat notifikasi"
+          />
+          <MenuItem
+            to="/profile/transactions"
+            icon={<History size={18} />}
+            label="Riwayat Transaksi"
+            sub="Lihat daftar transaksi sebelumnya"
+          />
+          <MenuItem
+            to="/profile/help"
+            icon={<LifeBuoy size={18} />}
+            label="Pusat Bantuan"
+            sub="FAQ dan layanan bantuan"
+          />
+          <MenuItem
+            to="/profile/settings"
+            icon={<SettingsIcon size={18} />}
+            label="Pengaturan"
+            sub="Notifikasi, privasi dan keamanan"
+          />
         </div>
 
-        <button onClick={() => void handleLogout()} className="btn-outline !border-error/40 !text-error flex items-center justify-center gap-2">
+        <button
+          onClick={() => void handleLogout()}
+          className="btn-outline !border-error/40 !text-error flex items-center justify-center gap-2"
+        >
           <LogOut size={16} /> Logout
         </button>
       </div>
@@ -89,10 +119,25 @@ export default function Profile() {
   );
 }
 
-function MenuItem({ to, icon, label, sub }: { to: string; icon: React.ReactNode; label: string; sub: string }) {
+function MenuItem({
+  to,
+  icon,
+  label,
+  sub,
+}: {
+  to: string;
+  icon: React.ReactNode;
+  label: string;
+  sub: string;
+}) {
   return (
-    <Link to={to} className="flex items-center gap-3 px-4 py-3.5 hover:bg-background/60 transition-colors">
-      <span className="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">{icon}</span>
+    <Link
+      to={to}
+      className="flex items-center gap-3 px-4 py-3.5 hover:bg-background/60 transition-colors"
+    >
+      <span className="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
+        {icon}
+      </span>
       <div className="min-w-0">
         <p className="font-semibold text-body2">{label}</p>
         <p className="text-small text-ink-secondary truncate">{sub}</p>
@@ -100,4 +145,3 @@ function MenuItem({ to, icon, label, sub }: { to: string; icon: React.ReactNode;
     </Link>
   );
 }
-

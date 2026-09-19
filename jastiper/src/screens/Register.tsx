@@ -41,7 +41,9 @@ export default function Register() {
     }
     try {
       await register(name.trim(), email.trim(), password, phone.trim());
-      enqueueSnackbar('Pendaftaran berhasil! Lengkapi data dan verifikasi.', { variant: 'success' });
+      enqueueSnackbar('Pendaftaran berhasil! Lengkapi data dan verifikasi.', {
+        variant: 'success',
+      });
       navigate('/kyc', { replace: true });
     } catch {
       /* errorMessage sudah di-set store */
@@ -66,12 +68,23 @@ export default function Register() {
 
         <div>
           <label className="text-sm font-medium text-ink">Nama Lengkap</label>
-          <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Nama sesuai KTP" className="input-base mt-1.5" />
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Nama sesuai KTP"
+            className="input-base mt-1.5"
+          />
         </div>
 
         <div>
           <label className="text-sm font-medium text-ink">Email</label>
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="nama@email.com" className="input-base mt-1.5" />
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="nama@email.com"
+            className="input-base mt-1.5"
+          />
         </div>
 
         <div>
@@ -88,12 +101,24 @@ export default function Register() {
 
         <div>
           <label className="text-sm font-medium text-ink">Password</label>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Minimal 8 karakter" className="input-base mt-1.5" />
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Minimal 8 karakter"
+            className="input-base mt-1.5"
+          />
         </div>
 
         <div>
           <label className="text-sm font-medium text-ink">Konfirmasi Password</label>
-          <input type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder="Ulangi password" className="input-base mt-1.5" />
+          <input
+            type="password"
+            value={confirm}
+            onChange={(e) => setConfirm(e.target.value)}
+            placeholder="Ulangi password"
+            className="input-base mt-1.5"
+          />
         </div>
 
         <label className="flex items-start gap-3 pt-1 cursor-pointer">
@@ -122,4 +147,3 @@ export default function Register() {
     </div>
   );
 }
-

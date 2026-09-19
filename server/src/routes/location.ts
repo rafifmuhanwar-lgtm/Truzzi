@@ -1,5 +1,10 @@
 import { Router, type Request, type Response } from 'express';
-import { geocode, reverseGeocode, searchRecommendations, hitungJarak } from '../services/distance.js';
+import {
+  geocode,
+  reverseGeocode,
+  searchRecommendations,
+  hitungJarak,
+} from '../services/distance.js';
 
 const router = Router();
 

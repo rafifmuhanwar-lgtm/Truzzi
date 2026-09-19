@@ -18,7 +18,9 @@ export default function JastipManageScreen() {
               <ArrowLeft className="w-5 h-5 text-white" />
             </button>
             <div className="min-w-0">
-              <h1 className="font-bold text-base leading-tight truncate">Kelola Trip &amp; Jastip</h1>
+              <h1 className="font-bold text-base leading-tight truncate">
+                Kelola Trip &amp; Jastip
+              </h1>
               <p className="text-[11px] text-white/80 leading-none mt-0.5">Truzzi Driver Partner</p>
             </div>
           </div>
@@ -33,7 +35,9 @@ export default function JastipManageScreen() {
         <div className="space-y-2 max-w-sm">
           <h2 className="text-lg font-bold text-ink">Fitur Khusus Mitra Jastiper</h2>
           <p className="text-xs text-ink-secondary leading-relaxed">
-            Pengelolaan jadwal trip, destinasi belanja, serta katalog produk titipan kini dipindahkan ke <strong>Aplikasi Truzzi Driver</strong> agar terintegrasi langsung dengan penerimaan order dan pelacakan jastiper.
+            Pengelolaan jadwal trip, destinasi belanja, serta katalog produk titipan kini
+            dipindahkan ke <strong>Aplikasi Truzzi Driver</strong> agar terintegrasi langsung dengan
+            penerimaan order dan pelacakan jastiper.
           </p>
         </div>
 

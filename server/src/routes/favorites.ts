@@ -15,7 +15,10 @@ router.get('/', requireUser, async (req: Request, res: Response) => {
   try {
     const user = getUser(req)!;
     const favs = await db.listFavorites(user.id);
-    const favorites = favs.map((f) => f.jastiper).filter(Boolean).map(sanitizeJastiper);
+    const favorites = favs
+      .map((f) => f.jastiper)
+      .filter(Boolean)
+      .map(sanitizeJastiper);
     res.json({ favorites });
   } catch (e) {
     console.error(e);

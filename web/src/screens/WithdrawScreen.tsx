@@ -44,7 +44,12 @@ const METHOD_LIST: BankItem[] = [
   { id: 'mandiri', name: 'Bank Mandiri', category: 'bank', label: 'Bank Mandiri' },
   { id: 'bri', name: 'Bank BRI', category: 'bank', label: 'Bank BRI' },
   { id: 'bni', name: 'Bank BNI', category: 'bank', label: 'Bank BNI' },
-  { id: 'bsi', name: 'Bank Syariah Indonesia (BSI)', category: 'bank', label: 'Bank Syariah Indonesia (BSI)' },
+  {
+    id: 'bsi',
+    name: 'Bank Syariah Indonesia (BSI)',
+    category: 'bank',
+    label: 'Bank Syariah Indonesia (BSI)',
+  },
   { id: 'btn', name: 'Bank BTN', category: 'bank', label: 'Bank BTN' },
   { id: 'cimb', name: 'Bank CIMB Niaga', category: 'bank', label: 'Bank CIMB Niaga' },
   { id: 'danamon', name: 'Bank Danamon', category: 'bank', label: 'Bank Danamon' },
@@ -54,7 +59,12 @@ const METHOD_LIST: BankItem[] = [
   { id: 'ocbc', name: 'Bank OCBC NISP', category: 'bank', label: 'Bank OCBC NISP' },
   { id: 'uob', name: 'Bank UOB Indonesia', category: 'bank', label: 'Bank UOB Indonesia' },
   { id: 'hsbc', name: 'Bank HSBC Indonesia', category: 'bank', label: 'Bank HSBC Indonesia' },
-  { id: 'stanchard', name: 'Standard Chartered Bank', category: 'bank', label: 'Standard Chartered Bank' },
+  {
+    id: 'stanchard',
+    name: 'Standard Chartered Bank',
+    category: 'bank',
+    label: 'Standard Chartered Bank',
+  },
   { id: 'commonwealth', name: 'Bank Commonwealth', category: 'bank', label: 'Bank Commonwealth' },
   { id: 'sinarmas', name: 'Bank Sinarmas', category: 'bank', label: 'Bank Sinarmas' },
   { id: 'muamalat', name: 'Bank Muamalat', category: 'bank', label: 'Bank Muamalat' },
@@ -74,7 +84,12 @@ const METHOD_LIST: BankItem[] = [
   { id: 'papua', name: 'Bank Papua', category: 'bank', label: 'Bank Papua' },
   { id: 'nagari', name: 'Bank Nagari', category: 'bank', label: 'Bank Nagari' },
   { id: 'acehsyariah', name: 'Bank Aceh Syariah', category: 'bank', label: 'Bank Aceh Syariah' },
-  { id: 'riaukepri', name: 'Bank Riau Kepri Syariah', category: 'bank', label: 'Bank Riau Kepri Syariah' },
+  {
+    id: 'riaukepri',
+    name: 'Bank Riau Kepri Syariah',
+    category: 'bank',
+    label: 'Bank Riau Kepri Syariah',
+  },
   { id: 'kalbar', name: 'Bank Kalbar', category: 'bank', label: 'Bank Kalbar' },
   { id: 'kalsel', name: 'Bank Kalsel', category: 'bank', label: 'Bank Kalsel' },
   { id: 'bali', name: 'Bank BPD Bali', category: 'bank', label: 'Bank BPD Bali' },
@@ -121,7 +136,10 @@ export default function WithdrawScreen() {
       return;
     }
     if (isEwallet && value <= adminFee) {
-      enqueueSnackbar(`Nominal penarikan harus lebih besar dari biaya admin (${formatRupiah(adminFee)})`, { variant: 'warning' });
+      enqueueSnackbar(
+        `Nominal penarikan harus lebih besar dari biaya admin (${formatRupiah(adminFee)})`,
+        { variant: 'warning' },
+      );
       return;
     }
     if (!selectedId) {
@@ -133,7 +151,9 @@ export default function WithdrawScreen() {
       return;
     }
     if (value > saldo) {
-      enqueueSnackbar(`Saldo Anda tidak mencukupi (${formatRupiah(saldo)})`, { variant: 'warning' });
+      enqueueSnackbar(`Saldo Anda tidak mencukupi (${formatRupiah(saldo)})`, {
+        variant: 'warning',
+      });
       return;
     }
 
@@ -160,7 +180,10 @@ export default function WithdrawScreen() {
     <div className="min-h-screen bg-background">
       <div className="bg-primary px-4 pt-4 pb-5 sticky top-0 z-20">
         <div className="flex items-center gap-2">
-          <button onClick={() => navigate(-1)} className="p-2 -ml-2 text-white rounded-full hover:bg-white/10">
+          <button
+            onClick={() => navigate(-1)}
+            className="p-2 -ml-2 text-white rounded-full hover:bg-white/10"
+          >
             <ArrowLeft className="w-[22px] h-[22px]" />
           </button>
           <h1 className="text-white font-semibold">Tarik Saldo</h1>
@@ -174,7 +197,8 @@ export default function WithdrawScreen() {
           <div className="text-xs space-y-0.5">
             <p className="font-bold text-amber-950">Informasi Penarikan Saldo</p>
             <p className="text-amber-800 leading-relaxed">
-              Proses pencairan dana membutuhkan waktu <strong>1x24 jam</strong> atau bisa <strong>lebih cepat</strong> tergantung jam operasional bank / e-wallet tujuan.
+              Proses pencairan dana membutuhkan waktu <strong>1x24 jam</strong> atau bisa{' '}
+              <strong>lebih cepat</strong> tergantung jam operasional bank / e-wallet tujuan.
             </p>
           </div>
         </div>
@@ -189,7 +213,9 @@ export default function WithdrawScreen() {
         <div>
           <div className="flex items-center justify-between">
             <label className="text-sm font-semibold text-ink">Nominal Penarikan</label>
-            <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">Min. Rp 10.000</span>
+            <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+              Min. Rp 10.000
+            </span>
           </div>
           <input
             inputMode="numeric"
@@ -203,7 +229,11 @@ export default function WithdrawScreen() {
         {/* Bank / e-wallet Dropdown (Tanpa Emoji) */}
         <div>
           <label className="text-sm font-semibold text-ink">Bank / E-Wallet</label>
-          <select value={selectedId} onChange={(e) => setSelectedId(e.target.value)} className="input-base mt-1.5">
+          <select
+            value={selectedId}
+            onChange={(e) => setSelectedId(e.target.value)}
+            className="input-base mt-1.5"
+          >
             <option value="">Pilih tujuan...</option>
             <optgroup label="E-Wallet (Biaya Admin Rp 2.500)">
               {METHOD_LIST.filter((m) => m.category === 'ewallet').map((m) => (
@@ -245,13 +275,17 @@ export default function WithdrawScreen() {
             </div>
             <div className="flex justify-between text-ink-secondary">
               <span>Biaya Admin :</span>
-              <span className={`font-bold ${adminFee === 0 ? 'text-emerald-600' : 'text-amber-700'}`}>
+              <span
+                className={`font-bold ${adminFee === 0 ? 'text-emerald-600' : 'text-amber-700'}`}
+              >
                 {adminFee === 0 ? 'GRATIS (Rp 0)' : formatRupiah(adminFee)}
               </span>
             </div>
             <div className="border-t border-dashed border-slate-300 pt-2 flex justify-between items-center text-ink font-bold">
               <span>Dana Bersih Diterima:</span>
-              <span className="text-sm font-extrabold text-emerald-700">{formatRupiah(netReceived)}</span>
+              <span className="text-sm font-extrabold text-emerald-700">
+                {formatRupiah(netReceived)}
+              </span>
             </div>
           </div>
         )}

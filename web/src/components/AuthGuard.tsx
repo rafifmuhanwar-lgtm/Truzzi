@@ -14,7 +14,8 @@ export function AuthGuard({ children }: { children: ReactNode }) {
   }, [status, checkAuth]);
 
   const path = location.pathname;
-  const isAuthRoute = PUBLIC_PATHS.includes(path) || path.startsWith('/login') || path.startsWith('/register');
+  const isAuthRoute =
+    PUBLIC_PATHS.includes(path) || path.startsWith('/login') || path.startsWith('/register');
 
   // Splash menangani redirect sendiri; location boleh sebelum login.
   if (path === '/' || path === '/location') {

@@ -22,7 +22,7 @@ import {
   ShieldCheck,
   Lock,
   AlertCircle,
-  ArrowRight
+  ArrowRight,
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -31,13 +31,23 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip
+  Tooltip,
 } from 'recharts';
 
-type Tab = 'overview' | 'promos' | 'withdrawals' | 'orders' | 'jastipers' | 'customers' | 'admins' | 'kyc-review';
+type Tab =
+  | 'overview'
+  | 'promos'
+  | 'withdrawals'
+  | 'orders'
+  | 'jastipers'
+  | 'customers'
+  | 'admins'
+  | 'kyc-review';
 
 export default function AdminApp() {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!localStorage.getItem('sg_admin_token'));
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
+    !!localStorage.getItem('sg_admin_token'),
+  );
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [loginError, setLoginError] = useState('');
@@ -83,7 +93,7 @@ export default function AdminApp() {
     enabled: isAuthenticated,
   });
   const jastipers: any[] = jastipersData?.jastipers || jastipersData?.jastipers || [];
-  const pendingKycJastipers = jastipers.filter(j => !j.kycVerified && j.kycKtpUrl);
+  const pendingKycJastipers = jastipers.filter((j) => !j.kycVerified && j.kycKtpUrl);
 
   const { data: usersData, refetch: refetchUsers } = useQuery({
     queryKey: ['admin-users'],
@@ -96,16 +106,18 @@ export default function AdminApp() {
   const [searchJastiper, setSearchJastiper] = useState('');
   const [searchCustomer, setSearchCustomer] = useState('');
 
-  const filteredJastipers = jastipers.filter(j => 
-    (j.name || '').toLowerCase().includes(searchJastiper.toLowerCase()) || 
-    (j.email || '').toLowerCase().includes(searchJastiper.toLowerCase()) ||
-    (j.phone || '').includes(searchJastiper)
+  const filteredJastipers = jastipers.filter(
+    (j) =>
+      (j.name || '').toLowerCase().includes(searchJastiper.toLowerCase()) ||
+      (j.email || '').toLowerCase().includes(searchJastiper.toLowerCase()) ||
+      (j.phone || '').includes(searchJastiper),
   );
 
-  const filteredCustomers = customers.filter(c =>
-    (c.name || '').toLowerCase().includes(searchCustomer.toLowerCase()) ||
-    (c.email || '').toLowerCase().includes(searchCustomer.toLowerCase()) ||
-    (c.phone || '').includes(searchCustomer)
+  const filteredCustomers = customers.filter(
+    (c) =>
+      (c.name || '').toLowerCase().includes(searchCustomer.toLowerCase()) ||
+      (c.email || '').toLowerCase().includes(searchCustomer.toLowerCase()) ||
+      (c.phone || '').includes(searchCustomer),
   );
 
   // Promo Form State
@@ -116,7 +128,7 @@ export default function AdminApp() {
   const [promoDiscount, setPromoDiscount] = useState('');
   const [promoMinSpend, setPromoMinSpend] = useState('');
   const [promoImageUrl, setPromoImageUrl] = useState('');
-  
+
   // Advanced fields
   const [promoType, setPromoType] = useState('discount'); // discount, cashback, gratis_ongkir
   const [promoCategory, setPromoCategory] = useState('all'); // all, jastip, suruh
@@ -127,7 +139,7 @@ export default function AdminApp() {
   const [promoBudgetMax, setPromoBudgetMax] = useState('');
   const [promoStartDate, setPromoStartDate] = useState('');
   const [promoEndDate, setPromoEndDate] = useState('');
-  
+
   const [uploadingImage, setUploadingImage] = useState(false);
   const [submittingPromo, setSubmittingPromo] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -270,7 +282,11 @@ export default function AdminApp() {
 
   const handleRejectKyc = async (id: string) => {
     try {
-      await AdminAPI.updateJastiper(id, { kycVerified: false, kycKtpUrl: null, kycSelfieUrl: null });
+      await AdminAPI.updateJastiper(id, {
+        kycVerified: false,
+        kycKtpUrl: null,
+        kycSelfieUrl: null,
+      });
       enqueueSnackbar('Data KYC ditolak. Jastiper harus upload ulang.', { variant: 'info' });
       setSelectedKycJastiper(null);
       refetchJastipers();
@@ -385,7 +401,7 @@ export default function AdminApp() {
   // --- COMPUTE CHART DATA ---
   const chartData = React.useMemo(() => {
     if (!orders || orders.length === 0) return [];
-    
+
     // Create an array of the last 7 days (YYYY-MM-DD)
     const dates = Array.from({ length: 7 }, (_, i) => {
       const d = new Date();
@@ -393,15 +409,18 @@ export default function AdminApp() {
       return d.toISOString().split('T')[0];
     }).reverse();
 
-    return dates.map(date => {
-      const dayOrders = orders.filter(o => o.createdAt && o.createdAt.startsWith(date));
-      const gmv = dayOrders.reduce((sum, o) => sum + Number(o.totalAmount || o.danaBelanja || 0), 0);
+    return dates.map((date) => {
+      const dayOrders = orders.filter((o) => o.createdAt && o.createdAt.startsWith(date));
+      const gmv = dayOrders.reduce(
+        (sum, o) => sum + Number(o.totalAmount || o.danaBelanja || 0),
+        0,
+      );
       const fee = dayOrders.reduce((sum, o) => sum + Number(o.biayaLayanan || 0), 0);
       return {
         name: date.substring(5), // MM-DD
         gmv,
         fee,
-        orders: dayOrders.length
+        orders: dayOrders.length,
       };
     });
   }, [orders]);
@@ -428,7 +447,10 @@ export default function AdminApp() {
             <div>
               <label className="text-xs font-bold text-slate-700 block mb-1">Email Admin</label>
               <div className="relative">
-                <ShieldCheck size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <ShieldCheck
+                  size={18}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                />
                 <input
                   type="email"
                   required
@@ -441,7 +463,10 @@ export default function AdminApp() {
             <div>
               <label className="text-xs font-bold text-slate-700 block mb-1">Password</label>
               <div className="relative">
-                <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Lock
+                  size={18}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                />
                 <input
                   type="password"
                   required
@@ -474,7 +499,9 @@ export default function AdminApp() {
             </div>
             <div>
               <h1 className="font-bold text-base tracking-tight text-white leading-none">Truzzi</h1>
-              <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Admin Center</span>
+              <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                Admin Center
+              </span>
             </div>
           </div>
         </div>
@@ -483,7 +510,9 @@ export default function AdminApp() {
           <button
             onClick={() => setActiveTab('overview')}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
-              activeTab === 'overview' ? 'bg-primary text-white shadow-md' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+              activeTab === 'overview'
+                ? 'bg-primary text-white shadow-md'
+                : 'text-slate-400 hover:bg-slate-800 hover:text-white'
             }`}
           >
             <LayoutDashboard size={18} /> Ringkasan
@@ -491,7 +520,9 @@ export default function AdminApp() {
           <button
             onClick={() => setActiveTab('promos')}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
-              activeTab === 'promos' ? 'bg-primary text-white shadow-md' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+              activeTab === 'promos'
+                ? 'bg-primary text-white shadow-md'
+                : 'text-slate-400 hover:bg-slate-800 hover:text-white'
             }`}
           >
             <Ticket size={18} /> Banner &amp; Promo
@@ -499,7 +530,9 @@ export default function AdminApp() {
           <button
             onClick={() => setActiveTab('withdrawals')}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
-              activeTab === 'withdrawals' ? 'bg-primary text-white shadow-md' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+              activeTab === 'withdrawals'
+                ? 'bg-primary text-white shadow-md'
+                : 'text-slate-400 hover:bg-slate-800 hover:text-white'
             }`}
           >
             <ArrowDownToLine size={18} /> Penarikan Dana
@@ -507,7 +540,9 @@ export default function AdminApp() {
           <button
             onClick={() => setActiveTab('orders')}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
-              activeTab === 'orders' ? 'bg-primary text-white shadow-md' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+              activeTab === 'orders'
+                ? 'bg-primary text-white shadow-md'
+                : 'text-slate-400 hover:bg-slate-800 hover:text-white'
             }`}
           >
             <ShoppingBag size={18} /> Transaksi Jastip
@@ -515,7 +550,9 @@ export default function AdminApp() {
           <button
             onClick={() => setActiveTab('jastipers')}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
-              activeTab === 'jastipers' ? 'bg-primary text-white shadow-md' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+              activeTab === 'jastipers'
+                ? 'bg-primary text-white shadow-md'
+                : 'text-slate-400 hover:bg-slate-800 hover:text-white'
             }`}
           >
             <Users size={18} /> Mitra Jastiper
@@ -523,20 +560,26 @@ export default function AdminApp() {
           <button
             onClick={() => setActiveTab('kyc-review')}
             className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
-              activeTab === 'kyc-review' ? 'bg-primary text-white shadow-md' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+              activeTab === 'kyc-review'
+                ? 'bg-primary text-white shadow-md'
+                : 'text-slate-400 hover:bg-slate-800 hover:text-white'
             }`}
           >
             <div className="flex items-center gap-3">
               <ShieldCheck size={18} /> Verifikasi KYC
             </div>
             {pendingKycJastipers.length > 0 && (
-              <span className="bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{pendingKycJastipers.length}</span>
+              <span className="bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                {pendingKycJastipers.length}
+              </span>
             )}
           </button>
           <button
             onClick={() => setActiveTab('customers')}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
-              activeTab === 'customers' ? 'bg-primary text-white shadow-md' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+              activeTab === 'customers'
+                ? 'bg-primary text-white shadow-md'
+                : 'text-slate-400 hover:bg-slate-800 hover:text-white'
             }`}
           >
             <Users size={18} /> Pelanggan
@@ -544,7 +587,9 @@ export default function AdminApp() {
           <button
             onClick={() => setActiveTab('admins')}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
-              activeTab === 'admins' ? 'bg-primary text-white shadow-md' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+              activeTab === 'admins'
+                ? 'bg-primary text-white shadow-md'
+                : 'text-slate-400 hover:bg-slate-800 hover:text-white'
             }`}
           >
             <ShieldCheck size={18} /> Admin & Staff
@@ -624,7 +669,9 @@ export default function AdminApp() {
                   <p className="text-2xl font-black text-slate-800 mt-2">
                     {formatRupiah(stats?.totalGMV ?? 0)}
                   </p>
-                  <span className="text-[11px] text-slate-400 mt-1 block">Volume transaksi kotor</span>
+                  <span className="text-[11px] text-slate-400 mt-1 block">
+                    Volume transaksi kotor
+                  </span>
                 </div>
 
                 <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
@@ -635,7 +682,9 @@ export default function AdminApp() {
                   <p className="text-2xl font-black text-blue-600 mt-2">
                     {formatRupiah(stats?.totalPlatformFee ?? 0)}
                   </p>
-                  <span className="text-[11px] text-slate-400 mt-1 block">Total biaya layanan masuk</span>
+                  <span className="text-[11px] text-slate-400 mt-1 block">
+                    Total biaya layanan masuk
+                  </span>
                 </div>
 
                 <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
@@ -646,7 +695,9 @@ export default function AdminApp() {
                   <p className="text-2xl font-black text-slate-800 mt-2">
                     {stats?.totalOrders ?? orders.length}
                   </p>
-                  <span className="text-[11px] text-slate-400 mt-1 block">Pesanan jastip terselesaikan</span>
+                  <span className="text-[11px] text-slate-400 mt-1 block">
+                    Pesanan jastip terselesaikan
+                  </span>
                 </div>
 
                 <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
@@ -657,7 +708,9 @@ export default function AdminApp() {
                   <p className="text-2xl font-black text-amber-600 mt-2">
                     {withdrawals.filter((w) => w.status === 'pending').length}
                   </p>
-                  <span className="text-[11px] text-slate-400 mt-1 block">Perlu approval admin</span>
+                  <span className="text-[11px] text-slate-400 mt-1 block">
+                    Perlu approval admin
+                  </span>
                 </div>
 
                 <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
@@ -666,35 +719,73 @@ export default function AdminApp() {
                     <Ticket size={16} className="text-indigo-500" />
                   </div>
                   <p className="text-2xl font-black text-slate-800 mt-2">{promos.length}</p>
-                  <span className="text-[11px] text-slate-400 mt-1 block">Banner tayang di customer</span>
+                  <span className="text-[11px] text-slate-400 mt-1 block">
+                    Banner tayang di customer
+                  </span>
                 </div>
               </div>
 
               {/* NEW LAYOUT: Dashboard widgets */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                
                 {/* Left Column (Chart & Orders) */}
                 <div className="lg:col-span-2 space-y-6">
                   {/* Trend Chart */}
                   <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs">
                     <div className="flex items-center justify-between mb-6">
                       <div>
-                        <h3 className="font-bold text-base text-slate-800">Tren GMV & Pendapatan</h3>
+                        <h3 className="font-bold text-base text-slate-800">
+                          Tren GMV & Pendapatan
+                        </h3>
                         <p className="text-xs text-slate-500">7 Hari Terakhir</p>
                       </div>
                     </div>
                     <div className="h-[250px] w-full">
                       <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={chartData} margin={{ top: 5, right: 5, bottom: 5, left: 5 }}>
+                        <LineChart
+                          data={chartData}
+                          margin={{ top: 5, right: 5, bottom: 5, left: 5 }}
+                        >
                           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                          <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#64748b' }} dy={10} />
-                          <YAxis yAxisId="left" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#64748b' }} tickFormatter={(val) => `Rp${(val/1000)}k`} />
-                          <Tooltip 
-                            contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', fontSize: '12px' }}
-                            formatter={(value: any, name: any) => [name === 'gmv' ? formatRupiah(value) : value, name === 'gmv' ? 'GMV' : 'Pesanan']}
-                            labelStyle={{ fontWeight: 'bold', color: '#334155', marginBottom: '4px' }}
+                          <XAxis
+                            dataKey="name"
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fontSize: 11, fill: '#64748b' }}
+                            dy={10}
                           />
-                          <Line yAxisId="left" type="monotone" dataKey="gmv" stroke="#0ea5e9" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
+                          <YAxis
+                            yAxisId="left"
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fontSize: 11, fill: '#64748b' }}
+                            tickFormatter={(val) => `Rp${val / 1000}k`}
+                          />
+                          <Tooltip
+                            contentStyle={{
+                              borderRadius: '12px',
+                              border: 'none',
+                              boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+                              fontSize: '12px',
+                            }}
+                            formatter={(value: any, name: any) => [
+                              name === 'gmv' ? formatRupiah(value) : value,
+                              name === 'gmv' ? 'GMV' : 'Pesanan',
+                            ]}
+                            labelStyle={{
+                              fontWeight: 'bold',
+                              color: '#334155',
+                              marginBottom: '4px',
+                            }}
+                          />
+                          <Line
+                            yAxisId="left"
+                            type="monotone"
+                            dataKey="gmv"
+                            stroke="#0ea5e9"
+                            strokeWidth={3}
+                            dot={{ r: 4, strokeWidth: 2 }}
+                            activeDot={{ r: 6 }}
+                          />
                         </LineChart>
                       </ResponsiveContainer>
                     </div>
@@ -708,9 +799,14 @@ export default function AdminApp() {
                           <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                           Transaksi Live
                         </h3>
-                        <p className="text-xs text-slate-500">Pesanan terbaru yang masuk ke platform</p>
+                        <p className="text-xs text-slate-500">
+                          Pesanan terbaru yang masuk ke platform
+                        </p>
                       </div>
-                      <button onClick={() => setActiveTab('orders')} className="text-xs text-primary font-bold hover:underline flex items-center gap-1">
+                      <button
+                        onClick={() => setActiveTab('orders')}
+                        className="text-xs text-primary font-bold hover:underline flex items-center gap-1"
+                      >
                         Semua Transaksi <ArrowRight size={14} />
                       </button>
                     </div>
@@ -718,27 +814,42 @@ export default function AdminApp() {
                       {orders.slice(0, 5).map((o) => (
                         <div key={o.id} className="py-3 flex items-center justify-between">
                           <div className="flex items-center gap-3">
-                            <span className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${o.orderType === 'suruh' ? 'bg-amber-50 text-amber-500' : 'bg-primary/10 text-primary'}`}>
+                            <span
+                              className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${o.orderType === 'suruh' ? 'bg-amber-50 text-amber-500' : 'bg-primary/10 text-primary'}`}
+                            >
                               <ShoppingBag size={18} />
                             </span>
                             <div className="min-w-0">
-                              <p className="font-bold text-sm text-slate-800 truncate">{o.serviceName || 'Layanan Truzzi'}</p>
-                              <p className="text-xs text-slate-500 truncate">{o.title || o.id.split('-')[0]}</p>
+                              <p className="font-bold text-sm text-slate-800 truncate">
+                                {o.serviceName || 'Layanan Truzzi'}
+                              </p>
+                              <p className="text-xs text-slate-500 truncate">
+                                {o.title || o.id.split('-')[0]}
+                              </p>
                             </div>
                           </div>
                           <div className="text-right shrink-0 ml-4">
-                            <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                              o.status === 'completed' ? 'bg-emerald-50 text-emerald-600' :
-                              o.status === 'cancelled' ? 'bg-rose-50 text-rose-600' : 'bg-blue-50 text-blue-600'
-                            }`}>
+                            <span
+                              className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                                o.status === 'completed'
+                                  ? 'bg-emerald-50 text-emerald-600'
+                                  : o.status === 'cancelled'
+                                    ? 'bg-rose-50 text-rose-600'
+                                    : 'bg-blue-50 text-blue-600'
+                              }`}
+                            >
                               {o.status.replace('_', ' ')}
                             </span>
-                            <p className="text-[11px] font-bold text-slate-700 mt-1.5">{formatRupiah(o.totalAmount || o.danaBelanja || 0)}</p>
+                            <p className="text-[11px] font-bold text-slate-700 mt-1.5">
+                              {formatRupiah(o.totalAmount || o.danaBelanja || 0)}
+                            </p>
                           </div>
                         </div>
                       ))}
                       {orders.length === 0 && (
-                        <p className="text-xs text-slate-400 py-6 text-center">Belum ada transaksi</p>
+                        <p className="text-xs text-slate-400 py-6 text-center">
+                          Belum ada transaksi
+                        </p>
                       )}
                     </div>
                   </div>
@@ -751,26 +862,42 @@ export default function AdminApp() {
                     <div className="absolute top-0 right-0 p-4 opacity-5">
                       <AlertCircle size={80} />
                     </div>
-                    <h3 className="font-bold text-base text-slate-800 relative z-10">To-Do List Admin</h3>
-                    
+                    <h3 className="font-bold text-base text-slate-800 relative z-10">
+                      To-Do List Admin
+                    </h3>
+
                     <div className="space-y-3 relative z-10">
-                      <button onClick={() => setActiveTab('kyc-review')} className="w-full bg-slate-50 hover:bg-slate-100 transition-colors border border-slate-100 rounded-xl p-3 flex items-center justify-between text-left">
+                      <button
+                        onClick={() => setActiveTab('kyc-review')}
+                        className="w-full bg-slate-50 hover:bg-slate-100 transition-colors border border-slate-100 rounded-xl p-3 flex items-center justify-between text-left"
+                      >
                         <div>
-                          <p className="font-bold text-sm text-slate-800">Verifikasi KYC Jastiper</p>
+                          <p className="font-bold text-sm text-slate-800">
+                            Verifikasi KYC Jastiper
+                          </p>
                           <p className="text-xs text-slate-500 mt-0.5">Menunggu diproses</p>
                         </div>
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${pendingKycJastipers.length > 0 ? 'bg-rose-100 text-rose-600' : 'bg-slate-200 text-slate-500'}`}>
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-xs font-bold ${pendingKycJastipers.length > 0 ? 'bg-rose-100 text-rose-600' : 'bg-slate-200 text-slate-500'}`}
+                        >
                           {pendingKycJastipers.length}
                         </span>
                       </button>
 
-                      <button onClick={() => setActiveTab('withdrawals')} className="w-full bg-slate-50 hover:bg-slate-100 transition-colors border border-slate-100 rounded-xl p-3 flex items-center justify-between text-left">
+                      <button
+                        onClick={() => setActiveTab('withdrawals')}
+                        className="w-full bg-slate-50 hover:bg-slate-100 transition-colors border border-slate-100 rounded-xl p-3 flex items-center justify-between text-left"
+                      >
                         <div>
-                          <p className="font-bold text-sm text-slate-800">Penarikan Dana (Withdrawal)</p>
+                          <p className="font-bold text-sm text-slate-800">
+                            Penarikan Dana (Withdrawal)
+                          </p>
                           <p className="text-xs text-slate-500 mt-0.5">Permintaan tertunda</p>
                         </div>
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${withdrawals.filter(w => w.status === 'pending').length > 0 ? 'bg-amber-100 text-amber-600' : 'bg-slate-200 text-slate-500'}`}>
-                          {withdrawals.filter(w => w.status === 'pending').length}
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-xs font-bold ${withdrawals.filter((w) => w.status === 'pending').length > 0 ? 'bg-amber-100 text-amber-600' : 'bg-slate-200 text-slate-500'}`}
+                        >
+                          {withdrawals.filter((w) => w.status === 'pending').length}
                         </span>
                       </button>
                     </div>
@@ -780,7 +907,10 @@ export default function AdminApp() {
                   <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs space-y-4">
                     <div className="flex items-center justify-between">
                       <h3 className="font-bold text-base text-slate-800">Promo Tayang</h3>
-                      <button onClick={() => setActiveTab('promos')} className="text-xs text-primary font-bold hover:underline">
+                      <button
+                        onClick={() => setActiveTab('promos')}
+                        className="text-xs text-primary font-bold hover:underline"
+                      >
                         Kelola
                       </button>
                     </div>
@@ -802,7 +932,6 @@ export default function AdminApp() {
                     </div>
                   </div>
                 </div>
-
               </div>
             </div>
           )}
@@ -812,8 +941,13 @@ export default function AdminApp() {
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-lg font-bold text-slate-800">Daftar Banner &amp; Kode Promo</h3>
-                  <p className="text-xs text-slate-500">Semua promo di sini langsung tampil di banner beranda &amp; halaman voucher customer</p>
+                  <h3 className="text-lg font-bold text-slate-800">
+                    Daftar Banner &amp; Kode Promo
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    Semua promo di sini langsung tampil di banner beranda &amp; halaman voucher
+                    customer
+                  </p>
                 </div>
                 <button
                   onClick={() => setShowPromoModal(true)}
@@ -826,14 +960,19 @@ export default function AdminApp() {
               {/* Grid Promo Cards */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {promos.map((p) => (
-                  <div key={p.id || p.code} className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-xs flex flex-col">
+                  <div
+                    key={p.id || p.code}
+                    className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-xs flex flex-col"
+                  >
                     <div className="h-40 bg-slate-100 relative overflow-hidden flex items-center justify-center">
                       {p.imageUrl ? (
                         <img src={p.imageUrl} alt="" className="w-full h-full object-cover" />
                       ) : (
                         <div className="p-6 text-center">
                           <Ticket size={36} className="mx-auto text-slate-400 mb-2" />
-                          <span className="font-bold font-mono text-primary text-base">{p.code}</span>
+                          <span className="font-bold font-mono text-primary text-base">
+                            {p.code}
+                          </span>
                         </div>
                       )}
                       <span className="absolute top-3 right-3 px-2.5 py-1 bg-white/90 backdrop-blur-xs font-mono font-bold text-xs rounded-lg text-primary shadow-xs">
@@ -844,7 +983,9 @@ export default function AdminApp() {
                     <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
                       <div>
                         <h4 className="font-bold text-base text-slate-800">{p.title}</h4>
-                        <p className="text-xs text-slate-500 mt-1 leading-relaxed">{p.subtitle || p.description}</p>
+                        <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                          {p.subtitle || p.description}
+                        </p>
                         {p.discountText && (
                           <div className="mt-2 inline-block px-2 py-0.5 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-md">
                             {p.discountText}
@@ -853,7 +994,9 @@ export default function AdminApp() {
                       </div>
 
                       <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
-                        <span className="text-[11px] text-slate-400">Min. {p.minSpend || 'Rp 0'}</span>
+                        <span className="text-[11px] text-slate-400">
+                          Min. {p.minSpend || 'Rp 0'}
+                        </span>
                         <button
                           onClick={() => handleDeletePromo(p.id)}
                           className="p-2 text-rose-500 hover:bg-rose-50 rounded-lg transition-colors"
@@ -875,13 +1018,17 @@ export default function AdminApp() {
               <div className="p-6 border-b border-slate-200 flex items-center justify-between">
                 <div>
                   <h3 className="font-bold text-base text-slate-800">Permintaan Penarikan Dana</h3>
-                  <p className="text-xs text-slate-500 mt-0.5">Persetujuan pencairan saldo pengguna ke rekening bank</p>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Persetujuan pencairan saldo pengguna ke rekening bank
+                  </p>
                 </div>
                 <div className="flex bg-slate-100 p-1 rounded-xl">
                   <button
                     onClick={() => setActiveWithdrawalTab('mitra')}
                     className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all ${
-                      activeWithdrawalTab === 'mitra' ? 'bg-white text-primary shadow-sm' : 'text-slate-500 hover:text-slate-700'
+                      activeWithdrawalTab === 'mitra'
+                        ? 'bg-white text-primary shadow-sm'
+                        : 'text-slate-500 hover:text-slate-700'
                     }`}
                   >
                     Mitra Jastiper
@@ -889,7 +1036,9 @@ export default function AdminApp() {
                   <button
                     onClick={() => setActiveWithdrawalTab('customer')}
                     className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all ${
-                      activeWithdrawalTab === 'customer' ? 'bg-white text-primary shadow-sm' : 'text-slate-500 hover:text-slate-700'
+                      activeWithdrawalTab === 'customer'
+                        ? 'bg-white text-primary shadow-sm'
+                        : 'text-slate-500 hover:text-slate-700'
                     }`}
                   >
                     Customer
@@ -901,7 +1050,9 @@ export default function AdminApp() {
                 <table className="w-full text-left text-sm">
                   <thead className="bg-slate-50 text-slate-500 text-xs uppercase font-semibold border-b border-slate-200">
                     <tr>
-                      <th className="px-6 py-4">{activeWithdrawalTab === 'mitra' ? 'Mitra Jastiper' : 'Customer'}</th>
+                      <th className="px-6 py-4">
+                        {activeWithdrawalTab === 'mitra' ? 'Mitra Jastiper' : 'Customer'}
+                      </th>
                       <th className="px-6 py-4">Nominal</th>
                       <th className="px-6 py-4">Bank Tujuan</th>
                       <th className="px-6 py-4">No. Rekening</th>
@@ -910,50 +1061,62 @@ export default function AdminApp() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
-                    {(activeWithdrawalTab === 'mitra' ? mitraWithdrawals : customerWithdrawals).map((w) => (
-                      <tr key={w.id} className="hover:bg-slate-50/50">
-                        <td className="px-6 py-4 font-semibold text-slate-800">{w.accountName || 'Mitra Jastip'}</td>
-                        <td className="px-6 py-4 font-bold text-primary">{formatRupiah(w.amount)}</td>
-                        <td className="px-6 py-4 font-medium text-slate-700">{w.bankName}</td>
-                        <td className="px-6 py-4 font-mono text-slate-600">{w.accountNumber}</td>
-                        <td className="px-6 py-4">
-                          <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
-                            w.status === 'approved' ? 'bg-emerald-50 text-emerald-600' :
-                            w.status === 'rejected' ? 'bg-rose-50 text-rose-600' : 'bg-amber-50 text-amber-600'
-                          }`}>
-                            {w.status.toUpperCase()}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 text-right">
-                          <div className="flex items-center justify-end gap-2">
-                            {w.status === 'pending' && (
-                              <>
-                                <button
-                                  onClick={() => handleApproveWd(w.id)}
-                                  className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold flex items-center gap-1"
-                                >
-                                  <CheckCircle2 size={14} /> Setujui
-                                </button>
-                                <button
-                                  onClick={() => handleRejectWd(w.id)}
-                                  className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold flex items-center gap-1"
-                                >
-                                  <XCircle size={14} /> Tolak
-                                </button>
-                              </>
-                            )}
-                            <button
-                              onClick={() => handleDeleteWd(w.id)}
-                              className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors"
-                              title="Hapus Penarikan"
+                    {(activeWithdrawalTab === 'mitra' ? mitraWithdrawals : customerWithdrawals).map(
+                      (w) => (
+                        <tr key={w.id} className="hover:bg-slate-50/50">
+                          <td className="px-6 py-4 font-semibold text-slate-800">
+                            {w.accountName || 'Mitra Jastip'}
+                          </td>
+                          <td className="px-6 py-4 font-bold text-primary">
+                            {formatRupiah(w.amount)}
+                          </td>
+                          <td className="px-6 py-4 font-medium text-slate-700">{w.bankName}</td>
+                          <td className="px-6 py-4 font-mono text-slate-600">{w.accountNumber}</td>
+                          <td className="px-6 py-4">
+                            <span
+                              className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+                                w.status === 'approved'
+                                  ? 'bg-emerald-50 text-emerald-600'
+                                  : w.status === 'rejected'
+                                    ? 'bg-rose-50 text-rose-600'
+                                    : 'bg-amber-50 text-amber-600'
+                              }`}
                             >
-                              <Trash2 size={16} />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                    {(activeWithdrawalTab === 'mitra' ? mitraWithdrawals : customerWithdrawals).length === 0 && (
+                              {w.status.toUpperCase()}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-right">
+                            <div className="flex items-center justify-end gap-2">
+                              {w.status === 'pending' && (
+                                <>
+                                  <button
+                                    onClick={() => handleApproveWd(w.id)}
+                                    className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold flex items-center gap-1"
+                                  >
+                                    <CheckCircle2 size={14} /> Setujui
+                                  </button>
+                                  <button
+                                    onClick={() => handleRejectWd(w.id)}
+                                    className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold flex items-center gap-1"
+                                  >
+                                    <XCircle size={14} /> Tolak
+                                  </button>
+                                </>
+                              )}
+                              <button
+                                onClick={() => handleDeleteWd(w.id)}
+                                className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors"
+                                title="Hapus Penarikan"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ),
+                    )}
+                    {(activeWithdrawalTab === 'mitra' ? mitraWithdrawals : customerWithdrawals)
+                      .length === 0 && (
                       <tr>
                         <td colSpan={6} className="px-6 py-8 text-center text-xs text-slate-400">
                           Tidak ada data penarikan
@@ -972,7 +1135,9 @@ export default function AdminApp() {
               <div className="p-6 border-b border-slate-200 flex items-center justify-between">
                 <div>
                   <h3 className="font-bold text-base text-slate-800">Semua Transaksi Jastip</h3>
-                  <p className="text-xs text-slate-500 mt-0.5">Monitoring transaksi real-time seluruh pesanan</p>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Monitoring transaksi real-time seluruh pesanan
+                  </p>
                 </div>
               </div>
 
@@ -991,16 +1156,29 @@ export default function AdminApp() {
                   <tbody className="divide-y divide-slate-100">
                     {orders.map((o) => (
                       <tr key={o.id} className="hover:bg-slate-50/50">
-                        <td className="px-6 py-4 font-mono text-xs text-slate-500 font-semibold">#{o.id.slice(-6).toUpperCase()}</td>
+                        <td className="px-6 py-4 font-mono text-xs text-slate-500 font-semibold">
+                          #{o.id.slice(-6).toUpperCase()}
+                        </td>
                         <td className="px-6 py-4 font-bold text-slate-800">{o.title}</td>
-                        <td className="px-6 py-4 text-slate-600">{o.jastiperName || 'Mencari Jastiper'}</td>
-                        <td className="px-6 py-4 font-semibold text-slate-800">{formatRupiah(o.danaBelanja || o.totalAmount)}</td>
-                        <td className="px-6 py-4 font-semibold text-primary">{formatRupiah(o.ongkir || 10000)}</td>
+                        <td className="px-6 py-4 text-slate-600">
+                          {o.jastiperName || 'Mencari Jastiper'}
+                        </td>
+                        <td className="px-6 py-4 font-semibold text-slate-800">
+                          {formatRupiah(o.danaBelanja || o.totalAmount)}
+                        </td>
+                        <td className="px-6 py-4 font-semibold text-primary">
+                          {formatRupiah(o.ongkir || 10000)}
+                        </td>
                         <td className="px-6 py-4">
-                          <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
-                            o.status === 'completed' ? 'bg-emerald-50 text-emerald-600' :
-                            o.status === 'cancelled' ? 'bg-rose-50 text-rose-600' : 'bg-blue-50 text-blue-600'
-                          }`}>
+                          <span
+                            className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+                              o.status === 'completed'
+                                ? 'bg-emerald-50 text-emerald-600'
+                                : o.status === 'cancelled'
+                                  ? 'bg-rose-50 text-rose-600'
+                                  : 'bg-blue-50 text-blue-600'
+                            }`}
+                          >
                             {o.statusText || o.status}
                           </span>
                         </td>
@@ -1024,11 +1202,18 @@ export default function AdminApp() {
             <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
               <div className="p-6 border-b border-slate-200 flex items-center justify-between">
                 <div>
-                  <h3 className="font-bold text-base text-slate-800">Daftar Mitra Jastiper &amp; Rating</h3>
-                  <p className="text-xs text-slate-500 mt-0.5">Rating nyata hasil ulasan customer di platform</p>
+                  <h3 className="font-bold text-base text-slate-800">
+                    Daftar Mitra Jastiper &amp; Rating
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Rating nyata hasil ulasan customer di platform
+                  </p>
                 </div>
                 <div className="relative">
-                  <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <Search
+                    size={16}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                  />
                   <input
                     type="text"
                     placeholder="Cari Jastiper..."
@@ -1057,7 +1242,11 @@ export default function AdminApp() {
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
                             {j.photoUrl ? (
-                              <img src={j.photoUrl} alt="" className="w-10 h-10 rounded-full object-cover border border-slate-200" />
+                              <img
+                                src={j.photoUrl}
+                                alt=""
+                                className="w-10 h-10 rounded-full object-cover border border-slate-200"
+                              />
                             ) : (
                               <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 font-bold text-xs">
                                 📦
@@ -1065,21 +1254,29 @@ export default function AdminApp() {
                             )}
                             <div>
                               <p className="font-bold text-slate-800">{j.name}</p>
-                              <p className="text-xs text-slate-400">{j.email || 'Tidak ada email'}</p>
+                              <p className="text-xs text-slate-400">
+                                {j.email || 'Tidak ada email'}
+                              </p>
                               <p className="text-xs text-slate-400">{j.phone || '-'}</p>
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4 text-slate-600 font-medium">{j.area || 'Nasional'}</td>
+                        <td className="px-6 py-4 text-slate-600 font-medium">
+                          {j.area || 'Nasional'}
+                        </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-1 font-bold text-amber-500">
                             <Star size={16} className="fill-amber-400 text-amber-400" />
                             <span>{Number(j.rating || 0).toFixed(1)}</span>
                           </div>
                         </td>
-                        <td className="px-6 py-4 font-semibold text-slate-700">{j.totalOrders || 0} pesanan</td>
+                        <td className="px-6 py-4 font-semibold text-slate-700">
+                          {j.totalOrders || 0} pesanan
+                        </td>
                         <td className="px-6 py-4">
-                          <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${j.isActive !== false ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
+                          <span
+                            className={`px-2.5 py-1 rounded-full text-xs font-bold ${j.isActive !== false ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}
+                          >
                             {j.isActive !== false ? 'AKTIF' : 'SUSPEND'}
                           </span>
                         </td>
@@ -1121,11 +1318,16 @@ export default function AdminApp() {
             <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
               <div className="p-6 border-b border-slate-200 flex items-center justify-between">
                 <div>
-                  <h3 className="font-bold text-base text-slate-800">Daftar Pelanggan (Customer)</h3>
+                  <h3 className="font-bold text-base text-slate-800">
+                    Daftar Pelanggan (Customer)
+                  </h3>
                   <p className="text-xs text-slate-500 mt-0.5">Kelola pengguna aplikasi Truzzi</p>
                 </div>
                 <div className="relative">
-                  <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <Search
+                    size={16}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                  />
                   <input
                     type="text"
                     placeholder="Cari Pelanggan..."
@@ -1152,7 +1354,11 @@ export default function AdminApp() {
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
                             {c.photoUrl ? (
-                              <img src={c.photoUrl} alt="" className="w-10 h-10 rounded-full object-cover border border-slate-200" />
+                              <img
+                                src={c.photoUrl}
+                                alt=""
+                                className="w-10 h-10 rounded-full object-cover border border-slate-200"
+                              />
                             ) : (
                               <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 font-bold text-xs">
                                 🧑
@@ -1252,7 +1458,9 @@ export default function AdminApp() {
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="font-bold text-xl text-slate-800">Persetujuan Identitas (KYC)</h3>
-                  <p className="text-xs text-slate-500 mt-0.5">Review foto KTP dan wajah pendaftar Jastiper baru.</p>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Review foto KTP dan wajah pendaftar Jastiper baru.
+                  </p>
                 </div>
               </div>
 
@@ -1263,16 +1471,24 @@ export default function AdminApp() {
                       <CheckCircle2 className="w-8 h-8 text-emerald-500" />
                     </div>
                     <h3 className="text-slate-800 font-bold mb-1">Semua Selesai!</h3>
-                    <p className="text-slate-500 text-sm">Tidak ada Jastiper yang menunggu verifikasi saat ini.</p>
+                    <p className="text-slate-500 text-sm">
+                      Tidak ada Jastiper yang menunggu verifikasi saat ini.
+                    </p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {pendingKycJastipers.map(j => (
-                      <div key={j.id || j.$id} className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col">
+                    {pendingKycJastipers.map((j) => (
+                      <div
+                        key={j.id || j.$id}
+                        className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col"
+                      >
                         <div className="flex items-center gap-3 mb-4">
-                          <img 
-                            src={j.photoUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(j.name)}&background=random`} 
-                            alt={j.name} 
+                          <img
+                            src={
+                              j.photoUrl ||
+                              `https://ui-avatars.com/api/?name=${encodeURIComponent(j.name)}&background=random`
+                            }
+                            alt={j.name}
                             className="w-10 h-10 rounded-full object-cover border border-slate-200"
                           />
                           <div>
@@ -1280,11 +1496,13 @@ export default function AdminApp() {
                             <p className="text-xs text-slate-500">{j.email}</p>
                           </div>
                         </div>
-                        
+
                         <div className="mt-auto space-y-3">
                           <div className="flex items-center justify-between text-xs border-t border-slate-200 pt-3">
                             <span className="text-slate-500">Status</span>
-                            <span className="text-amber-600 font-bold px-2 py-0.5 bg-amber-100 rounded-full">Pending</span>
+                            <span className="text-amber-600 font-bold px-2 py-0.5 bg-amber-100 rounded-full">
+                              Pending
+                            </span>
                           </div>
                           <button
                             onClick={() => setSelectedKycJastiper(j)}
@@ -1309,64 +1527,86 @@ export default function AdminApp() {
           <div className="bg-white rounded-3xl p-6 w-full max-w-4xl shadow-2xl space-y-4 max-h-[90vh] flex flex-col overflow-hidden">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100 shrink-0">
               <h3 className="font-bold text-lg text-slate-800 flex items-center gap-2">
-                <ShieldCheck className="w-5 h-5 text-primary" /> Verifikasi KYC: {selectedKycJastiper.name}
+                <ShieldCheck className="w-5 h-5 text-primary" /> Verifikasi KYC:{' '}
+                {selectedKycJastiper.name}
               </h3>
-              <button onClick={() => setSelectedKycJastiper(null)} className="text-slate-400 hover:text-slate-600">
+              <button
+                onClick={() => setSelectedKycJastiper(null)}
+                className="text-slate-400 hover:text-slate-600"
+              >
                 <XCircle className="w-6 h-6" />
               </button>
             </div>
-            
+
             <div className="overflow-y-auto flex-1 p-2 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* KTP */}
                 <div className="space-y-3">
                   <h4 className="text-sm font-semibold text-slate-800">Foto KTP</h4>
                   <div className="aspect-[16/10] bg-slate-100 rounded-2xl border border-slate-200 overflow-hidden relative group shadow-sm">
-                    <img 
-                      src={selectedKycJastiper.kycKtpUrl} 
-                      alt="KTP" 
+                    <img
+                      src={selectedKycJastiper.kycKtpUrl}
+                      alt="KTP"
                       className="w-full h-full object-contain"
                     />
                     <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <a href={selectedKycJastiper.kycKtpUrl} target="_blank" rel="noreferrer" className="px-4 py-2 bg-white rounded-lg text-slate-800 text-xs font-bold shadow-lg">Perbesar Gambar</a>
+                      <a
+                        href={selectedKycJastiper.kycKtpUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="px-4 py-2 bg-white rounded-lg text-slate-800 text-xs font-bold shadow-lg"
+                      >
+                        Perbesar Gambar
+                      </a>
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Selfie */}
                 <div className="space-y-3">
                   <h4 className="text-sm font-semibold text-slate-800">Foto Selfie (Wajah)</h4>
                   <div className="aspect-[16/10] bg-slate-100 rounded-2xl border border-slate-200 overflow-hidden relative group shadow-sm">
-                    <img 
-                      src={selectedKycJastiper.kycSelfieUrl} 
-                      alt="Selfie" 
+                    <img
+                      src={selectedKycJastiper.kycSelfieUrl}
+                      alt="Selfie"
                       className="w-full h-full object-contain"
                     />
                     <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <a href={selectedKycJastiper.kycSelfieUrl} target="_blank" rel="noreferrer" className="px-4 py-2 bg-white rounded-lg text-slate-800 text-xs font-bold shadow-lg">Perbesar Gambar</a>
+                      <a
+                        href={selectedKycJastiper.kycSelfieUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="px-4 py-2 bg-white rounded-lg text-slate-800 text-xs font-bold shadow-lg"
+                      >
+                        Perbesar Gambar
+                      </a>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200">
-                <h4 className="text-xs font-bold text-slate-500 mb-2 uppercase tracking-wide">Panduan Verifikasi Admin</h4>
+                <h4 className="text-xs font-bold text-slate-500 mb-2 uppercase tracking-wide">
+                  Panduan Verifikasi Admin
+                </h4>
                 <ul className="text-xs text-slate-600 space-y-1.5 list-disc pl-4 font-medium">
                   <li>Pastikan wajah di KTP sama persis dengan foto Selfie.</li>
                   <li>Pastikan tulisan di KTP (NIK, Nama, dll) dapat terbaca dengan jelas.</li>
-                  <li>Pastikan foto KTP asli dan bukan merupakan hasil manipulasi/editan komputer.</li>
+                  <li>
+                    Pastikan foto KTP asli dan bukan merupakan hasil manipulasi/editan komputer.
+                  </li>
                 </ul>
               </div>
             </div>
 
             <div className="pt-4 border-t border-slate-100 flex justify-end gap-3 shrink-0">
-              <button 
+              <button
                 onClick={() => handleRejectKyc(selectedKycJastiper.id || selectedKycJastiper.$id)}
                 className="px-6 py-2.5 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-100 font-bold text-sm transition-colors"
               >
                 Tolak &amp; Minta Foto Ulang
               </button>
-              <button 
+              <button
                 onClick={() => handleApproveKyc(selectedKycJastiper.id || selectedKycJastiper.$id)}
                 className="px-6 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white font-bold text-sm transition-colors shadow-md"
               >
@@ -1379,18 +1619,31 @@ export default function AdminApp() {
 
       {/* Modal Buat Promo Baru */}
       {showPromoModal && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4" onClick={() => setShowPromoModal(false)}>
-          <div className="bg-white rounded-3xl p-6 w-full max-w-lg shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4"
+          onClick={() => setShowPromoModal(false)}
+        >
+          <div
+            className="bg-white rounded-3xl p-6 w-full max-w-lg shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <h3 className="font-bold text-lg text-slate-800">Buat Banner &amp; Kode Promo Baru</h3>
-              <button onClick={() => setShowPromoModal(false)} className="text-slate-400 hover:text-slate-600">
+              <h3 className="font-bold text-lg text-slate-800">
+                Buat Banner &amp; Kode Promo Baru
+              </h3>
+              <button
+                onClick={() => setShowPromoModal(false)}
+                className="text-slate-400 hover:text-slate-600"
+              >
                 &times;
               </button>
             </div>
 
             <form onSubmit={handleCreatePromo} className="space-y-3.5">
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Kode Voucher (Kapital)</label>
+                <label className="text-xs font-bold text-slate-700 block mb-1">
+                  Kode Voucher (Kapital)
+                </label>
                 <input
                   type="text"
                   required
@@ -1414,7 +1667,9 @@ export default function AdminApp() {
               </div>
 
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Deskripsi / Subtitle</label>
+                <label className="text-xs font-bold text-slate-700 block mb-1">
+                  Deskripsi / Subtitle
+                </label>
                 <input
                   type="text"
                   placeholder="Mis: Diskon ongkir s.d Rp 10.000 untuk pengguna baru"
@@ -1437,7 +1692,11 @@ export default function AdminApp() {
                 </div>
                 <div>
                   <label className="text-xs font-bold text-slate-700 block mb-1">Tipe Promo</label>
-                  <select value={promoType} onChange={(e) => setPromoType(e.target.value)} className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm bg-white focus:outline-none focus:border-primary">
+                  <select
+                    value={promoType}
+                    onChange={(e) => setPromoType(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm bg-white focus:outline-none focus:border-primary"
+                  >
                     <option value="discount">Diskon Persen</option>
                     <option value="cashback">Diskon Flat (Rupiah)</option>
                     <option value="gratis_ongkir">Gratis Ongkir</option>
@@ -1448,17 +1707,27 @@ export default function AdminApp() {
               <div className="grid grid-cols-3 gap-3">
                 <div>
                   <label className="text-xs font-bold text-slate-700 block mb-1">Kategori</label>
-                  <select value={promoCategory} onChange={(e) => setPromoCategory(e.target.value)} className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm bg-white focus:outline-none focus:border-primary">
+                  <select
+                    value={promoCategory}
+                    onChange={(e) => setPromoCategory(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm bg-white focus:outline-none focus:border-primary"
+                  >
                     <option value="all">Semua</option>
                     <option value="jastip">Jastip</option>
                   </select>
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">Min. Belanja (Rp)</label>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    Min. Belanja (Rp)
+                  </label>
                   <input
                     type="text"
                     placeholder="Mis: 30.000"
-                    value={promoMinSpend ? new Intl.NumberFormat('id-ID').format(Number(promoMinSpend)) : ''}
+                    value={
+                      promoMinSpend
+                        ? new Intl.NumberFormat('id-ID').format(Number(promoMinSpend))
+                        : ''
+                    }
                     onChange={(e) => setPromoMinSpend(e.target.value.replace(/\D/g, ''))}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-primary"
                   />
@@ -1479,40 +1748,66 @@ export default function AdminApp() {
                 {promoType === 'discount' ? (
                   <>
                     <div>
-                      <label className="text-xs font-bold text-slate-700 block mb-1">Persen Diskon (%)</label>
-                      <input type="number" placeholder="20" value={promoDiscountPercent} onChange={(e) => setPromoDiscountPercent(e.target.value)} className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-primary" />
+                      <label className="text-xs font-bold text-slate-700 block mb-1">
+                        Persen Diskon (%)
+                      </label>
+                      <input
+                        type="number"
+                        placeholder="20"
+                        value={promoDiscountPercent}
+                        onChange={(e) => setPromoDiscountPercent(e.target.value)}
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-primary"
+                      />
                     </div>
                     <div>
-                      <label className="text-xs font-bold text-slate-700 block mb-1">Maks. Diskon (Rp)</label>
-                      <input 
-                        type="text" 
-                        placeholder="Mis: 10.000" 
-                        value={promoMaxDiscount ? new Intl.NumberFormat('id-ID').format(Number(promoMaxDiscount)) : ''} 
-                        onChange={(e) => setPromoMaxDiscount(e.target.value.replace(/\D/g, ''))} 
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-primary" 
+                      <label className="text-xs font-bold text-slate-700 block mb-1">
+                        Maks. Diskon (Rp)
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Mis: 10.000"
+                        value={
+                          promoMaxDiscount
+                            ? new Intl.NumberFormat('id-ID').format(Number(promoMaxDiscount))
+                            : ''
+                        }
+                        onChange={(e) => setPromoMaxDiscount(e.target.value.replace(/\D/g, ''))}
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-primary"
                       />
                     </div>
                   </>
                 ) : (
                   <>
                     <div>
-                      <label className="text-xs font-bold text-slate-700 block mb-1">Nominal Diskon (Rp)</label>
-                      <input 
-                        type="text" 
-                        placeholder="Mis: 10.000" 
-                        value={promoDiscountFlat ? new Intl.NumberFormat('id-ID').format(Number(promoDiscountFlat)) : ''} 
-                        onChange={(e) => setPromoDiscountFlat(e.target.value.replace(/\D/g, ''))} 
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-primary" 
+                      <label className="text-xs font-bold text-slate-700 block mb-1">
+                        Nominal Diskon (Rp)
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Mis: 10.000"
+                        value={
+                          promoDiscountFlat
+                            ? new Intl.NumberFormat('id-ID').format(Number(promoDiscountFlat))
+                            : ''
+                        }
+                        onChange={(e) => setPromoDiscountFlat(e.target.value.replace(/\D/g, ''))}
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-primary"
                       />
                     </div>
                     <div>
-                      <label className="text-xs font-bold text-slate-700 block mb-1">Max Budget Total (Rp)</label>
-                      <input 
-                        type="text" 
-                        placeholder="Mis: 500.000" 
-                        value={promoBudgetMax ? new Intl.NumberFormat('id-ID').format(Number(promoBudgetMax)) : ''} 
-                        onChange={(e) => setPromoBudgetMax(e.target.value.replace(/\D/g, ''))} 
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-primary" 
+                      <label className="text-xs font-bold text-slate-700 block mb-1">
+                        Max Budget Total (Rp)
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Mis: 500.000"
+                        value={
+                          promoBudgetMax
+                            ? new Intl.NumberFormat('id-ID').format(Number(promoBudgetMax))
+                            : ''
+                        }
+                        onChange={(e) => setPromoBudgetMax(e.target.value.replace(/\D/g, ''))}
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-primary"
                       />
                     </div>
                   </>
@@ -1522,16 +1817,30 @@ export default function AdminApp() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-xs font-bold text-slate-700 block mb-1">Tgl Mulai</label>
-                  <input type="datetime-local" value={promoStartDate} onChange={(e) => setPromoStartDate(e.target.value)} className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-primary" />
+                  <input
+                    type="datetime-local"
+                    value={promoStartDate}
+                    onChange={(e) => setPromoStartDate(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-primary"
+                  />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">Tgl Berakhir</label>
-                  <input type="datetime-local" value={promoEndDate} onChange={(e) => setPromoEndDate(e.target.value)} className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-primary" />
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    Tgl Berakhir
+                  </label>
+                  <input
+                    type="datetime-local"
+                    value={promoEndDate}
+                    onChange={(e) => setPromoEndDate(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-primary"
+                  />
                 </div>
               </div>
 
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Upload Gambar Banner</label>
+                <label className="text-xs font-bold text-slate-700 block mb-1">
+                  Upload Gambar Banner
+                </label>
                 <div className="flex items-center gap-3">
                   <input
                     type="file"
@@ -1548,7 +1857,11 @@ export default function AdminApp() {
                   >
                     <Upload size={14} /> {uploadingImage ? 'Mengunggah...' : 'Pilih File Gambar'}
                   </button>
-                  {promoImageUrl && <span className="text-xs text-emerald-600 font-bold truncate">✓ Gambar Terpasang</span>}
+                  {promoImageUrl && (
+                    <span className="text-xs text-emerald-600 font-bold truncate">
+                      ✓ Gambar Terpasang
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -1575,11 +1888,20 @@ export default function AdminApp() {
 
       {/* Modal Edit Jastiper */}
       {showEditJastiperModal && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4" onClick={() => setShowEditJastiperModal(false)}>
-          <div className="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl space-y-4" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4"
+          onClick={() => setShowEditJastiperModal(false)}
+        >
+          <div
+            className="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <h3 className="font-bold text-lg text-slate-800">Edit Data Jastiper</h3>
-              <button onClick={() => setShowEditJastiperModal(false)} className="text-slate-400 hover:text-slate-600">
+              <button
+                onClick={() => setShowEditJastiperModal(false)}
+                className="text-slate-400 hover:text-slate-600"
+              >
                 &times;
               </button>
             </div>
@@ -1597,7 +1919,9 @@ export default function AdminApp() {
               </div>
 
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Nomor Handphone</label>
+                <label className="text-xs font-bold text-slate-700 block mb-1">
+                  Nomor Handphone
+                </label>
                 <input
                   type="text"
                   required
@@ -1610,7 +1934,12 @@ export default function AdminApp() {
               <div className="flex items-center justify-between pt-2">
                 <label className="text-sm font-bold text-slate-700">Status Akun Aktif</label>
                 <label className="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" className="sr-only peer" checked={jastiperIsActive} onChange={(e) => setJastiperIsActive(e.target.checked)} />
+                  <input
+                    type="checkbox"
+                    className="sr-only peer"
+                    checked={jastiperIsActive}
+                    onChange={(e) => setJastiperIsActive(e.target.checked)}
+                  />
                   <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
                 </label>
               </div>
@@ -1618,7 +1947,12 @@ export default function AdminApp() {
               <div className="flex items-center justify-between">
                 <label className="text-sm font-bold text-slate-700">Verifikasi KYC (KTP)</label>
                 <label className="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" className="sr-only peer" checked={jastiperKycVerified} onChange={(e) => setJastiperKycVerified(e.target.checked)} />
+                  <input
+                    type="checkbox"
+                    className="sr-only peer"
+                    checked={jastiperKycVerified}
+                    onChange={(e) => setJastiperKycVerified(e.target.checked)}
+                  />
                   <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500"></div>
                 </label>
               </div>
@@ -1646,18 +1980,29 @@ export default function AdminApp() {
 
       {/* Modal Edit Customer */}
       {showEditCustomerModal && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4" onClick={() => setShowEditCustomerModal(false)}>
-          <div className="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl space-y-4" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4"
+          onClick={() => setShowEditCustomerModal(false)}
+        >
+          <div
+            className="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <h3 className="font-bold text-lg text-slate-800">Edit Data Pelanggan</h3>
-              <button onClick={() => setShowEditCustomerModal(false)} className="text-slate-400 hover:text-slate-600">
+              <button
+                onClick={() => setShowEditCustomerModal(false)}
+                className="text-slate-400 hover:text-slate-600"
+              >
                 &times;
               </button>
             </div>
 
             <form onSubmit={handleUpdateCustomer} className="space-y-4">
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Nama Pelanggan</label>
+                <label className="text-xs font-bold text-slate-700 block mb-1">
+                  Nama Pelanggan
+                </label>
                 <input
                   type="text"
                   required
@@ -1668,7 +2013,9 @@ export default function AdminApp() {
               </div>
 
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Nomor Handphone</label>
+                <label className="text-xs font-bold text-slate-700 block mb-1">
+                  Nomor Handphone
+                </label>
                 <input
                   type="text"
                   required
@@ -1701,4 +2048,3 @@ export default function AdminApp() {
     </div>
   );
 }
-

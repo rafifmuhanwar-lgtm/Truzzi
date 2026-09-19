@@ -55,7 +55,13 @@ export async function hitungJarak(opts: {
   };
 }
 
-function parseRoute(data: { routes?: Array<{ distance?: number; duration?: number; geometry?: { coordinates?: [number, number][] } }> }): DistanceResult | null {
+function parseRoute(data: {
+  routes?: Array<{
+    distance?: number;
+    duration?: number;
+    geometry?: { coordinates?: [number, number][] };
+  }>;
+}): DistanceResult | null {
   const routes = data.routes;
   if (!routes || routes.length === 0) return null;
   const route = routes[0];
@@ -70,19 +76,27 @@ function parseRoute(data: { routes?: Array<{ distance?: number; duration?: numbe
   };
 }
 
-async function mapboxDistance(fromLat: number, fromLng: number, toLat: number, toLng: number): Promise<DistanceResult | null> {
+async function mapboxDistance(
+  fromLat: number,
+  fromLng: number,
+  toLat: number,
+  toLng: number,
+): Promise<DistanceResult | null> {
   try {
     const coordinates = `${fromLng},${fromLat};${toLng},${toLat}`;
-    const r = await axios.get(`https://api.mapbox.com/directions/v5/mapbox/driving/${coordinates}`, {
-      params: {
-        access_token: config.mapbox.accessToken,
-        geometries: 'geojson',
-        overview: 'full',
-        alternatives: 'false',
-        steps: 'false',
+    const r = await axios.get(
+      `https://api.mapbox.com/directions/v5/mapbox/driving/${coordinates}`,
+      {
+        params: {
+          access_token: config.mapbox.accessToken,
+          geometries: 'geojson',
+          overview: 'full',
+          alternatives: 'false',
+          steps: 'false',
+        },
+        timeout: 10000,
       },
-      timeout: 10000,
-    });
+    );
     if (r.status === 200 && r.data && r.data.routes?.length) {
       return parseRoute(r.data);
     }
@@ -92,7 +106,12 @@ async function mapboxDistance(fromLat: number, fromLng: number, toLat: number, t
   return null;
 }
 
-async function osmDistance(fromLat: number, fromLng: number, toLat: number, toLng: number): Promise<DistanceResult | null> {
+async function osmDistance(
+  fromLat: number,
+  fromLng: number,
+  toLat: number,
+  toLng: number,
+): Promise<DistanceResult | null> {
   try {
     const coordinates = `${fromLng},${fromLat};${toLng},${toLat}`;
     const r = await axios.get(`https://router.project-osrm.org/route/v1/driving/${coordinates}`, {
@@ -112,10 +131,17 @@ async function osmDistance(fromLat: number, fromLng: number, toLat: number, toLn
 export async function reverseGeocode(lat: number, lng: number): Promise<GeocodeDetail | null> {
   if (config.mapbox.accessToken) {
     try {
-      const r = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json`, {
-        params: { access_token: config.mapbox.accessToken, language: 'id', types: 'address,poi,neighborhood,locality,place,region,country' },
-        timeout: 10000,
-      });
+      const r = await axios.get(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json`,
+        {
+          params: {
+            access_token: config.mapbox.accessToken,
+            language: 'id',
+            types: 'address,poi,neighborhood,locality,place,region,country',
+          },
+          timeout: 10000,
+        },
+      );
       const feature = r.data?.features?.[0];
       if (feature) {
         const context: Record<string, string> = {};
@@ -179,10 +205,13 @@ export async function geocode(query: string): Promise<{ lat: number; lng: number
   const encoded = encodeURIComponent(query);
   if (config.mapbox.accessToken) {
     try {
-      const r = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encoded}.json`, {
-        params: { access_token: config.mapbox.accessToken, language: 'id', limit: 1 },
-        timeout: 10000,
-      });
+      const r = await axios.get(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encoded}.json`,
+        {
+          params: { access_token: config.mapbox.accessToken, language: 'id', limit: 1 },
+          timeout: 10000,
+        },
+      );
       const c = r.data?.features?.[0]?.center;
       if (c && c.length >= 2) return { lng: c[0], lat: c[1] };
     } catch {
@@ -208,15 +237,27 @@ export async function geocode(query: string): Promise<{ lat: number; lng: number
 }
 
 /** Rekomendasi tempat terdekat — Mapbox → Nominatim. Urut dari terdekat bila ada proximity. */
-export async function searchRecommendations(opts: { query: string; lat?: number; lng?: number }): Promise<GeocodeRecommendation[]> {
+export async function searchRecommendations(opts: {
+  query: string;
+  lat?: number;
+  lng?: number;
+}): Promise<GeocodeRecommendation[]> {
   const { query, lat, lng } = opts;
   if (!query.trim()) return [];
   const encoded = encodeURIComponent(query.trim());
   if (config.mapbox.accessToken) {
     try {
-      const params: Record<string, unknown> = { access_token: config.mapbox.accessToken, language: 'id', limit: 6, country: 'id' };
+      const params: Record<string, unknown> = {
+        access_token: config.mapbox.accessToken,
+        language: 'id',
+        limit: 6,
+        country: 'id',
+      };
       if (lat != null && lng != null) params.proximity = `${lng},${lat}`;
-      const r = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encoded}.json`, { params, timeout: 10000 });
+      const r = await axios.get(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encoded}.json`,
+        { params, timeout: 10000 },
+      );
       const results: GeocodeRecommendation[] = [];
       for (const f of r.data?.features ?? []) {
         const center = f.center;
@@ -234,7 +275,8 @@ export async function searchRecommendations(opts: { query: string; lat?: number;
           });
         }
       }
-      if (lat != null && lng != null) results.sort((a, b) => (a.distanceKm ?? 999999) - (b.distanceKm ?? 999999));
+      if (lat != null && lng != null)
+        results.sort((a, b) => (a.distanceKm ?? 999999) - (b.distanceKm ?? 999999));
       return results;
     } catch {
       /* fallthrough */
@@ -261,7 +303,8 @@ export async function searchRecommendations(opts: { query: string; lat?: number;
         distanceKm: dist,
       });
     }
-    if (lat != null && lng != null) results.sort((a, b) => (a.distanceKm ?? 999999) - (b.distanceKm ?? 999999));
+    if (lat != null && lng != null)
+      results.sort((a, b) => (a.distanceKm ?? 999999) - (b.distanceKm ?? 999999));
     return results;
   } catch {
     return [];
@@ -274,7 +317,10 @@ export function haversineKm(lat1: number, lon1: number, lat2: number, lon2: numb
   const dLon = ((lon2 - lon1) * Math.PI) / 180.0;
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos((lat1 * Math.PI) / 180.0) * Math.cos((lat2 * Math.PI) / 180.0) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    Math.cos((lat1 * Math.PI) / 180.0) *
+      Math.cos((lat2 * Math.PI) / 180.0) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
 }

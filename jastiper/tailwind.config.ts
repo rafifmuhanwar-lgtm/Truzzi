@@ -1,5 +1,5 @@
 /** Tailwind config driver — token mereplikasi AppColors courier_app Flutter. */
-import type { Config } from 'tailwindcss'
+import type { Config } from 'tailwindcss';
 
 export default {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
@@ -49,4 +49,4 @@ export default {
     },
   },
   plugins: [],
-} satisfies Config
+} satisfies Config;

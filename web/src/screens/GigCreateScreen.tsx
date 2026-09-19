@@ -4,7 +4,16 @@ import { useSnackbar } from 'notistack';
 import { useQueryClient } from '@tanstack/react-query';
 import { API, errMsg } from '../lib/api';
 import { useAuthStore } from '../store/auth';
-import { ArrowLeft, Monitor, Wrench, Users, Link as LinkIcon, ImageIcon, X, Camera } from '../components/icons';
+import {
+  ArrowLeft,
+  Monitor,
+  Wrench,
+  Users,
+  Link as LinkIcon,
+  ImageIcon,
+  X,
+  Camera,
+} from '../components/icons';
 
 export default function GigCreateScreen() {
   const navigate = useNavigate();
@@ -72,9 +81,14 @@ export default function GigCreateScreen() {
 
     if (unitBudget < minBudgetRequired) {
       if (isSingleWorker) {
-        enqueueSnackbar('Minimum budget untuk 1 pengerja (single) adalah Rp 15.000', { variant: 'error' });
+        enqueueSnackbar('Minimum budget untuk 1 pengerja (single) adalah Rp 15.000', {
+          variant: 'error',
+        });
       } else {
-        enqueueSnackbar(`Minimum budget per pengerja adalah Rp ${minBudgetRequired.toLocaleString('id-ID')}`, { variant: 'error' });
+        enqueueSnackbar(
+          `Minimum budget per pengerja adalah Rp ${minBudgetRequired.toLocaleString('id-ID')}`,
+          { variant: 'error' },
+        );
       }
       return;
     }
@@ -103,9 +117,8 @@ export default function GigCreateScreen() {
 
       const formattedDesc = `${description.trim()}${extraNotes}`;
 
-      const finalTitle = actualWorkers > 1
-        ? `${title.trim()} [Kuota ${actualWorkers} Pengerja]`
-        : title.trim();
+      const finalTitle =
+        actualWorkers > 1 ? `${title.trim()} [Kuota ${actualWorkers} Pengerja]` : title.trim();
 
       await API.gigs.create({
         title: finalTitle,
@@ -123,9 +136,20 @@ export default function GigCreateScreen() {
     } catch (e) {
       const msg = errMsg(e);
       if ((e as { code?: string }).code === 'INSUFFICIENT_BALANCE') {
-        enqueueSnackbar(msg, { variant: 'error', autoHideDuration: 6000, action: () => (
-          <button onClick={() => { navigate('/wallet/topup'); }} className="text-white font-semibold text-xs underline">Top Up</button>
-        ) });
+        enqueueSnackbar(msg, {
+          variant: 'error',
+          autoHideDuration: 6000,
+          action: () => (
+            <button
+              onClick={() => {
+                navigate('/wallet/topup');
+              }}
+              className="text-white font-semibold text-xs underline"
+            >
+              Top Up
+            </button>
+          ),
+        });
       } else {
         enqueueSnackbar(`Gagal memasang: ${msg}`, { variant: 'error' });
       }
@@ -138,17 +162,22 @@ export default function GigCreateScreen() {
     <div className="min-h-screen bg-slate-50 flex flex-col antialiased">
       {/* Header */}
       <header className="bg-white px-4 h-14 border-b border-slate-200 flex items-center gap-3 sticky top-0 z-10 shadow-2xs">
-        <button onClick={() => navigate(-1)} className="p-2 -ml-2 rounded-full hover:bg-slate-100 transition-colors text-ink" aria-label="Kembali">
+        <button
+          onClick={() => navigate(-1)}
+          className="p-2 -ml-2 rounded-full hover:bg-slate-100 transition-colors text-ink"
+          aria-label="Kembali"
+        >
           <ArrowLeft className="w-5 h-5" />
         </button>
         <h1 className="font-bold text-base text-ink">Pasang Tugas Baru</h1>
       </header>
 
       <form onSubmit={submit} className="flex-1 max-w-lg w-full mx-auto px-5 py-5 space-y-5 pb-32">
-
         {/* ─── 1. Kategori Tugas (Centered) ─── */}
         <div>
-          <label className="text-xs font-bold mb-1.5 block text-ink text-center">Kategori Tugas</label>
+          <label className="text-xs font-bold mb-1.5 block text-ink text-center">
+            Kategori Tugas
+          </label>
           <div className="grid grid-cols-2 gap-3">
             <button
               type="button"
@@ -159,7 +188,9 @@ export default function GigCreateScreen() {
                   : 'border-slate-200 bg-white hover:border-slate-300'
               }`}
             >
-              <span className={`inline-flex p-2 rounded-xl mx-auto ${category === 'digital' ? 'bg-primary text-white' : 'bg-slate-100 text-slate-500'}`}>
+              <span
+                className={`inline-flex p-2 rounded-xl mx-auto ${category === 'digital' ? 'bg-primary text-white' : 'bg-slate-100 text-slate-500'}`}
+              >
                 <Monitor className="w-5 h-5" />
               </span>
               <p className="text-sm font-bold mt-2 text-ink">Digital</p>
@@ -178,11 +209,15 @@ export default function GigCreateScreen() {
                   : 'border-slate-200 bg-white hover:border-slate-300'
               }`}
             >
-              <span className={`inline-flex p-2 rounded-xl mx-auto ${category === 'fisik' ? 'bg-primary text-white' : 'bg-slate-100 text-slate-500'}`}>
+              <span
+                className={`inline-flex p-2 rounded-xl mx-auto ${category === 'fisik' ? 'bg-primary text-white' : 'bg-slate-100 text-slate-500'}`}
+              >
                 <Wrench className="w-5 h-5" />
               </span>
               <p className="text-sm font-bold mt-2 text-ink">Fisik</p>
-              <p className="text-[11px] text-ink-secondary mt-0.5 leading-snug">Butuh kehadiran di lokasi</p>
+              <p className="text-[11px] text-ink-secondary mt-0.5 leading-snug">
+                Butuh kehadiran di lokasi
+              </p>
             </button>
           </div>
         </div>
@@ -193,7 +228,11 @@ export default function GigCreateScreen() {
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder={category === 'digital' ? 'Contoh: Bantu isi kuesioner survei skripsi' : 'Contoh: Ngecat pagar rumah'}
+            placeholder={
+              category === 'digital'
+                ? 'Contoh: Bantu isi kuesioner survei skripsi'
+                : 'Contoh: Ngecat pagar rumah'
+            }
             className="w-full h-11 px-3.5 rounded-xl border border-slate-200 bg-white text-xs font-semibold text-ink placeholder:text-slate-400 focus:outline-none focus:border-primary transition-all"
           />
         </div>
@@ -280,7 +319,9 @@ export default function GigCreateScreen() {
               <div className="w-10 h-10 rounded-full bg-slate-200 group-hover:bg-primary/20 flex items-center justify-center transition-colors">
                 <Camera className="w-5 h-5 text-slate-400 group-hover:text-primary transition-colors" />
               </div>
-              <p className="text-xs font-semibold text-slate-400 group-hover:text-primary transition-colors">Klik untuk upload foto contoh bukti</p>
+              <p className="text-xs font-semibold text-slate-400 group-hover:text-primary transition-colors">
+                Klik untuk upload foto contoh bukti
+              </p>
               <p className="text-[10px] text-slate-400">JPG, PNG, maks 5 MB</p>
             </button>
           )}
@@ -322,7 +363,9 @@ export default function GigCreateScreen() {
           </div>
 
           <div className="relative">
-            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">Rp</span>
+            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">
+              Rp
+            </span>
             <input
               type="text"
               inputMode="numeric"
@@ -337,7 +380,9 @@ export default function GigCreateScreen() {
           <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-1.5">
             <div className="flex justify-between text-ink-secondary">
               <span>Total Bayaran ({actualWorkers} Pekerja):</span>
-              <span className="font-bold text-ink">Rp {totalWorkerBudget.toLocaleString('id-ID')}</span>
+              <span className="font-bold text-ink">
+                Rp {totalWorkerBudget.toLocaleString('id-ID')}
+              </span>
             </div>
             <div className="flex justify-between text-ink-secondary">
               <span>Biaya Layanan Platform (2,1%):</span>
@@ -345,14 +390,18 @@ export default function GigCreateScreen() {
             </div>
             <div className="border-t border-dashed border-slate-300 pt-2 flex justify-between items-center text-ink font-bold">
               <span>Total Dipotong dari Saldo:</span>
-              <span className="text-sm font-extrabold text-primary">Rp {totalEscrow.toLocaleString('id-ID')}</span>
+              <span className="text-sm font-extrabold text-primary">
+                Rp {totalEscrow.toLocaleString('id-ID')}
+              </span>
             </div>
           </div>
         </div>
 
         {/* ─── 8. Tanggal & Waktu ─── */}
         <div>
-          <label className="text-xs font-bold mb-1.5 block text-ink">Tanggal & Waktu Tenggat (Opsional)</label>
+          <label className="text-xs font-bold mb-1.5 block text-ink">
+            Tanggal & Waktu Tenggat (Opsional)
+          </label>
           <input
             type="datetime-local"
             value={deadline}
@@ -367,8 +416,12 @@ export default function GigCreateScreen() {
           disabled={submitting}
           className="btn-primary flex items-center justify-center gap-2 font-bold shadow-md active:scale-98 transition-all"
         >
-          {submitting && <span className="w-4 h-4 border-2 border-white/40 border-t-transparent rounded-full animate-spin" />}
-          {submitting ? 'Memasang Tugas...' : `Pasang Tugas — Rp ${totalEscrow.toLocaleString('id-ID')}`}
+          {submitting && (
+            <span className="w-4 h-4 border-2 border-white/40 border-t-transparent rounded-full animate-spin" />
+          )}
+          {submitting
+            ? 'Memasang Tugas...'
+            : `Pasang Tugas — Rp ${totalEscrow.toLocaleString('id-ID')}`}
         </button>
       </form>
     </div>

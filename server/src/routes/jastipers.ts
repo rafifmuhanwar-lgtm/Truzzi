@@ -71,7 +71,9 @@ router.get('/me', requireUser, async (req: Request, res: Response) => {
     const user = getUser(req)!;
     const jastiper = await db.getJastiper(user.id);
     if (!jastiper) {
-      return res.status(404).json({ message: 'Kamu belum terdaftar sebagai jastiper', isJastiper: false });
+      return res
+        .status(404)
+        .json({ message: 'Kamu belum terdaftar sebagai jastiper', isJastiper: false });
     }
     res.json({ jastiper, isJastiper: true });
   } catch (e) {
@@ -158,4 +160,3 @@ router.get('/:id/products', async (req: Request, res: Response) => {
 });
 
 export default router;
-

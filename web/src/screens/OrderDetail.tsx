@@ -7,10 +7,16 @@ import { useAuthStore } from '../store/auth';
 import { formatRupiah } from '../lib/format';
 import { type Order } from '../types';
 import {
-  ArrowLeft, RefreshCw, Search, User as UserIcon, MessageCircle,
-  Store, MapPin, Check, Star,
+  ArrowLeft,
+  RefreshCw,
+  Search,
+  User as UserIcon,
+  MessageCircle,
+  Store,
+  MapPin,
+  Check,
+  Star,
 } from '../components/icons';
-
 
 export default function OrderDetail() {
   const { state } = useLocation() as { state?: { order?: Order } };
@@ -22,13 +28,18 @@ export default function OrderDetail() {
   const user = useAuthStore((s) => s.user);
   const [order, setOrder] = useState<Order | null>(state?.order ?? null);
   const [loading, setLoading] = useState<boolean>(!state?.order && !!orderIdFromUrl);
-  const [jastiper, setJastiper] = useState<{ name?: string; phone?: string; photoUrl?: string; rating?: number } | null>(null);
-
+  const [jastiper, setJastiper] = useState<{
+    name?: string;
+    phone?: string;
+    photoUrl?: string;
+    rating?: number;
+  } | null>(null);
 
   useEffect(() => {
     if (orderIdFromUrl) {
       if (!order) setLoading(true);
-      API.orders.get(orderIdFromUrl)
+      API.orders
+        .get(orderIdFromUrl)
         .then((res) => {
           if (res?.order) setOrder(res.order);
         })
@@ -54,7 +65,10 @@ export default function OrderDetail() {
 
   useEffect(() => {
     if (order?.jastiperId) {
-      API.orders.jastiper(order.id).then(({ jastiper: c }) => setJastiper(c)).catch(() => undefined);
+      API.orders
+        .jastiper(order.id)
+        .then(({ jastiper: c }) => setJastiper(c))
+        .catch(() => undefined);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order?.jastiperId]);
@@ -71,7 +85,9 @@ export default function OrderDetail() {
   const handleSubmitReview = async () => {
     if (!order) return;
     if (selectedRating === 0) {
-      enqueueSnackbar('Silakan pilih jumlah bintang rating terlebih dahulu!', { variant: 'warning' });
+      enqueueSnackbar('Silakan pilih jumlah bintang rating terlebih dahulu!', {
+        variant: 'warning',
+      });
       return;
     }
     setSubmittingReview(true);
@@ -80,7 +96,9 @@ export default function OrderDetail() {
         rating: selectedRating,
         comment: reviewComment,
       });
-      enqueueSnackbar(`Terima kasih atas ulasan bintang ${selectedRating} Anda! ⭐`, { variant: 'success' });
+      enqueueSnackbar(`Terima kasih atas ulasan bintang ${selectedRating} Anda! ⭐`, {
+        variant: 'success',
+      });
       setShowReviewModal(false);
       setSelectedRating(0);
       setReviewComment('');
@@ -88,7 +106,10 @@ export default function OrderDetail() {
       qc.invalidateQueries({ queryKey: ['jastipers'] });
       // Refresh data jastiper jika ada
       if (order.jastiperId) {
-        API.orders.jastiper(order.id).then(({ jastiper: c }) => setJastiper(c)).catch(() => {});
+        API.orders
+          .jastiper(order.id)
+          .then(({ jastiper: c }) => setJastiper(c))
+          .catch(() => {});
       }
     } catch {
       enqueueSnackbar('Gagal menyimpan ulasan. Silakan coba lagi.', { variant: 'error' });
@@ -97,27 +118,28 @@ export default function OrderDetail() {
     }
   };
 
-  if (loading) return <p className="p-6 text-center text-sm text-ink-secondary">Memuat pesanan...</p>;
-  if (!order) return <p className="p-6 text-center text-sm text-ink-secondary">Pesanan tidak ditemukan</p>;
+  if (loading)
+    return <p className="p-6 text-center text-sm text-ink-secondary">Memuat pesanan...</p>;
+  if (!order)
+    return <p className="p-6 text-center text-sm text-ink-secondary">Pesanan tidak ditemukan</p>;
 
   const isJastip = order.orderType === 'jastip';
   const currentStep = getStep(order);
 
-  const itemPrice = order.danaBelanja > 0 ? order.danaBelanja : Math.max(0, order.totalAmount - order.ongkir - order.biayaLayanan);
+  const itemPrice =
+    order.danaBelanja > 0
+      ? order.danaBelanja
+      : Math.max(0, order.totalAmount - order.ongkir - order.biayaLayanan);
   const ongkirPrice = order.ongkir > 0 ? order.ongkir : 10000;
   const layananPrice = order.biayaLayanan > 0 ? order.biayaLayanan : 2000;
 
   const openChat = () => {
     if (order?.jastiperId) {
-       navigate(`/chat/room?targetUserId=${order.jastiperId}`);
+      navigate(`/chat/room?targetUserId=${order.jastiperId}`);
     } else {
-       enqueueSnackbar('Belum ada jastiper yang mengambil pesanan ini.', { variant: 'info' });
+      enqueueSnackbar('Belum ada jastiper yang mengambil pesanan ini.', { variant: 'info' });
     }
   };
-
-
-
-
 
   const refreshOrder = async () => {
     const { order: fresh } = await API.orders.get(order!.id);
@@ -127,12 +149,16 @@ export default function OrderDetail() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="bg-primary px-4 py-3 flex items-center gap-3 sticky top-0 z-10 text-white">
-        <button onClick={() => navigate(-1)} aria-label="Kembali"><ArrowLeft className="w-6 h-6 text-white" /></button>
+        <button onClick={() => navigate(-1)} aria-label="Kembali">
+          <ArrowLeft className="w-6 h-6 text-white" />
+        </button>
         <div className="flex-1 min-w-0">
           <p className="font-bold text-sm truncate">{order.id}</p>
           <p className="text-xs text-white/80">{order.serviceName}</p>
         </div>
-        <button onClick={refreshOrder} title="Refresh status" aria-label="Refresh"><RefreshCw className="w-5 h-5" /></button>
+        <button onClick={refreshOrder} title="Refresh status" aria-label="Refresh">
+          <RefreshCw className="w-5 h-5" />
+        </button>
       </header>
 
       <div className="flex-1 max-w-lg w-full mx-auto px-5 py-4 space-y-4 pb-28">
@@ -145,19 +171,27 @@ export default function OrderDetail() {
           </div>
         </div>
 
-
-
         <div className={`card-pad ${order.jastiperId ? 'border-primary/30' : ''}`}>
           <div className="flex items-center gap-3">
             {order.jastiperAvatar || jastiper?.photoUrl ? (
-              <img src={order.jastiperAvatar || jastiper?.photoUrl} alt="" className="w-11 h-11 rounded-full object-cover" />
+              <img
+                src={order.jastiperAvatar || jastiper?.photoUrl}
+                alt=""
+                className="w-11 h-11 rounded-full object-cover"
+              />
             ) : (
               <span className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center">
-                {order.jastiperId ? <UserIcon className="w-5 h-5 text-primary" /> : <Search className="w-5 h-5 text-primary" />}
+                {order.jastiperId ? (
+                  <UserIcon className="w-5 h-5 text-primary" />
+                ) : (
+                  <Search className="w-5 h-5 text-primary" />
+                )}
               </span>
             )}
             <div className="flex-1 min-w-0">
-              <p className="font-bold text-sm text-ink">{jastiper?.name || order.jastiperName || 'Mencari Jastiper...'}</p>
+              <p className="font-bold text-sm text-ink">
+                {jastiper?.name || order.jastiperName || 'Mencari Jastiper...'}
+              </p>
               {order.jastiperId ? (
                 <div className="flex items-center gap-1 mt-0.5">
                   <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
@@ -167,12 +201,18 @@ export default function OrderDetail() {
                   <span className="text-xs text-ink-secondary">· Mitra Jastiper</span>
                 </div>
               ) : (
-                <p className="text-xs text-ink-secondary mt-0.5">Mohon tunggu, jastiper sedang dicari...</p>
+                <p className="text-xs text-ink-secondary mt-0.5">
+                  Mohon tunggu, jastiper sedang dicari...
+                </p>
               )}
             </div>
             {order.jastiperId && (
               <div className="flex items-center gap-1.5 shrink-0">
-                <button onClick={openChat} className="p-2.5 rounded-full bg-primary active:scale-95 transition-transform" aria-label="Chat jastiper">
+                <button
+                  onClick={openChat}
+                  className="p-2.5 rounded-full bg-primary active:scale-95 transition-transform"
+                  aria-label="Chat jastiper"
+                >
                   <MessageCircle className="w-4 h-4 text-white" />
                 </button>
               </div>
@@ -185,7 +225,9 @@ export default function OrderDetail() {
           {!isJastip && (
             <>
               <div className="flex items-center gap-2">
-                <span className="p-2 rounded-lg bg-primary/10 shrink-0"><Store className="w-4 h-4 text-primary" /></span>
+                <span className="p-2 rounded-lg bg-primary/10 shrink-0">
+                  <Store className="w-4 h-4 text-primary" />
+                </span>
                 <div className="min-w-0">
                   <p className="text-xs text-ink-secondary">Lokasi Toko / Jemput</p>
                   <p className="text-sm font-medium line-clamp-1">{order.pickupAddress || '-'}</p>
@@ -195,7 +237,9 @@ export default function OrderDetail() {
             </>
           )}
           <div className="flex items-center gap-2">
-            <span className="p-2 rounded-lg bg-error/10 shrink-0"><MapPin className="w-4 h-4 text-error" /></span>
+            <span className="p-2 rounded-lg bg-error/10 shrink-0">
+              <MapPin className="w-4 h-4 text-error" />
+            </span>
             <div className="min-w-0">
               <p className="text-xs text-ink-secondary">Tujuan Pengantaran</p>
               <p className="text-sm font-medium line-clamp-1">{order.deliveryAddress || '-'}</p>
@@ -206,7 +250,11 @@ export default function OrderDetail() {
         <div className="card-pad">
           <h3 className="font-bold text-sm mb-2">Detail Barang / Pesanan</h3>
           <p className="font-bold text-[15px]">{order.title}</p>
-          {order.description && <p className="text-[13px] text-ink-secondary mt-1 leading-relaxed whitespace-pre-line">{order.description}</p>}
+          {order.description && (
+            <p className="text-[13px] text-ink-secondary mt-1 leading-relaxed whitespace-pre-line">
+              {order.description}
+            </p>
+          )}
         </div>
 
         {(!isJastip || Number(order.danaBelanja) > 0 || order.status === 'completed') && (
@@ -214,10 +262,19 @@ export default function OrderDetail() {
             <h3 className="font-bold text-sm mb-2">Rincian Biaya</h3>
             <div className="space-y-2 text-sm">
               {Number(order.danaBelanja) > 0 && (
-                <div className="flex justify-between"><span className="text-ink-secondary">Harga Item (Dana Belanja)</span><span className="font-semibold">{formatRupiah(itemPrice)}</span></div>
+                <div className="flex justify-between">
+                  <span className="text-ink-secondary">Harga Item (Dana Belanja)</span>
+                  <span className="font-semibold">{formatRupiah(itemPrice)}</span>
+                </div>
               )}
-              <div className="flex justify-between"><span className="text-ink-secondary">Ongkos Kirim Jastiper</span><span className="font-semibold">{formatRupiah(ongkirPrice)}</span></div>
-              <div className="flex justify-between"><span className="text-ink-secondary">Biaya Layanan</span><span className="font-semibold">{formatRupiah(layananPrice)}</span></div>
+              <div className="flex justify-between">
+                <span className="text-ink-secondary">Ongkos Kirim Jastiper</span>
+                <span className="font-semibold">{formatRupiah(ongkirPrice)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-ink-secondary">Biaya Layanan</span>
+                <span className="font-semibold">{formatRupiah(layananPrice)}</span>
+              </div>
               {Number(order.voucherDiscount || 0) > 0 ? (
                 <div className="flex justify-between text-success">
                   <span>Diskon Voucher ({order.voucherCode ?? 'PROMO'})</span>
@@ -227,7 +284,9 @@ export default function OrderDetail() {
               <div className="h-px bg-divider" />
               <div className="flex justify-between items-center">
                 <span className="font-bold">Total Pembayaran</span>
-                <span className="font-bold text-primary text-lg">{formatRupiah(order.totalAmount)}</span>
+                <span className="font-bold text-primary text-lg">
+                  {formatRupiah(order.totalAmount)}
+                </span>
               </div>
             </div>
           </div>
@@ -240,22 +299,39 @@ export default function OrderDetail() {
               {order.strukImageUrl && (
                 <BuktiItem
                   title={isJastip ? 'Foto Barang Dibeli' : 'Foto Pengambilan Barang'}
-                  value={order.totalBelanjaStruk != null ? formatRupiah(order.totalBelanjaStruk) : undefined}
+                  value={
+                    order.totalBelanjaStruk != null
+                      ? formatRupiah(order.totalBelanjaStruk)
+                      : undefined
+                  }
                   url={order.strukImageUrl}
                 />
               )}
-              {order.deliveryProofUrl && <BuktiItem title="Bukti Penerimaan" url={order.deliveryProofUrl} />}
+              {order.deliveryProofUrl && (
+                <BuktiItem title="Bukti Penerimaan" url={order.deliveryProofUrl} />
+              )}
             </div>
           </div>
         )}
       </div>
 
-      {(order.status === 'completed' || order.status === 'cancelled' || order.status === 'waiting_confirmation') && (
+      {(order.status === 'completed' ||
+        order.status === 'cancelled' ||
+        order.status === 'waiting_confirmation') && (
         <div className="sticky bottom-0 bg-white px-6 pt-4 pb-6 border-t border-divider z-20">
           <div className="max-w-lg mx-auto">
             {order.status === 'completed' && (
               <div className="flex gap-2">
-                <button className="btn-primary w-full" onClick={() => order.serviceName.includes('Jastip') ? navigate('/jastip') : enqueueSnackbar(`Memesan ulang ${order.serviceName}...`, { variant: 'info' })}>
+                <button
+                  className="btn-primary w-full"
+                  onClick={() =>
+                    order.serviceName.includes('Jastip')
+                      ? navigate('/jastip')
+                      : enqueueSnackbar(`Memesan ulang ${order.serviceName}...`, {
+                          variant: 'info',
+                        })
+                  }
+                >
                   Pesan Lagi
                 </button>
               </div>
@@ -264,7 +340,9 @@ export default function OrderDetail() {
               <div className="space-y-2">
                 <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
                   <span className="text-xl">📦</span>
-                  <p className="text-xs text-amber-800">Jastiper telah menyelesaikan pesanan ini. Silakan konfirmasi penerimaan barang.</p>
+                  <p className="text-xs text-amber-800">
+                    Jastiper telah menyelesaikan pesanan ini. Silakan konfirmasi penerimaan barang.
+                  </p>
                 </div>
                 <button
                   className="w-full py-3 rounded-xl bg-amber-500 text-white font-bold text-sm hover:bg-amber-600 active:scale-[0.98] transition-all"
@@ -275,18 +353,29 @@ export default function OrderDetail() {
               </div>
             )}
             {order.status === 'cancelled' && (
-              <button className="btn-primary" onClick={() => navigate(-1)}>Kembali ke Daftar Pesanan</button>
+              <button className="btn-primary" onClick={() => navigate(-1)}>
+                Kembali ke Daftar Pesanan
+              </button>
             )}
           </div>
         </div>
       )}
 
       {showReviewModal && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4" onClick={() => setShowReviewModal(false)}>
-          <div className="bg-white rounded-3xl p-6 w-full max-w-sm space-y-4 shadow-xl" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4"
+          onClick={() => setShowReviewModal(false)}
+        >
+          <div
+            className="bg-white rounded-3xl p-6 w-full max-w-sm space-y-4 shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="text-center space-y-1">
               <h3 className="font-bold text-lg text-ink">Beri Ulasan Jastiper</h3>
-              <p className="text-xs text-ink-secondary">Bagaimana pengalamanmu berbelanja dengan {jastiper?.name || order.jastiperName || 'Jastiper'}?</p>
+              <p className="text-xs text-ink-secondary">
+                Bagaimana pengalamanmu berbelanja dengan{' '}
+                {jastiper?.name || order.jastiperName || 'Jastiper'}?
+              </p>
             </div>
 
             <div className="flex justify-center gap-2.5 py-3">
@@ -302,9 +391,7 @@ export default function OrderDetail() {
                   >
                     <Star
                       className={`w-9 h-9 transition-colors ${
-                        isFilled
-                          ? 'text-amber-400 fill-amber-400'
-                          : 'text-gray-300 stroke-[1.5]'
+                        isFilled ? 'text-amber-400 fill-amber-400' : 'text-gray-300 stroke-[1.5]'
                       }`}
                     />
                   </button>
@@ -348,9 +435,21 @@ export function getStep(order: Order): number {
   const st = (order.statusText ?? '').toLowerCase();
   if (order.status === 'completed' || st.includes('pesanan selesai')) return 4;
   if (order.status === 'waiting_confirmation' || st.includes('menunggu konfirmasi')) return 3;
-  if (st.includes('dalam perjalanan ke tujuan') || st.includes('barang dibeli') || st.includes('tugas selesai')) return 3;
-  if (st.includes('sampai di lokasi') || st.includes('dibelikan') || st.includes('diambil')) return 2;
-  if (st.includes('menuju lokasi') || st.includes('jemput') || st.includes('assigned') || order.jastiperId) return 1;
+  if (
+    st.includes('dalam perjalanan ke tujuan') ||
+    st.includes('barang dibeli') ||
+    st.includes('tugas selesai')
+  )
+    return 3;
+  if (st.includes('sampai di lokasi') || st.includes('dibelikan') || st.includes('diambil'))
+    return 2;
+  if (
+    st.includes('menuju lokasi') ||
+    st.includes('jemput') ||
+    st.includes('assigned') ||
+    order.jastiperId
+  )
+    return 1;
   return 0;
 }
 
@@ -382,7 +481,11 @@ function StepTimeline({ isJastip, currentStep }: { isJastip: boolean; currentSte
               <span
                 className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${done && i > 0 ? 'bg-success text-white' : current ? 'bg-primary/15' : 'border border-border'}`}
               >
-                {done && i > 0 ? <Check className="w-3.5 h-3.5" /> : current ? <span className="w-2 h-2 rounded-full bg-primary" /> : null}
+                {done && i > 0 ? (
+                  <Check className="w-3.5 h-3.5" />
+                ) : current ? (
+                  <span className="w-2 h-2 rounded-full bg-primary" />
+                ) : null}
               </span>
               {i < steps.length - 1 && (
                 <span className={`w-0.5 h-9 ${currentStep > i ? 'bg-success' : 'bg-border'}`} />
@@ -402,8 +505,15 @@ function StepTimeline({ isJastip, currentStep }: { isJastip: boolean; currentSte
 function BuktiItem({ title, value, url }: { title: string; value?: string; url: string }) {
   return (
     <div>
-      <p className="text-xs text-ink-secondary">{title}{value ? ` · ${value}` : ''}</p>
-      <img src={url} alt={title} className="mt-1.5 w-full max-h-52 object-cover rounded-xl border border-border" />
+      <p className="text-xs text-ink-secondary">
+        {title}
+        {value ? ` · ${value}` : ''}
+      </p>
+      <img
+        src={url}
+        alt={title}
+        className="mt-1.5 w-full max-h-52 object-cover rounded-xl border border-border"
+      />
     </div>
   );
 }

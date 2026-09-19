@@ -23,9 +23,15 @@ export default function InspirationsScreen() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="bg-surface px-4 py-3 flex items-center gap-3 sticky top-0 z-10">
-        <button onClick={() => navigate(-1)} aria-label="Kembali"><ArrowLeft className="w-6 h-6 text-ink" /></button>
+        <button onClick={() => navigate(-1)} aria-label="Kembali">
+          <ArrowLeft className="w-6 h-6 text-ink" />
+        </button>
         <h1 className="font-semibold text-base">
-          {service === 'titip' ? 'Inspirasi Titip Jastiper' : service === 'suruh' ? 'Inspirasi Suruh Jastiper' : 'Inspirasi Jastiper'}
+          {service === 'titip'
+            ? 'Inspirasi Titip Jastiper'
+            : service === 'suruh'
+              ? 'Inspirasi Suruh Jastiper'
+              : 'Inspirasi Jastiper'}
         </h1>
       </header>
 
@@ -73,17 +79,29 @@ export default function InspirationsScreen() {
 }
 
 /** Kartu inspirasi vertikal — header gradient + ikon, badan teks + CTA. */
-function InspirationCard({ item, onOpen }: { item: InspirationDef; onOpen: (i: InspirationDef) => void }) {
+function InspirationCard({
+  item,
+  onOpen,
+}: {
+  item: InspirationDef;
+  onOpen: (i: InspirationDef) => void;
+}) {
   const Icon = item.icon;
   return (
-    <button onClick={() => onOpen(item)} className="card p-4 flex items-center gap-3 text-left hover:shadow-soft transition-shadow">
+    <button
+      onClick={() => onOpen(item)}
+      className="card p-4 flex items-center gap-3 text-left hover:shadow-soft transition-shadow"
+    >
       <span className="p-2.5 rounded-xl shrink-0" style={{ backgroundColor: `${item.color}1A` }}>
         <Icon className="w-[22px] h-[22px]" style={{ color: item.color }} />
       </span>
       <div className="min-w-0">
         <p className="text-xs font-bold truncate">{item.title}</p>
         <p className="text-[10px] text-ink-secondary truncate">{item.subtitle}</p>
-        <span className="inline-flex items-center gap-1 mt-1.5 text-[10px] font-semibold" style={{ color: item.color }}>
+        <span
+          className="inline-flex items-center gap-1 mt-1.5 text-[10px] font-semibold"
+          style={{ color: item.color }}
+        >
           Lihat Detail
         </span>
       </div>
@@ -99,7 +117,10 @@ function InspirationSheet({ item, onClose }: { item: InspirationDef | null; onCl
   const isTitip = item.service === 'titip';
 
   return (
-    <div className="fixed inset-0 z-[1500] bg-black/40 flex items-end justify-center" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-[1500] bg-black/40 flex items-end justify-center"
+      onClick={onClose}
+    >
       <div
         onClick={(e) => e.stopPropagation()}
         className="bg-white w-full max-w-lg rounded-t-3xl overflow-hidden"
@@ -109,7 +130,10 @@ function InspirationSheet({ item, onClose }: { item: InspirationDef | null; onCl
           <span className="w-10 h-1 rounded-full bg-border" />
         </div>
 
-        <div className="p-6 flex items-center gap-4 relative overflow-hidden" style={{ backgroundColor: item.color }}>
+        <div
+          className="p-6 flex items-center gap-4 relative overflow-hidden"
+          style={{ backgroundColor: item.color }}
+        >
           <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
           <span className="relative z-10 inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/25 text-white shrink-0">
             <IconCmp className="w-9 h-9" />
@@ -118,7 +142,9 @@ function InspirationSheet({ item, onClose }: { item: InspirationDef | null; onCl
             <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/25 text-white text-xs font-semibold">
               {isTitip ? 'TITIP KURIR' : 'SURUH KURIR'}
             </span>
-            <p className="text-white text-xl font-bold font-sans leading-snug mt-2.5">{item.title}</p>
+            <p className="text-white text-xl font-bold font-sans leading-snug mt-2.5">
+              {item.title}
+            </p>
             <p className="text-white/85 text-sm mt-1 leading-relaxed">{item.subtitle}</p>
           </div>
         </div>
@@ -129,7 +155,10 @@ function InspirationSheet({ item, onClose }: { item: InspirationDef | null; onCl
             <ul className="space-y-1.5">
               {item.about.map((a, i) => (
                 <li key={i} className="flex items-start gap-2 text-sm text-ink leading-relaxed">
-                  <span className="w-1.5 h-1.5 rounded-full shrink-0 mt-1.5" style={{ backgroundColor: item.color }} />
+                  <span
+                    className="w-1.5 h-1.5 rounded-full shrink-0 mt-1.5"
+                    style={{ backgroundColor: item.color }}
+                  />
                   <span>{a}</span>
                 </li>
               ))}
@@ -140,7 +169,10 @@ function InspirationSheet({ item, onClose }: { item: InspirationDef | null; onCl
             <h3 className="font-bold text-sm mb-2">Contoh yang bisa</h3>
             <ul className="space-y-1.5">
               {item.contoh.map((c, i) => (
-                <li key={i} className="flex items-start gap-2 text-xs text-ink-secondary leading-relaxed">
+                <li
+                  key={i}
+                  className="flex items-start gap-2 text-xs text-ink-secondary leading-relaxed"
+                >
                   <span className="w-1 h-1 rounded-full bg-ink-secondary/50 shrink-0 mt-1.5" />
                   <span>{c}</span>
                 </li>
@@ -161,7 +193,10 @@ function InspirationSheet({ item, onClose }: { item: InspirationDef | null; onCl
             <IconCmp className="w-4 h-4" />
             {isTitip ? 'Titip Sekarang' : 'Suruh Sekarang'}
           </button>
-          <button onClick={onClose} className="btn-outline flex-1 !h-[46px] !border-border !bg-background !text-ink-secondary">
+          <button
+            onClick={onClose}
+            className="btn-outline flex-1 !h-[46px] !border-border !bg-background !text-ink-secondary"
+          >
             Tutup
           </button>
         </div>
@@ -169,4 +204,3 @@ function InspirationSheet({ item, onClose }: { item: InspirationDef | null; onCl
     </div>
   );
 }
-

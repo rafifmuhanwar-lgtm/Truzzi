@@ -169,10 +169,15 @@ router.post('/:id/take', requireUser, async (req: Request, res: Response) => {
     const user = getUser(req)!;
     const gig = await db.getGig(req.params.id);
     if (!gig) return res.status(404).json({ message: 'Tugas tidak ditemukan' });
-    if (gig.posterId === user.id) return res.status(400).json({ message: 'Tidak bisa mengambil tugas milik sendiri' });
-    if (gig.status !== 'open') return res.status(400).json({ message: 'Tugas sudah diambil orang lain' });
+    if (gig.posterId === user.id)
+      return res.status(400).json({ message: 'Tidak bisa mengambil tugas milik sendiri' });
+    if (gig.status !== 'open')
+      return res.status(400).json({ message: 'Tugas sudah diambil orang lain' });
 
-    const updated = await db.updateGig(gig.id ?? gig.$id, { workerId: user.id, status: 'in_progress' });
+    const updated = await db.updateGig(gig.id ?? gig.$id, {
+      workerId: user.id,
+      status: 'in_progress',
+    });
     await db.createNotification({
       userId: gig.posterId,
       category: 'Cari Cuan',
@@ -193,8 +198,10 @@ router.post('/:id/submit', requireUser, async (req: Request, res: Response) => {
     const user = getUser(req)!;
     const gig = await db.getGig(req.params.id);
     if (!gig) return res.status(404).json({ message: 'Tugas tidak ditemukan' });
-    if (gig.workerId !== user.id) return res.status(403).json({ message: 'Bukan pengerja tugas ini' });
-    if (gig.status !== 'in_progress') return res.status(400).json({ message: 'Tugas tidak dalam status pengerjaan' });
+    if (gig.workerId !== user.id)
+      return res.status(403).json({ message: 'Bukan pengerja tugas ini' });
+    if (gig.status !== 'in_progress')
+      return res.status(400).json({ message: 'Tugas tidak dalam status pengerjaan' });
 
     const body = req.body ?? {};
     const proofImageUrl = body.proofImageUrl ? String(body.proofImageUrl) : null;
@@ -224,8 +231,10 @@ router.post('/:id/approve', requireUser, async (req: Request, res: Response) => 
     const user = getUser(req)!;
     const gig = await db.getGig(req.params.id);
     if (!gig) return res.status(404).json({ message: 'Tugas tidak ditemukan' });
-    if (gig.posterId !== user.id) return res.status(403).json({ message: 'Bukan pemasang tugas ini' });
-    if (gig.status !== 'submitted') return res.status(400).json({ message: 'Tugas harus menunggu bukti & berstatus submitted' });
+    if (gig.posterId !== user.id)
+      return res.status(403).json({ message: 'Bukan pemasang tugas ini' });
+    if (gig.status !== 'submitted')
+      return res.status(400).json({ message: 'Tugas harus menunggu bukti & berstatus submitted' });
 
     const gigId = gig.id ?? gig.$id;
     const escrow = gig.escrowId ? await db.getEscrowById(gig.escrowId) : null;
@@ -237,7 +246,10 @@ router.post('/:id/approve', requireUser, async (req: Request, res: Response) => 
     // Release escrow & bayar worker = budget − (fee dibayar penyedia) ... worker menerima budget penuh?
     // Di desain: penyedia bayar (budget + fee); worker menerima budget penuh; fee platform = biayaLayanan.
     if (escrow && escrow.status === 'held') {
-      await db.updateEscrow(escrow.$id ?? escrow.id, { status: 'released', releasedAt: new Date().toISOString() });
+      await db.updateEscrow(escrow.$id ?? escrow.id, {
+        status: 'released',
+        releasedAt: new Date().toISOString(),
+      });
     }
     if (budget > 0) {
       const workerWallet = await walletOf(gig.workerId);
@@ -269,7 +281,8 @@ router.post('/:id/cancel', requireUser, async (req: Request, res: Response) => {
     const gig = await db.getGig(req.params.id);
     if (!gig) return res.status(404).json({ message: 'Tugas tidak ditemukan' });
     // Hanya penyedia yang bisa batal
-    if (gig.posterId !== user.id) return res.status(403).json({ message: 'Bukan pemasang tugas ini' });
+    if (gig.posterId !== user.id)
+      return res.status(403).json({ message: 'Bukan pemasang tugas ini' });
 
     if (gig.status !== 'open' && gig.status !== 'in_progress') {
       return res.status(400).json({ message: 'Tugas dalam status ini tidak dapat dibatalkan' });

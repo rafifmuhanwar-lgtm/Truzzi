@@ -81,7 +81,10 @@ export default function Receipt() {
     <div className="min-h-screen bg-background">
       <div className="bg-primary px-4 pt-4 pb-5 sticky top-0 z-20">
         <div className="flex items-center gap-2">
-          <button onClick={() => navigate(-1)} className="p-2 -ml-2 text-white rounded-full hover:bg-white/10">
+          <button
+            onClick={() => navigate(-1)}
+            className="p-2 -ml-2 text-white rounded-full hover:bg-white/10"
+          >
             <ArrowLeft size={22} />
           </button>
           <h1 className="text-white font-semibold">Upload Struk</h1>
@@ -111,7 +114,9 @@ export default function Receipt() {
             type="button"
             onClick={() => fileRef.current?.click()}
             className={`mt-2 w-full aspect-[4/3] rounded-card border-2 border-dashed overflow-hidden flex items-center justify-center transition-colors ${
-              photoUrl ? 'border-success bg-success/5' : 'border-border bg-white hover:border-primary'
+              photoUrl
+                ? 'border-success bg-success/5'
+                : 'border-border bg-white hover:border-primary'
             }`}
           >
             {photoUrl ? (
@@ -144,7 +149,9 @@ export default function Receipt() {
         <div>
           <label className="text-sm font-semibold text-ink">Total Belanja (Struk)</label>
           <div className="relative mt-1.5">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-ink-secondary">Rp</span>
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-ink-secondary">
+              Rp
+            </span>
             <input
               inputMode="numeric"
               value={totalStruk}
@@ -155,33 +162,54 @@ export default function Receipt() {
           </div>
         </div>
 
-        <button onClick={() => void handleSubmit()} disabled={uploading || !order} className="btn-primary">
+        <button
+          onClick={() => void handleSubmit()}
+          disabled={uploading || !order}
+          className="btn-primary"
+        >
           {uploading ? 'Memproses...' : 'Submit Settlement'}
         </button>
       </div>
 
       {/* Dialog sukses — persis receipt_screen.dart */}
       {result && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40" onClick={() => navigate(`/order/detail?id=${orderId}`, { replace: true })}>
+        <div
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/40"
+          onClick={() => navigate(`/order/detail?id=${orderId}`, { replace: true })}
+        >
           <div
             className="w-full max-w-lg bg-white rounded-t-sheet p-6 space-y-3 animate-[slideUp_0.25s_ease-out]"
             onClick={(e) => e.stopPropagation()}
           >
             <h2 className="text-headline font-bold text-success">Upload Struk Berhasil</h2>
             <Row label="Dana Belanja" value={formatRupiahSpaced(order?.danaBelanja ?? 0)} />
-            <Row label="Total Belanja (Struk)" value={formatRupiahSpaced(result.order.totalBelanjaStruk ?? 0)} />
+            <Row
+              label="Total Belanja (Struk)"
+              value={formatRupiahSpaced(result.order.totalBelanjaStruk ?? 0)}
+            />
             <div className={`border-t border-divider pt-2`}>
               <Row
                 label="Refund ke Customer"
                 value={formatRupiahSpaced(result.settlement.refundCustomer)}
-                valueClass={(result.settlement.refundCustomer ?? 0) >= 0 ? 'text-success' : 'text-error'}
+                valueClass={
+                  (result.settlement.refundCustomer ?? 0) >= 0 ? 'text-success' : 'text-error'
+                }
               />
             </div>
             <div className="border-t border-divider pt-2">
-              <Row label="Payment ke Jastiper" value={formatRupiahSpaced(result.settlement.paymentToJastiper)} valueClass="text-primary font-bold" />
-              <p className="text-right text-small text-ink-secondary mt-0.5">Ongkir: {formatRupiahSpaced(order?.ongkir ?? 0)}</p>
+              <Row
+                label="Payment ke Jastiper"
+                value={formatRupiahSpaced(result.settlement.paymentToJastiper)}
+                valueClass="text-primary font-bold"
+              />
+              <p className="text-right text-small text-ink-secondary mt-0.5">
+                Ongkir: {formatRupiahSpaced(order?.ongkir ?? 0)}
+              </p>
             </div>
-            <button onClick={() => navigate(`/order/detail?id=${orderId}`, { replace: true })} className="btn-primary mt-2">
+            <button
+              onClick={() => navigate(`/order/detail?id=${orderId}`, { replace: true })}
+              className="btn-primary mt-2"
+            >
               Selesai
             </button>
           </div>
@@ -199,4 +227,3 @@ function Row({ label, value, valueClass }: { label: string; value: string; value
     </div>
   );
 }
-

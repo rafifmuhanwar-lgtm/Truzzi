@@ -23,7 +23,10 @@ export const useNotificationStore = create<NotificationState>((set, get) => ({
     set({ loading: true });
     try {
       const { notifications } = await API.notifications.list();
-      set({ notifications, unreadCount: notifications.filter((n: AppNotification) => !n.isRead).length });
+      set({
+        notifications,
+        unreadCount: notifications.filter((n: AppNotification) => !n.isRead).length,
+      });
     } catch {
       /* ignore */
     } finally {
@@ -33,7 +36,9 @@ export const useNotificationStore = create<NotificationState>((set, get) => ({
 
   markRead: async (id) => {
     await API.notifications.read(id);
-    const notifications = get().notifications.map((n) => (n.id === id ? { ...n, isRead: true } : n));
+    const notifications = get().notifications.map((n) =>
+      n.id === id ? { ...n, isRead: true } : n,
+    );
     set({ notifications, unreadCount: notifications.filter((n) => !n.isRead).length });
   },
 

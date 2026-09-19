@@ -2,8 +2,8 @@
  * Data layer PostgreSQL via Prisma — implementasi kembar dari `data.ts`
  * dengan signature identik. Dipakai saat DATA_ENGINE=postgres.
  */
-import { getPrisma } from "./prisma-client.js";
-import type { SessionUser } from "./session.js";
+import { getPrisma } from './prisma-client.js';
+import type { SessionUser } from './session.js';
 // Removed memory import
 
 type Doc = Record<string, any>;
@@ -36,7 +36,7 @@ export async function upsertUserDoc(user: SessionUser): Promise<Doc> {
 }
 
 export async function updateUserDoc(userId: string, data: Doc): Promise<Doc> {
-  const allowed = toUpdatable(data, ["name", "email", "phone", "photoUrl", "selectedArea", "role"]);
+  const allowed = toUpdatable(data, ['name', 'email', 'phone', 'photoUrl', 'selectedArea', 'role']);
   const u = await getPrisma().user.update({ where: { id: userId }, data: allowed });
   return { ...u };
 }
@@ -48,10 +48,10 @@ export async function createOrder(data: Doc): Promise<Doc> {
     data: {
       id: (data.$id as string) || undefined,
       userId: data.userId as string,
-      serviceName: (data.serviceName as string) ?? "",
-      title: (data.title as string) ?? "",
+      serviceName: (data.serviceName as string) ?? '',
+      title: (data.title as string) ?? '',
       description: (data.description as string) ?? null,
-      status: (data.status as any) ?? "ongoing",
+      status: (data.status as any) ?? 'ongoing',
       statusText: (data.statusText as string) ?? null,
       totalAmount: Number(data.totalAmount ?? 0),
       jastiperId: (data.jastiperId as string) ?? null,
@@ -77,12 +77,12 @@ export async function createOrder(data: Doc): Promise<Doc> {
       strukImageUrl: (data.strukImageUrl as string) ?? null,
       deliveryProofUrl: (data.deliveryProofUrl as string) ?? null,
       refundCustomer: numOrNull(data.refundCustomer),
-      kebijakanLebih: (data.kebijakanLebih as any) ?? "jangan_lebih",
+      kebijakanLebih: (data.kebijakanLebih as any) ?? 'jangan_lebih',
       pendingApproval: Boolean(data.pendingApproval ?? false),
       requestedTopup: numOrNull(data.requestedTopup),
       voucherCode: (data.voucherCode as string) ?? null,
       voucherDiscount: numOrNull(data.voucherDiscount),
-      orderType: (data.orderType as any) ?? "jastip",
+      orderType: (data.orderType as any) ?? 'jastip',
     },
   });
   return normalizeOrder(o);
@@ -91,7 +91,7 @@ export async function createOrder(data: Doc): Promise<Doc> {
 export async function listOrders(userId: string): Promise<Doc[]> {
   const rows = await getPrisma().order.findMany({
     where: { userId },
-    orderBy: { createdAt: "desc" },
+    orderBy: { createdAt: 'desc' },
     take: 100,
   });
   return rows.map(normalizeOrder);
@@ -104,15 +104,31 @@ export async function getOrder(orderId: string): Promise<Doc | null> {
 
 export async function updateOrder(orderId: string, data: Doc): Promise<Doc> {
   const allowed = toUpdatable(data, [
-    "status", "statusText", "jastiperId", "jastiperName", "jastiperPhone", "jastiperAvatar",
-    "jastiperLat", "jastiperLng", "totalBelanjaStruk", "strukImageUrl", "deliveryProofUrl",
-    "refundCustomer", "pendingApproval", "requestedTopup", "danaBelanja", "totalAmount",
-    "reviewRating", "reviewText", "customerConfirmed", "needsAdminReview", "adminReviewed"
+    'status',
+    'statusText',
+    'jastiperId',
+    'jastiperName',
+    'jastiperPhone',
+    'jastiperAvatar',
+    'jastiperLat',
+    'jastiperLng',
+    'totalBelanjaStruk',
+    'strukImageUrl',
+    'deliveryProofUrl',
+    'refundCustomer',
+    'pendingApproval',
+    'requestedTopup',
+    'danaBelanja',
+    'totalAmount',
+    'reviewRating',
+    'reviewText',
+    'customerConfirmed',
+    'needsAdminReview',
+    'adminReviewed',
   ]);
   const o = await getPrisma().order.update({ where: { id: orderId }, data: allowed });
   return normalizeOrder(o);
 }
-
 
 /** Order ongoing tanpa kurir — daftar "Tersedia" untuk app driver. */
 export async function listAvailableOrders(): Promise<Doc[]> {
@@ -126,7 +142,9 @@ export async function listAvailableOrders(): Promise<Doc[]> {
 
 /** Semua order milik satu kurir (accepted/completed/cancelled). */
 export async function listJastiperOrders(userId: string): Promise<Doc[]> {
-  const jastiper = await getPrisma().jastiper.findUnique({ where: { id: userId } }).catch(() => null);
+  const jastiper = await getPrisma()
+    .jastiper.findUnique({ where: { id: userId } })
+    .catch(() => null);
   const jId = jastiper ? jastiper.id : userId;
   const rows = await getPrisma().order.findMany({
     where: { jastiperId: jId },
@@ -144,7 +162,13 @@ export async function acceptOrder(orderId: string, patch: Doc): Promise<Doc | nu
   try {
     const res = await getPrisma().order.updateMany({
       where: { id: orderId, status: 'ongoing', OR: [{ jastiperId: null }, { jastiperId: '' }] },
-      data: toUpdatable(patch, ['jastiperId', 'jastiperName', 'jastiperPhone', 'jastiperAvatar', 'statusText']),
+      data: toUpdatable(patch, [
+        'jastiperId',
+        'jastiperName',
+        'jastiperPhone',
+        'jastiperAvatar',
+        'statusText',
+      ]),
     });
     if (res.count === 0) return null;
     return getOrder(orderId);
@@ -179,7 +203,7 @@ export async function listWithdrawalsByUser(userId: string): Promise<Doc[]> {
 export async function listChatMessages(orderId: string): Promise<Doc[]> {
   const rows = await getPrisma().chatMessage.findMany({
     where: { orderId },
-    orderBy: { timestamp: "asc" },
+    orderBy: { timestamp: 'asc' },
   });
   return rows.map((m) => ({ $id: m.id, ...m }));
 }
@@ -187,7 +211,7 @@ export async function listChatMessages(orderId: string): Promise<Doc[]> {
 export async function listAllChatMessages(): Promise<Doc[]> {
   try {
     const rows = await getPrisma().chatMessage.findMany({
-      orderBy: { timestamp: "desc" },
+      orderBy: { timestamp: 'desc' },
       take: 200,
     });
     return rows.map((m) => ({ $id: m.id, ...m }));
@@ -202,9 +226,9 @@ export async function createChatMessage(data: Doc): Promise<Doc> {
       orderId: data.orderId as string,
       senderId: data.senderId as string,
       senderName: (data.senderName as string) ?? null,
-      senderRole: (data.senderRole as any) ?? "customer",
+      senderRole: (data.senderRole as any) ?? 'customer',
       message: (data.message as string) ?? null,
-      messageType: (data.messageType as any) ?? "text",
+      messageType: (data.messageType as any) ?? 'text',
       mediaUrl: (data.mediaUrl as string) ?? null,
       timestamp: data.timestamp ? new Date(data.timestamp as string) : undefined,
     },
@@ -217,7 +241,7 @@ export async function createChatMessage(data: Doc): Promise<Doc> {
 export async function listNotifications(userId: string): Promise<Doc[]> {
   const rows = await getPrisma().notification.findMany({
     where: { userId },
-    orderBy: { createdAt: "desc" },
+    orderBy: { createdAt: 'desc' },
     take: 50,
   });
   return rows.map((n) => ({ $id: n.id, ...n }));
@@ -245,7 +269,10 @@ export async function createNotification(data: {
 }
 
 export async function markNotificationRead(notificationId: string, userId: string): Promise<void> {
-  await getPrisma().notification.updateMany({ where: { id: notificationId, userId }, data: { isRead: true } });
+  await getPrisma().notification.updateMany({
+    where: { id: notificationId, userId },
+    data: { isRead: true },
+  });
 }
 
 export async function markAllNotificationsRead(userId: string): Promise<void> {
@@ -257,13 +284,24 @@ export async function markAllNotificationsRead(userId: string): Promise<void> {
 export async function listAddresses(userId: string): Promise<Doc[]> {
   const rows = await getPrisma().address.findMany({
     where: { userId },
-    orderBy: { createdAt: "desc" },
+    orderBy: { createdAt: 'desc' },
   });
   return rows.map((a) => ({ $id: a.id, ...a }));
 }
 
-export async function saveAddress(addressId: string, addressUserId: string, data: Doc): Promise<Doc> {
-  const clean = toUpdatable(data, ["label", "recipientName", "phone", "fullAddress", "details", "isPrimary"]);
+export async function saveAddress(
+  addressId: string,
+  addressUserId: string,
+  data: Doc,
+): Promise<Doc> {
+  const clean = toUpdatable(data, [
+    'label',
+    'recipientName',
+    'phone',
+    'fullAddress',
+    'details',
+    'isPrimary',
+  ]);
   const existing = await getPrisma().address.findUnique({ where: { id: addressId } });
   if (existing) {
     const a = await getPrisma().address.update({ where: { id: addressId }, data: clean });
@@ -287,7 +325,14 @@ export async function listPaymentMethods(userId: string): Promise<Doc[]> {
 }
 
 export async function savePaymentMethod(methodId: string, userId: string, data: Doc): Promise<Doc> {
-  const clean = toUpdatable(data, ["name", "type", "accountNumber", "balance", "isLinked", "isDefault"]);
+  const clean = toUpdatable(data, [
+    'name',
+    'type',
+    'accountNumber',
+    'balance',
+    'isLinked',
+    'isDefault',
+  ]);
   const existing = await getPrisma().paymentMethod.findUnique({ where: { id: methodId } });
   if (existing) {
     const p = await getPrisma().paymentMethod.update({ where: { id: methodId }, data: clean });
@@ -345,15 +390,31 @@ export async function getGig(gigId: string): Promise<Doc | null> {
 
 export async function updateGig(gigId: string, data: Doc): Promise<Doc> {
   const allowed = toUpdatable(data, [
-    'workerId', 'title', 'description', 'category', 'location', 'budget',
-    'biayaLayanan', 'deadline', 'status', 'escrowId', 'proofImageUrl', 'proofNote',
+    'workerId',
+    'title',
+    'description',
+    'category',
+    'location',
+    'budget',
+    'biayaLayanan',
+    'deadline',
+    'status',
+    'escrowId',
+    'proofImageUrl',
+    'proofNote',
   ]);
-  const g = await getPrisma().gig.update({ where: { id: gigId }, data: { ...allowed, updatedAt: new Date() } });
+  const g = await getPrisma().gig.update({
+    where: { id: gigId },
+    data: { ...allowed, updatedAt: new Date() },
+  });
   return normalizeGig(g);
 }
 
 export async function listGigReviews(gigId: string): Promise<Doc[]> {
-  const rows = await getPrisma().gigReview.findMany({ where: { gigId }, orderBy: { createdAt: 'asc' } });
+  const rows = await getPrisma().gigReview.findMany({
+    where: { gigId },
+    orderBy: { createdAt: 'asc' },
+  });
   return rows.map((r) => ({ $id: r.id, ...r }));
 }
 
@@ -393,7 +454,7 @@ export async function ensureWallet(userId: string): Promise<Doc> {
 }
 
 export async function updateWallet(userId: string, data: Doc): Promise<Doc> {
-  const clean = toUpdatable(data, ["balance", "totalTopUp", "totalSpent"]);
+  const clean = toUpdatable(data, ['balance', 'totalTopUp', 'totalSpent']);
   const w = await getPrisma().wallet.update({ where: { id: userId }, data: clean });
   return { ...w };
 }
@@ -406,7 +467,7 @@ export async function createEscrow(data: Doc): Promise<Doc> {
       gigId: (data.gigId as string) ?? null,
       userId: data.userId as string,
       amount: Number(data.amount ?? 0),
-      status: (data.status as any) ?? "held",
+      status: (data.status as any) ?? 'held',
       serviceType: (data.serviceType as string) ?? null,
       danaBelanja: Number(data.danaBelanja ?? 0),
       ongkir: Number(data.ongkir ?? 0),
@@ -419,7 +480,7 @@ export async function createEscrow(data: Doc): Promise<Doc> {
 export async function listUserEscrows(userId: string): Promise<Doc[]> {
   const rows = await getPrisma().escrowTransaction.findMany({
     where: { userId },
-    orderBy: { createdAt: "desc" },
+    orderBy: { createdAt: 'desc' },
   });
   return rows.map((e) => ({ $id: e.id, ...e }));
 }
@@ -430,7 +491,7 @@ export async function getEscrowById(escrowId: string): Promise<Doc | null> {
 }
 
 export async function updateEscrow(escrowId: string, data: Doc): Promise<Doc> {
-  const clean = toUpdatable(data, ["status", "releasedAt", "amount"]);
+  const clean = toUpdatable(data, ['status', 'releasedAt', 'amount']);
   const e = await getPrisma().escrowTransaction.update({ where: { id: escrowId }, data: clean });
   return { $id: e.id, ...e };
 }
@@ -441,9 +502,9 @@ export async function createTopUp(data: Doc): Promise<Doc> {
       id: (data.$id as string) || undefined,
       userId: data.userId as string,
       amount: Number(data.amount ?? 0),
-      paymentMethod: (data.paymentMethod as string) ?? "qris",
+      paymentMethod: (data.paymentMethod as string) ?? 'qris',
       pakasirOrderId: (data.pakasirOrderId as string) ?? null,
-      status: (data.status as any) ?? "pending",
+      status: (data.status as any) ?? 'pending',
     },
   });
   return { $id: t.id, ...t };
@@ -452,7 +513,7 @@ export async function createTopUp(data: Doc): Promise<Doc> {
 export async function listUserTopUps(userId: string): Promise<Doc[]> {
   const rows = await getPrisma().topUpTransaction.findMany({
     where: { userId },
-    orderBy: { createdAt: "desc" },
+    orderBy: { createdAt: 'desc' },
   });
   return rows.map((t) => ({ $id: t.id, ...t }));
 }
@@ -468,7 +529,7 @@ export async function getTopUpByRef(refId: string): Promise<Doc | null> {
 }
 
 export async function updateTopUp(topUpId: string, data: Doc): Promise<Doc> {
-  const clean = toUpdatable(data, ["status", "completedAt", "pakasirOrderId"]);
+  const clean = toUpdatable(data, ['status', 'completedAt', 'pakasirOrderId']);
   const t = await getPrisma().topUpTransaction.update({ where: { id: topUpId }, data: clean });
   return { $id: t.id, ...t };
 }
@@ -479,9 +540,9 @@ export async function updateTopUp(topUpId: string, data: Doc): Promise<Doc> {
 function normalizeOrder(o: any): Doc {
   const out: Doc = { ...o };
   out.id = out.id ?? o.$id;
-  out.status = typeof o.status === "string" ? o.status : o.status;
-  out.orderType = typeof o.orderType === "string" ? o.orderType : o.orderType;
-  out.kebijakanLebih = typeof o.kebijakanLebih === "string" ? o.kebijakanLebih : o.kebijakanLebih;
+  out.status = typeof o.status === 'string' ? o.status : o.status;
+  out.orderType = typeof o.orderType === 'string' ? o.orderType : o.orderType;
+  out.kebijakanLebih = typeof o.kebijakanLebih === 'string' ? o.kebijakanLebih : o.kebijakanLebih;
   // pastikan field tanggal jadi string ISO
   if (o.createdAt instanceof Date) out.createdAt = toIso(o.createdAt);
   if (o.updatedAt instanceof Date) out.updatedAt = toIso(o.updatedAt);
@@ -531,7 +592,9 @@ export async function listAllUsers(): Promise<Doc[]> {
   try {
     const rows = await getPrisma().user.findMany({ take: 100 });
     return rows.map((u: any) => ({ ...u, $id: u.id }));
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
 export async function updateUser(id: string, data: Doc): Promise<Doc> {
@@ -540,51 +603,67 @@ export async function updateUser(id: string, data: Doc): Promise<Doc> {
 }
 
 export async function deleteUser(id: string): Promise<void> {
-  try { await getPrisma().user.delete({ where: { id } }); } catch {}
+  try {
+    await getPrisma().user.delete({ where: { id } });
+  } catch {}
 }
 
 export async function listAllOrders(): Promise<Doc[]> {
   try {
     const rows = await getPrisma().order.findMany({ orderBy: { createdAt: 'desc' }, take: 100 });
     return rows.map(normalizeOrder);
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
 export async function deleteOrder(id: string): Promise<void> {
-  try { await getPrisma().order.delete({ where: { id } }); } catch {}
+  try {
+    await getPrisma().order.delete({ where: { id } });
+  } catch {}
 }
 
 export async function listAllGigs(): Promise<Doc[]> {
   try {
     const rows = await getPrisma().gig.findMany({ orderBy: { createdAt: 'desc' }, take: 100 });
     return rows.map(normalizeGig);
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
 export async function deleteGig(id: string): Promise<void> {
-  try { await getPrisma().gig.delete({ where: { id } }); } catch {}
+  try {
+    await getPrisma().gig.delete({ where: { id } });
+  } catch {}
 }
 
 export async function listAllJastipers(): Promise<Doc[]> {
   try {
     const rows = await getPrisma().jastiper.findMany({ take: 100 });
     return rows.map(normalizeJastiper);
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
 export async function deleteJastiper(id: string): Promise<void> {
-  try { await getPrisma().jastiper.delete({ where: { id } }); } catch {}
+  try {
+    await getPrisma().jastiper.delete({ where: { id } });
+  } catch {}
 }
 
 export async function listAllWithdrawals(): Promise<Doc[]> {
   try {
-    const rows = await getPrisma().withdrawal.findMany({ 
-      include: { user: { select: { role: true, name: true } } }, 
-      orderBy: { createdAt: 'desc' }, 
-      take: 100 
+    const rows = await getPrisma().withdrawal.findMany({
+      include: { user: { select: { role: true, name: true } } },
+      orderBy: { createdAt: 'desc' },
+      take: 100,
     });
     return rows.map(normalizeWithdrawal);
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
 export async function updateWithdrawalStatus(id: string, status: string): Promise<Doc | null> {
@@ -594,11 +673,15 @@ export async function updateWithdrawalStatus(id: string, status: string): Promis
       data: { status: status as any },
     });
     return normalizeWithdrawal(w);
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }
 
 export async function deleteWithdrawal(id: string): Promise<void> {
-  try { await getPrisma().withdrawal.delete({ where: { id } }); } catch {}
+  try {
+    await getPrisma().withdrawal.delete({ where: { id } });
+  } catch {}
 }
 
 // ── Jastipers (PostgreSQL real implementation) ──
@@ -628,23 +711,27 @@ export async function createPromo(data: any): Promise<Doc> {
       gradient: data.gradient,
       accent: data.accent,
       active: data.active ?? true,
-    }
+    },
   });
   return { ...p, $id: p.id, createdAt: p.createdAt.toISOString() };
 }
 
 export async function listAllPromos(): Promise<Doc[]> {
   try {
-    const rows = await getPrisma().promo.findMany({ 
+    const rows = await getPrisma().promo.findMany({
       where: { active: true },
-      orderBy: { createdAt: 'desc' } 
+      orderBy: { createdAt: 'desc' },
     });
     return rows.map((p: any) => ({ ...p, $id: p.id, createdAt: p.createdAt.toISOString() }));
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
 export async function deletePromo(id: string): Promise<void> {
-  try { await getPrisma().promo.delete({ where: { id } }); } catch {}
+  try {
+    await getPrisma().promo.delete({ where: { id } });
+  } catch {}
 }
 
 function normalizeJastipProduct(p: any): Doc {
@@ -655,7 +742,13 @@ function normalizeJastipProduct(p: any): Doc {
   return out;
 }
 
-export async function listJastipers(filter?: { search?: string; area?: string; lat?: number; lng?: number; sort?: string }): Promise<Doc[]> {
+export async function listJastipers(filter?: {
+  search?: string;
+  area?: string;
+  lat?: number;
+  lng?: number;
+  sort?: string;
+}): Promise<Doc[]> {
   try {
     const where: any = { isJastipActive: true };
     if (filter?.area) where.area = { contains: filter.area, mode: 'insensitive' };
@@ -668,10 +761,11 @@ export async function listJastipers(filter?: { search?: string; area?: string; l
     let result = rows.map(normalizeJastiper);
     if (filter?.search) {
       const q = filter.search.toLowerCase();
-      result = result.filter((j) =>
-        (j.name || '').toLowerCase().includes(q) ||
-        (j.area || '').toLowerCase().includes(q) ||
-        (j.openTripTitle || '').toLowerCase().includes(q)
+      result = result.filter(
+        (j) =>
+          (j.name || '').toLowerCase().includes(q) ||
+          (j.area || '').toLowerCase().includes(q) ||
+          (j.openTripTitle || '').toLowerCase().includes(q),
       );
     }
     return result;
@@ -681,7 +775,7 @@ export async function listJastipers(filter?: { search?: string; area?: string; l
   }
 }
 
-﻿function normalizeJastiper(c: any): any {
+function normalizeJastiper(c: any): any {
   if (!c) return c;
   return { ...c, jastiperId: c.id };
 }
@@ -693,29 +787,56 @@ export async function getJastiper(id: string): Promise<any | null> {
       include: { products: { where: { published: true } } },
     });
     return j ? normalizeJastiper(j) : null;
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }
 
 export async function upsertJastiper(id: string, data: any): Promise<any> {
   const allowedFields = [
-    'name', 'email', 'phone', 'photoUrl', 'coverUrl', 'bio', 'vehicleType', 'vehiclePlate',
-    'selectedArea', 'category', 'feeEstimate', 'flatOngkir', 'isOnline', 'isActive',
-    'isJastipActive', 'kycVerified', 'kycKtpUrl', 'kycSelfieUrl', 'verified', 'rating',
-    'totalOrders', 'openTripTitle', 'openTripDestination', 'openTripSchedule', 'openTripClosing'
+    'name',
+    'email',
+    'phone',
+    'photoUrl',
+    'coverUrl',
+    'bio',
+    'vehicleType',
+    'vehiclePlate',
+    'selectedArea',
+    'category',
+    'feeEstimate',
+    'flatOngkir',
+    'isOnline',
+    'isActive',
+    'isJastipActive',
+    'kycVerified',
+    'kycKtpUrl',
+    'kycSelfieUrl',
+    'verified',
+    'rating',
+    'totalOrders',
+    'openTripTitle',
+    'openTripDestination',
+    'openTripSchedule',
+    'openTripClosing',
   ];
   const updateData: any = {};
   for (const k of allowedFields) {
     if (data[k] !== undefined) updateData[k] = data[k];
   }
-  
+
   const existing = await getPrisma().jastiper.findUnique({ where: { id } });
   let j;
   if (existing) {
-    j = await getPrisma().jastiper.update({ where: { id }, data: updateData, include: { products: true } });
+    j = await getPrisma().jastiper.update({
+      where: { id },
+      data: updateData,
+      include: { products: true },
+    });
   } else {
     j = await getPrisma().jastiper.create({
       data: { id, name: data.name || 'Jastiper Truzzi', ...updateData },
-      include: { products: true }
+      include: { products: true },
     });
   }
   return normalizeJastiper(j);
@@ -723,21 +844,45 @@ export async function upsertJastiper(id: string, data: any): Promise<any> {
 
 export async function updateJastiper(id: string, data: any): Promise<any> {
   const allowedFields = [
-    'name', 'email', 'phone', 'photoUrl', 'coverUrl', 'bio', 'vehicleType', 'vehiclePlate',
-    'selectedArea', 'category', 'feeEstimate', 'flatOngkir', 'isOnline', 'isActive',
-    'isJastipActive', 'kycVerified', 'kycKtpUrl', 'kycSelfieUrl', 'verified', 'rating',
-    'totalOrders', 'openTripTitle', 'openTripDestination', 'openTripSchedule', 'openTripClosing'
+    'name',
+    'email',
+    'phone',
+    'photoUrl',
+    'coverUrl',
+    'bio',
+    'vehicleType',
+    'vehiclePlate',
+    'selectedArea',
+    'category',
+    'feeEstimate',
+    'flatOngkir',
+    'isOnline',
+    'isActive',
+    'isJastipActive',
+    'kycVerified',
+    'kycKtpUrl',
+    'kycSelfieUrl',
+    'verified',
+    'rating',
+    'totalOrders',
+    'openTripTitle',
+    'openTripDestination',
+    'openTripSchedule',
+    'openTripClosing',
   ];
   const updateData: any = {};
   for (const k of allowedFields) {
     if (data[k] !== undefined) updateData[k] = data[k];
   }
-  const j = await getPrisma().jastiper.update({ where: { id }, data: updateData, include: { products: true } });
+  const j = await getPrisma().jastiper.update({
+    where: { id },
+    data: updateData,
+    include: { products: true },
+  });
   return normalizeJastiper(j);
 }
 
 // ── Favorites ──
-
 
 export async function listFavorites(userId: string): Promise<Doc[]> {
   try {
@@ -751,7 +896,9 @@ export async function listFavorites(userId: string): Promise<Doc[]> {
       id: f.id,
       jastiper: f.jastiper ? normalizeJastiper(f.jastiper) : null,
     }));
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
 export async function addFavorite(userId: string, jastiperId: string): Promise<Doc> {
@@ -776,7 +923,9 @@ export async function removeFavorite(userId: string, jastiperIdOrFavId: string):
         OR: [{ id: jastiperIdOrFavId }, { jastiperId: jastiperIdOrFavId }],
       },
     });
-  } catch { /* ok */ }
+  } catch {
+    /* ok */
+  }
 }
 
 export async function checkFavorite(userId: string, jastiperId: string): Promise<boolean> {
@@ -785,7 +934,9 @@ export async function checkFavorite(userId: string, jastiperId: string): Promise
       where: { userId_jastiperId: { userId, jastiperId } },
     });
     return !!fav;
-  } catch { return false; }
+  } catch {
+    return false;
+  }
 }
 
 // ── Jastip Products (PostgreSQL) ──
@@ -797,7 +948,9 @@ export async function listJastipProducts(jastiperId: string): Promise<Doc[]> {
       orderBy: { createdAt: 'desc' },
     });
     return rows.map(normalizeJastipProduct);
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
 export async function listMyJastipProducts(jastiperId: string): Promise<Doc[]> {
@@ -809,7 +962,9 @@ export async function listMyJastipProducts(jastiperId: string): Promise<Doc[]> {
       orderBy: { createdAt: 'desc' },
     });
     return rows.map(normalizeJastipProduct);
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
 export async function createJastipProduct(data: Doc): Promise<Doc> {
@@ -852,8 +1007,12 @@ export async function togglePublishJastipProduct(id: string): Promise<Doc> {
   return normalizeJastipProduct(p);
 }
 
-export const createOrderReport = async (data: Doc): Promise<Doc> => ({ ...data, id: "mock-report" });
-export const createOrderReview = async (data: Doc): Promise<Doc> => ({ ...data, id: "mock-review" });
-export const getOrderReviews = async (orderId: string): Promise<Doc[]> => ([]);
-
-
+export const createOrderReport = async (data: Doc): Promise<Doc> => ({
+  ...data,
+  id: 'mock-report',
+});
+export const createOrderReview = async (data: Doc): Promise<Doc> => ({
+  ...data,
+  id: 'mock-review',
+});
+export const getOrderReviews = async (orderId: string): Promise<Doc[]> => [];

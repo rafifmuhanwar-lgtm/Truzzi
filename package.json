@@ -17,9 +17,20 @@
     "build:landing": "npm --prefix landing run build",
     "build:server": "npm --prefix server run build",
     "start": "npm --prefix server run start",
-    "type-check": "npm --prefix web run type-check && npm --prefix server run type-check && npm --prefix jastiper run type-check && npm --prefix admin run type-check && npm --prefix landing run type-check"
+    "type-check": "npm --prefix web run type-check && npm --prefix server run type-check && npm --prefix jastiper run type-check && npm --prefix admin run type-check && npm --prefix landing run type-check",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "lint": "eslint \"**/*.{ts,tsx,js,jsx}\"",
+    "lint:fix": "eslint \"**/*.{ts,tsx,js,jsx}\" --fix"
   },
   "devDependencies": {
-    "concurrently": "^9.1.0"
+    "@typescript-eslint/eslint-plugin": "^8.70.0",
+    "@typescript-eslint/parser": "^8.70.0",
+    "concurrently": "^9.1.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.7",
+    "prettier": "^3.9.8"
   }
 }

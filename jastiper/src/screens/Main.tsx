@@ -23,8 +23,12 @@ export default function Main() {
   const params = new URLSearchParams(location.search);
   const tab = params.get('tab') ?? 'home';
 
-  const { data: roomData } = useQuery({ queryKey: ['chat-rooms'], queryFn: () => API.chat.rooms(), refetchInterval: 8000 });
-  
+  const { data: roomData } = useQuery({
+    queryKey: ['chat-rooms'],
+    queryFn: () => API.chat.rooms(),
+    refetchInterval: 8000,
+  });
+
   const hasUnreadChat = (roomData?.rooms ?? []).some((r: any) => (r.unreadCount || 0) > 0);
 
   return (
